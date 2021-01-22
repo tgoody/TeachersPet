@@ -6,5 +6,5 @@
         xmlns:local="clr-namespace:TeachersPet"
         mc:Ignorable="d"
         Title="TeachersPet" Height="800" Width="1200">
-    <Frame Source="/Pages/LoginPage.xaml" />
+    <Frame Source="/Pages/LoginPage.xaml" Name="Frame"/>
 </Window>

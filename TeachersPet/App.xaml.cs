@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -16,20 +17,17 @@ namespace TeachersPet {
         
         private App() {
 
-            var types = System.Reflection.Assembly.GetExecutingAssembly().GetTypes();
+            var types = Assembly.GetExecutingAssembly().GetTypes();
             var baseModules = types.Where(type => type.Namespace?.Contains("BaseModules") ?? false);
 
             foreach (var baseModule in baseModules) {
-
-                //var moduleList = createList(baseModule);
                 var inheritedTypes =
-                    types.Where(type => type.IsClass && !type.IsAbstract && type.IsSubclassOf(baseModule)).ToList();
-                // foreach (var type in inheritedTypes) {
-                //     moduleList.Add(type);
-                // }
-
+                    types.Where(type => type.IsClass && !type.IsAbstract && baseModule.IsAssignableFrom(type)).ToList();
+                
                 Current.Properties.Add(baseModule, inheritedTypes);
             }
+
+
 
         }
         
