@@ -1,0 +1,17 @@
+﻿<Page x:Class="TeachersPet.Pages.LoginPage"
+                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="300"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        
+        <TextBlock Text="This text demonstrates the wrapping behavior of a TextBlock." TextWrapping="NoWrap"
+                   TextAlignment="Center" Grid.Row="0" VerticalAlignment="Bottom"/>
+    <Button Content="Login To Canvas" Height="125" Width="300" Grid.Row="2" VerticalAlignment="Top" Click="Button_Click"/>
+    </Grid>
+</Page>

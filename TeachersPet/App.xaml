@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:TeachersPet"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+         <!-- this spot is for global styling - use this to keep things consistent -->
     </Application.Resources>
 </Application>

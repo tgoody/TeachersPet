@@ -14,12 +14,12 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TeachersPet.Services;
 
-namespace TeachersPet {
+namespace TeachersPet.Pages {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window {
-        public MainWindow() {
+    public partial class LoginPage : Page {
+        public LoginPage() {
             InitializeComponent();
         }
 
@@ -27,6 +27,10 @@ namespace TeachersPet {
             
             AuthenticationProvider.Instance().CanvasLogin();
             Console.WriteLine(AuthenticationProvider.Instance().ApiToken);
+            
+            //do something to confirm login worked
+
+            NavigationService?.Navigate(new CourseListPage());
         }
     }
 }
