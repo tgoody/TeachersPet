@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TeachersPet.Pages.CourseList;
 using TeachersPet.Services;
 
 namespace TeachersPet.Pages {

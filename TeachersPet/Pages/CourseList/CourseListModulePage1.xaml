@@ -1,11 +1,12 @@
-<Page x:Class="TeachersPet.Pages.CourseListPage"
+<Page x:Class="TeachersPet.Pages.CourseList.CourseListModulePage1"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:TeachersPet.Pages"
       mc:Ignorable="d"
-      Title="Course List" Height="450" Width="800">
+      Title="CourseListModulePage1" Height="450" Width="800">
     <Grid>
-        <WrapPanel x:Name="WrapPanel" />  
+        <TextBlock Text="This text demonstrates the wrapping behavior of a TextBlock." />
     </Grid>
 </Page>

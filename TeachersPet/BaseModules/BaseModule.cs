@@ -1,4 +1,4 @@
-namespace TeachersPet.Modules.BaseModules {
+namespace TeachersPet.BaseModules {
     public interface BaseModule {
         public string GetName();
     }

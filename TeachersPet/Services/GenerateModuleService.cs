@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using TeachersPet.Modules.BaseModules;
+using TeachersPet.BaseModules;
 
 namespace TeachersPet.Services {
     public static class GenerateModuleService {
