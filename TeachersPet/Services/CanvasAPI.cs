@@ -42,25 +42,23 @@ namespace TeachersPet.Services {
         }
         
         //TODO: lets find some way to store data program wide
-        public static async Task<List<string>> GetCourseList() {
+        public static async Task<JArray> GetCourseList() {
 
             //If a teacher, use all courses where you are a teacher
             //else, you will get no results, so you must be a TA, so only show  courses where you are a TA
             var result = await CanvasApiRequest("courses?enrollment_type=teacher");
             if(!result.HasValues)
                 result = await CanvasApiRequest("courses?enrollment_type=ta");
-            var courseIDs = new List<string>();
             try {
                 foreach (var course in (JArray) result) {
                     Console.WriteLine((string) course["id"]);
-                    courseIDs.Add((string) course["id"]);
                 }
             }
             catch (Exception e) {
                 throw new Exception("Error retrieving courses for your Canvas account");
             }
 
-            return courseIDs;
+            return (JArray) result;
         }
         
             

@@ -6,6 +6,6 @@
       mc:Ignorable="d"
       Title="Course List" Height="450" Width="800">
     <Grid>
-        <WrapPanel x:Name="WrapPanel" />  
+        <StackPanel x:Name="StackPanel" Orientation="Vertical"/>  
     </Grid>
 </Page>

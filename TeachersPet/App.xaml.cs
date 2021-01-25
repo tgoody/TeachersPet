@@ -16,7 +16,6 @@ namespace TeachersPet {
 
         
         private App() {
-            //TODO: Check BaseModule.cs
             var types = Assembly.GetExecutingAssembly().GetTypes();
             var baseModules = types.Where(type => type.Namespace?.Contains("BaseModules") ?? false);
 
