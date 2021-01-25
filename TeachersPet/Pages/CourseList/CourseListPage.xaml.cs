@@ -1,7 +1,9 @@
 using System;
+using System.Windows;
 using System.Windows.Controls;
 using Newtonsoft.Json.Linq;
 using TeachersPet.BaseModules;
+using TeachersPet.Pages.CourseInfo;
 using TeachersPet.Services;
 
 namespace TeachersPet.Pages.CourseList {
@@ -20,9 +22,10 @@ namespace TeachersPet.Pages.CourseList {
             try {
                 foreach (var course in courses) {
                     var newButton = new Button {
-                        Tag = course["id"],
+                        Tag = course,
                         Content = $"{course["course_code"]}: {course["name"]}"
                     };
+                    newButton.Click += CourseButtonClick;
                     StackPanel.Children.Add(newButton);
                 }
             }
@@ -30,6 +33,15 @@ namespace TeachersPet.Pages.CourseList {
                 Console.Error.WriteLine("Error populating course list");
                 Console.Error.WriteLine(e);
             }
+
+        }
+
+
+
+        private void CourseButtonClick(object sender, RoutedEventArgs e) {
+
+            var button = sender as Button;
+            NavigationService?.Navigate(new CourseInfoPage(button?.Tag as JToken));
 
         }
         
