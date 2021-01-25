@@ -24,7 +24,7 @@ namespace TeachersPet.Pages {
             InitializeComponent();
         }
 
-        public void Button_Click(object sender, RoutedEventArgs routedEventArgs) {
+        private void Button_Click(object sender, RoutedEventArgs routedEventArgs) {
             
             AuthenticationProvider.Instance().CanvasLogin();
             Console.WriteLine(AuthenticationProvider.Instance().ApiToken);

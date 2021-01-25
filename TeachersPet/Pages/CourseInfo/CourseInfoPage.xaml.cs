@@ -1,5 +1,7 @@
 using System.Windows.Controls;
 using Newtonsoft.Json.Linq;
+using TeachersPet.BaseModules;
+using TeachersPet.Services;
 
 namespace TeachersPet.Pages.CourseInfo {
     public partial class CourseInfoPage : Page {
@@ -9,6 +11,7 @@ namespace TeachersPet.Pages.CourseInfo {
 
         public CourseInfoPage(JToken courseData) {
             InitializeComponent();
+            GenerateModuleService.CreateWrapPanel(typeof(CourseInfoModule), ref WrapPanel);
             TextBlock.Text = courseData.ToString();
         }
         

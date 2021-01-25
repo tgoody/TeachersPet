@@ -1,13 +1,13 @@
-<Page x:Class="TeachersPet.Pages.CourseInfo.CourseInfoPage"
+<Page x:Class="TeachersPet.Pages.Students.StudentsPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:local="clr-namespace:TeachersPet.Pages.CourseInfo"
+      xmlns:local="clr-namespace:TeachersPet.Pages.Students"
       mc:Ignorable="d"
-      Title="CourseInfo" Height="450" Width="800">
+      Title="StudentsPage" Height="450" Width="800">
     <Grid>
-        <TextBlock Name="TextBlock"/>
-        <WrapPanel Name="WrapPanel"/>
+        <TextBlock x:Name="UiLoadingBlock" Text="Loading..."/>
+        <ListView x:Name="UiStudentList" Visibility="Collapsed"/>
     </Grid>
 </Page>

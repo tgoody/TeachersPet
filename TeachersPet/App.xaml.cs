@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
+using Newtonsoft.Json.Linq;
 
 namespace TeachersPet {
     /// <summary>
@@ -14,7 +15,12 @@ namespace TeachersPet {
     /// </summary>
     public partial class App : Application {
 
-        
+        //Developer could add other partial class definitions to add more variables if they wanted
+        //Or just change this one, because at that point, I wouldn't know the difference.
+
+        public static JToken CurrentClassData { get; set; }
+
+
         private App() {
             var types = Assembly.GetExecutingAssembly().GetTypes();
             var baseModules = types.Where(type => type.Namespace?.Contains("BaseModules") ?? false);

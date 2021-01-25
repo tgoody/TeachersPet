@@ -60,8 +60,15 @@ namespace TeachersPet.Services {
 
             return (JArray) result;
         }
-        
-            
+
+
+        public static async Task<JArray> GetStudentListFromCourseID(string courseID) {
+
+            var result = await CanvasApiRequest($"courses/{courseID}/users?enrollment_type[]=student");
+            //TODO: handle pagination, starts with 10 items, we can go to 100. 'Link' header is where we find next page URLs
+            return result as JArray;
+
+        }
         
         
         

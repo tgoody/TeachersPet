@@ -17,7 +17,6 @@ namespace TeachersPet.Pages.CourseList {
 
 
         public CourseListPage(JArray courses) {
-
             InitializeComponent();
             try {
                 foreach (var course in courses) {
@@ -33,7 +32,6 @@ namespace TeachersPet.Pages.CourseList {
                 Console.Error.WriteLine("Error populating course list");
                 Console.Error.WriteLine(e);
             }
-
         }
 
 
@@ -41,6 +39,7 @@ namespace TeachersPet.Pages.CourseList {
         private void CourseButtonClick(object sender, RoutedEventArgs e) {
 
             var button = sender as Button;
+            App.CurrentClassData = button?.Tag as JToken;
             NavigationService?.Navigate(new CourseInfoPage(button?.Tag as JToken));
 
         }
