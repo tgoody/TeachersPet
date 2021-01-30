@@ -15,7 +15,6 @@ namespace TeachersPet.Services {
         private static HttpClient httpClient = new HttpClient();
         private static string canvasAPIUrl;
         private static bool betaMode;
-
         
         static CanvasAPI() {
             canvasAPIUrl = App.Current.Properties["CanvasAPIUrl"] as string;
@@ -34,7 +33,6 @@ namespace TeachersPet.Services {
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
         
-        //TODO: lets find some way to store data program wide
         public static async Task<JArray> GetCourseList() {
 
             //If a teacher, use all courses where you are a teacher
@@ -48,21 +46,21 @@ namespace TeachersPet.Services {
                 }
             }
             catch (Exception e) {
-                throw new Exception("Error retrieving courses for your Canvas account");
+                throw new Exception($"Error retrieving courses for your Canvas account: {e.Message}");
             }
-
             return (JArray) result;
         }
         
         public static async Task<JArray> GetStudentListFromCourseId(string courseID) {
-
-            var result = await CanvasApiRequest($"courses/{courseID}/users?enrollment_type[]=student");
-            //TODO: handle pagination, starts with 10 items, we can go to 100. 'Link' header is where we find next page URLs
+            var result = await CanvasApiRequest($"courses/{courseID}/users?enrollment_type[]=student&include[]=avatar_url");
             return result as JArray;
-
         }
-        
-        
+
+        public static async Task<JToken> GetStudentProfileFromStudentId(string studentId) {
+            Console.WriteLine(studentId);
+            var result = await CanvasApiRequest($"users/{studentId}/profile");
+            return result;
+        }
         
         
         
@@ -79,8 +77,6 @@ namespace TeachersPet.Services {
 
 
         private static async Task<JArray> HandlePaginationRequest(string urlParameters) {
-
-            
             //TODO: what if 100 is too much, Canvas says there's an unspecified limit
             var resultArray = new JArray();
             urlParameters += "&per_page=100";
@@ -88,16 +84,16 @@ namespace TeachersPet.Services {
             if (!response.Headers.Contains("Link")) {
                 throw new Exception("Error reading paginated Canvas API response");
             }
-            
-            
             var values = response.Headers.GetValues("Link").ToList()[0];
             var links = values.Split(',');
             var nextLink = links.SingleOrDefault(s => s.Contains("rel=\"next\""))?.Split('<', '>')[1];
             var currentLink = links.SingleOrDefault(s => s.Contains("rel=\"current\""))?.Split('<', '>')[1];
             var lastLink = links.SingleOrDefault(s => s.Contains("rel=\"last\""))?.Split('<', '>')[1];
+            
             var content = JsonConvert.DeserializeObject<JArray>(await response.Content.ReadAsStringAsync());
             resultArray.Merge(content);
-            while (nextLink != null) {
+            
+            while (nextLink != null && currentLink != lastLink) {
                 Console.WriteLine(resultArray.Count);
                 response = httpClient.GetAsync(nextLink).Result;
                 if (!response.Headers.Contains("Link")) {
@@ -108,9 +104,10 @@ namespace TeachersPet.Services {
                 content = JsonConvert.DeserializeObject<JArray>(await response.Content.ReadAsStringAsync());
                 resultArray.Merge(content);
                 nextLink = links.SingleOrDefault(s => s.Contains("rel=\"next\""))?.Split('<', '>')[1];
+                currentLink = links.SingleOrDefault(s => s.Contains("rel=\"current\""))?.Split('<', '>')[1];
+                lastLink = links.SingleOrDefault(s => s.Contains("rel=\"last\""))?.Split('<', '>')[1];
 
             }
-
             return resultArray;
 
         }

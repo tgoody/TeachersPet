@@ -8,6 +8,12 @@
       Title="StudentsPage" Height="450" Width="800">
     <Grid>
         <TextBlock x:Name="UiLoadingBlock" Text="Loading..."/>
-        <ListView x:Name="UiStudentList" Visibility="Collapsed"/>
+        <ListView x:Name="UiStudentList" Visibility="Collapsed">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ClickStudent" />
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
     </Grid>
 </Page>

@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TeachersPet.BaseModules;
 using TeachersPet.Models;
@@ -15,6 +18,7 @@ namespace TeachersPet.Pages.Students {
 
         public StudentsPage() {
             InitializeComponent();
+            students = new List<StudentModel>();
             Task.Run(GetStudents);
             
             //have some loading bar
@@ -28,8 +32,9 @@ namespace TeachersPet.Pages.Students {
             
             var studentJsonList = await CanvasAPI.GetStudentListFromCourseId(App.CurrentClassData["id"]?.ToString());
             foreach (var student in studentJsonList) {
-                //TODO: work on the async stuff here
-                //TODO: deserialize object when model code is complete
+                var studentModel = student.ToObject<StudentModel>();
+                students.Add(studentModel);
+                
                 Dispatcher.InvokeAsync(() => {
                     var newItem = new ListViewItem {
                         Content = (string)student["name"],
@@ -46,9 +51,26 @@ namespace TeachersPet.Pages.Students {
 
 
         }
-        
-        
-        
+
+
+        private async void ClickStudent(object sender, MouseButtonEventArgs e) {
+
+            var listBoxItem = sender as ListBoxItem;
+            var student = students.SingleOrDefault(s => s.Id == (string) listBoxItem.Tag);
+
+            if (student.Email == null) {
+                var studentProfile = await CanvasAPI.GetStudentProfileFromStudentId(student.Id);
+                if (studentProfile["email"] == null && studentProfile["login_id"] == null) {
+                    throw new Exception("Couldn't retrieve email.");
+                }
+                student.Email = (string) studentProfile["email"] ?? (string) studentProfile["login_id"];
+            }
+
+            NavigationService.Navigate(new StudentInfo.StudentInfo(student));
+
+
+        }
+
         
         
         
