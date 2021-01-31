@@ -44,14 +44,14 @@ namespace TeachersPet.Services {
                 foreach (var course in (JArray) result) {
                     Console.WriteLine((string) course["id"]);
                 }
-            }
+            } 
             catch (Exception e) {
                 throw new Exception($"Error retrieving courses for your Canvas account: {e.Message}");
             }
             return (JArray) result;
         }
         
-        public static async Task<JArray> GetStudentListFromCourseId(string courseID) {
+        public static async Task<JArray> GetStudentListFromCourseId(string courseID) { //TODO: Figure out retrieving emails on student list page
             var result = await CanvasApiRequest($"courses/{courseID}/users?enrollment_type[]=student&include[]=avatar_url");
             return result as JArray;
         }
