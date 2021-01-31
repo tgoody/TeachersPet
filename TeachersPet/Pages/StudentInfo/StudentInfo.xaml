@@ -8,5 +8,6 @@
       Title="StudentInfo" Height="450" Width="800">
     <Grid>
         <TextBlock x:Name="TextBlock"/>
+        <Image x:Name="Avatar"/>
     </Grid>
 </Page>

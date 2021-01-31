@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,13 +15,14 @@ using TeachersPet.Services;
 namespace TeachersPet.Pages.Students {
     public partial class StudentsPage : Page, CourseInfoModule {
 
-        private List<StudentModel> students;
+        private ObservableCollection<StudentModel> students;
 
         public StudentsPage() {
             InitializeComponent();
-            students = new List<StudentModel>();
+            students = new ObservableCollection<StudentModel>();
             Task.Run(GetStudents);
-            
+            UiStudentList.ItemsSource = students;
+
             //have some loading bar
             //currently just having a text box that says loading, which we will change in the async func
 
@@ -33,21 +35,23 @@ namespace TeachersPet.Pages.Students {
             var studentJsonList = await CanvasAPI.GetStudentListFromCourseId(App.CurrentClassData["id"]?.ToString());
             foreach (var student in studentJsonList) {
                 var studentModel = student.ToObject<StudentModel>();
-                students.Add(studentModel);
-                
                 Dispatcher.InvokeAsync(() => {
-                    var newItem = new ListViewItem {
-                        Content = (string)student["name"],
-                        Tag = (string)student["id"]
-                    };
-                    UiStudentList.Items.Add(newItem);
+                    students.Add(studentModel);
                 });
+
+                // Dispatcher.InvokeAsync(() => {
+                //     var newItem = new ListViewItem {
+                //         Content = (string)student["name"],
+                //         Tag = (string)student["id"]
+                //     };
+                //     UiStudentList.Items.Add(newItem);
+                // });
             }
 
-            Dispatcher.Invoke(() => {
-                UiLoadingBlock.Visibility = Visibility.Collapsed;
-                UiStudentList.Visibility = Visibility.Visible;
-            });
+            // Dispatcher.Invoke(() => {
+            //     UiLoadingBlock.Visibility = Visibility.Collapsed;
+            //     UiStudentList.Visibility = Visibility.Visible;
+            // });
 
 
         }

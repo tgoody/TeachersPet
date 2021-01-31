@@ -3,12 +3,28 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:local="clr-namespace:TeachersPet.Pages.Students"
+      xmlns:models="clr-namespace:TeachersPet.Models"
       mc:Ignorable="d"
       Title="StudentsPage" Height="450" Width="800">
     <Grid>
-        <TextBlock x:Name="UiLoadingBlock" Text="Loading..."/>
-        <ListView x:Name="UiStudentList" Visibility="Collapsed">
+        <TextBlock x:Name="UiLoadingBlock" Text="Loading..." Visibility="Collapsed"/>
+        <ListView x:Name="UiStudentList">
+            <ListView.ItemTemplate>
+                <DataTemplate DataType="models:StudentModel">
+                    <WrapPanel>
+                        <Image x:Name="StudentAvatar" Source="{Binding AvatarUrl}"/>
+                        <TextBlock Text="Name: " />
+                        <TextBlock Text="{Binding Name}" FontWeight="Bold" />
+                        <TextBlock Text=", " />
+                        <TextBlock Text="UFID: " />
+                        <TextBlock Text="{Binding SisUserId}" FontWeight="Bold" />
+                        <TextBlock Text=" (" />
+                        <TextBlock Text="{Binding Email}" TextDecorations="Underline" Foreground="Blue" Cursor="Hand" />
+                        <TextBlock Text=")" />
+                    </WrapPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            
             <ListView.ItemContainerStyle>
                 <Style TargetType="{x:Type ListViewItem}">
                     <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ClickStudent" />
