@@ -12,7 +12,7 @@ namespace TeachersPet.Pages.StudentInfo {
 
         public StudentInfo(StudentModel student) {
             InitializeComponent();
-            TextBlock.Text = $"{student.Name}, {student.SisUserId}\n{student.Email}";
+            TextBlock.Text = $"{student.Name}, {student.SisUserId}\n{student.Email}, {student.Id}";
             Avatar.Source = new BitmapImage(new Uri(student.AvatarUrl));
 
 

@@ -34,7 +34,7 @@ namespace TeachersPet {
 
             Current.Properties.Add("CanvasAPIUrl", "https://ufl.instructure.com/api/v1/");
             Current.Properties.Add("BetaCanvasAPIUrl", "https://ufl.beta.instructure.com/api/v1/");
-
+            Current.Properties.Add("ImagePath", $"{AppDomain.CurrentDomain.BaseDirectory}/Images");
 
         }
         

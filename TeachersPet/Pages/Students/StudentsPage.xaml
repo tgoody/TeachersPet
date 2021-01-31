@@ -4,15 +4,40 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:models="clr-namespace:TeachersPet.Models"
+      xmlns:teachersPet="clr-namespace:TeachersPet"
       mc:Ignorable="d"
       Title="StudentsPage" Height="450" Width="800">
+    
+    
+    
+    <Page.Resources>
+        
+        <Style x:Key="AvatarStyle"  TargetType="{x:Type Image}">
+            <Setter Property="Source" Value="/Resources/Images/defaultAvatar.png"/>
+            <Setter Property="MaxWidth" Value="50"/>
+            <Setter Property="MaxHeight" Value="50"/>
+        </Style>
+        
+        <Style x:Key="ListItemStyle" TargetType="{x:Type ListViewItem}">
+            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ClickStudent" />
+            <Setter Property="Height" Value="55"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Tag" Value="{Binding Id}"/>
+        </Style>
+        
+    </Page.Resources>
+    
+    
     <Grid>
-        <TextBlock x:Name="UiLoadingBlock" Text="Loading..." Visibility="Collapsed"/>
-        <ListView x:Name="UiStudentList">
+        <TextBlock x:Name="UiLoadingBlock" Text="Loading..."/>
+        <ListView x:Name="UiStudentList" ItemContainerStyle="{StaticResource ListItemStyle}" Visibility="Collapsed">
             <ListView.ItemTemplate>
                 <DataTemplate DataType="models:StudentModel">
                     <WrapPanel>
-                        <Image x:Name="StudentAvatar" Source="{Binding AvatarUrl}"/>
+                        <Image 
+                            x:Name="StudentAvatar" Source="{Binding AvatarUrl}"
+                            Style="{StaticResource AvatarStyle}" ImageFailed="SetDefaultAvatar"
+                            />
                         <TextBlock Text="Name: " />
                         <TextBlock Text="{Binding Name}" FontWeight="Bold" />
                         <TextBlock Text=", " />
@@ -25,11 +50,7 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
             
-            <ListView.ItemContainerStyle>
-                <Style TargetType="{x:Type ListViewItem}">
-                    <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ClickStudent" />
-                </Style>
-            </ListView.ItemContainerStyle>
+            
         </ListView>
     </Grid>
 </Page>

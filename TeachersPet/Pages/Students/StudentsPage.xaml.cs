@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TeachersPet.BaseModules;
@@ -39,19 +40,12 @@ namespace TeachersPet.Pages.Students {
                     students.Add(studentModel);
                 });
 
-                // Dispatcher.InvokeAsync(() => {
-                //     var newItem = new ListViewItem {
-                //         Content = (string)student["name"],
-                //         Tag = (string)student["id"]
-                //     };
-                //     UiStudentList.Items.Add(newItem);
-                // });
             }
 
-            // Dispatcher.Invoke(() => {
-            //     UiLoadingBlock.Visibility = Visibility.Collapsed;
-            //     UiStudentList.Visibility = Visibility.Visible;
-            // });
+            Dispatcher.Invoke(() => {
+                UiLoadingBlock.Visibility = Visibility.Collapsed;
+                UiStudentList.Visibility = Visibility.Visible;
+            });
 
 
         }
@@ -71,10 +65,18 @@ namespace TeachersPet.Pages.Students {
             }
 
             NavigationService.Navigate(new StudentInfo.StudentInfo(student));
-
-
         }
 
+        
+        //Some students don't have retrievable avatars
+        //This results in their initials being their avatar on Canvas
+        //For us, we can't retrieve that data, so we're going to manually set the image here
+        private void SetDefaultAvatar(object sender, ExceptionRoutedEventArgs e)
+        {
+            ((Image)sender).Source = new BitmapImage(new Uri("/Resources/Images/defaultAvatar.png", UriKind.Relative));
+        }
+        
+        
         
         
         
