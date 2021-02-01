@@ -50,7 +50,6 @@ namespace TeachersPet.Pages.Students {
 
         }
 
-
         private async void ClickStudent(object sender, MouseButtonEventArgs e) {
 
             var listBoxItem = sender as ListBoxItem;

@@ -11,7 +11,6 @@
     
     
     <Page.Resources>
-        
         <Style x:Key="AvatarStyle"  TargetType="{x:Type Image}">
             <Setter Property="Source" Value="/Resources/Images/defaultAvatar.png"/>
             <Setter Property="MaxWidth" Value="50"/>
@@ -24,7 +23,6 @@
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
             <Setter Property="Tag" Value="{Binding Id}"/>
         </Style>
-        
     </Page.Resources>
     
     
@@ -49,8 +47,6 @@
                     </WrapPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
-            
-            
         </ListView>
     </Grid>
 </Page>

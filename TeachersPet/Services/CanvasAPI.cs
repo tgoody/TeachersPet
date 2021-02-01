@@ -52,7 +52,7 @@ namespace TeachersPet.Services {
         }
         
         public static async Task<JArray> GetStudentListFromCourseId(string courseID) { //TODO: Figure out retrieving emails on student list page
-            var result = await CanvasApiRequest($"courses/{courseID}/users?enrollment_type[]=student&include[]=avatar_url");
+            var result = await CanvasApiRequest($"courses/{courseID}/users?enrollment_type[]=student&include[]=avatar_url&include[]=sis_user_id");
             return result as JArray;
         }
 

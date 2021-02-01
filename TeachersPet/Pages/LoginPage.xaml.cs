@@ -28,7 +28,7 @@ namespace TeachersPet.Pages {
             
             AuthenticationProvider.Instance().CanvasLogin();
             Console.WriteLine(AuthenticationProvider.Instance().ApiToken);
-            CanvasAPI.ToggleBetaCanvasMode();
+            //CanvasAPI.ToggleBetaCanvasMode();
             //do something to confirm login worked
 
             
