@@ -57,10 +57,18 @@ namespace TeachersPet.Services {
         }
 
         public static async Task<JToken> GetStudentProfileFromStudentId(string studentId) {
-            Console.WriteLine(studentId);
             var result = await CanvasApiRequest($"users/{studentId}/profile");
             return result;
         }
+
+        public static async Task<JArray> GetAssignmentListFromCourseId(string courseId) {
+            var result = await CanvasApiRequest($"courses/{courseId}/assignments");
+            return result as JArray;
+        }
+        
+        //TODO: Look into finding a way to run async function and set "global" value in it        
+        
+        
         
         
         
@@ -79,6 +87,9 @@ namespace TeachersPet.Services {
         private static async Task<JArray> HandlePaginationRequest(string urlParameters) {
             //TODO: what if 100 is too much, Canvas says there's an unspecified limit
             var resultArray = new JArray();
+            if (!urlParameters.Contains('?')) {
+                urlParameters += '?';
+            }
             urlParameters += "&per_page=100";
             var response = httpClient.GetAsync(canvasAPIUrl + urlParameters).Result;
             if (!response.Headers.Contains("Link")) {

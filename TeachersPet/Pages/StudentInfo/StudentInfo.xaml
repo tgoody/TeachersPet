@@ -16,6 +16,10 @@
                 </Style>
             </Style.Resources>
         </Style>
+        
+        <Style x:Key="AssignmentStyle" TargetType="ListViewItem">
+            
+        </Style>
     </Page.Resources>
     
     <Canvas Style="{StaticResource Header}" Name="HeaderCanvas">
@@ -28,5 +32,20 @@
         <TextBlock x:Name="StudentId" Canvas.Top="30" Text="{Binding Id}"/>
         <TextBlock x:Name="StudentEmail" Canvas.Top="50" Text="{Binding Email}"/>
         <TextBlock x:Name="StudentSisUserId" Canvas.Top="70" Text="{Binding SisUserId}"/>
+        
+        <ListView x:Name="AssignmentList" Canvas.Top="200" ItemContainerStyle="{StaticResource AssignmentStyle}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal"> 
+                        <TextBlock Text="{Binding Name}"/>
+                        <TextBlock Text="{Binding DueDate}"/>
+                        <TextBox Text="pointsretrieved/"/>
+                        <TextBlock Text="{Binding PointsPossible}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Canvas>
+    
+    
 </Page>

@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using Newtonsoft.Json.Linq;
@@ -89,7 +91,13 @@ namespace TeachersPet.Pages.CourseList {
         private void CourseButtonClick(object sender, RoutedEventArgs e) {
 
             var item = sender as ListViewItem;
-            App.CurrentClassData = item?.Tag as CourseModel;
+            var courseModel = item?.Tag as CourseModel;
+            App.CurrentClassData = courseModel;
+            Task.Run(async () => {
+                var assignmentArray = await CanvasAPI.GetAssignmentListFromCourseId(courseModel.Id);
+                App.CurrentClassAssignmentModels?.Clear();
+                App.CurrentClassAssignmentModels = assignmentArray.Select(assignment => assignment.ToObject<AssignmentModel>()).ToList();
+            });
             NavigationService?.Navigate(new CourseInfoPage(item?.Tag as CourseModel));
 
         }

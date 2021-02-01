@@ -22,6 +22,9 @@ namespace TeachersPet.Pages {
     public partial class LoginPage : Page {
         public LoginPage() {
             InitializeComponent();
+            
+            
+            
         }
 
         private void Button_Click(object sender, RoutedEventArgs routedEventArgs) {

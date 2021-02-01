@@ -20,6 +20,7 @@ namespace TeachersPet {
         //Or just change this one, because at that point, I wouldn't know the difference.
 
         public static CourseModel CurrentClassData { get; set; }
+        public static List<AssignmentModel> CurrentClassAssignmentModels { get; set; }
 
 
         private App() {
@@ -35,8 +36,6 @@ namespace TeachersPet {
 
             Current.Properties.Add("CanvasAPIUrl", "https://ufl.instructure.com/api/v1/");
             Current.Properties.Add("BetaCanvasAPIUrl", "https://ufl.beta.instructure.com/api/v1/");
-            Current.Properties.Add("ImagePath", $"{AppDomain.CurrentDomain.BaseDirectory}/Images");
-
         }
 
     }

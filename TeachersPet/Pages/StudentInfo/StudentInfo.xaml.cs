@@ -20,6 +20,7 @@ namespace TeachersPet.Pages.StudentInfo {
             _studentModel = student;
             DataContext = _studentModel;
             HeaderCanvas.DataContext = _studentModel;
+            AssignmentList.ItemsSource = App.CurrentClassAssignmentModels;
         }
         
         
