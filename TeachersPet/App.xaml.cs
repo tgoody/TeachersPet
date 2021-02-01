@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using Newtonsoft.Json.Linq;
+using TeachersPet.Models;
 
 namespace TeachersPet {
     /// <summary>
@@ -18,7 +19,7 @@ namespace TeachersPet {
         //Developer could add other partial class definitions to add more variables if they wanted
         //Or just change this one, because at that point, I wouldn't know the difference.
 
-        public static JToken CurrentClassData { get; set; }
+        public static CourseModel CurrentClassData { get; set; }
 
 
         private App() {
@@ -37,20 +38,6 @@ namespace TeachersPet {
             Current.Properties.Add("ImagePath", $"{AppDomain.CurrentDomain.BaseDirectory}/Images");
 
         }
-        
-        
-        
-        
-        
-        
-        
-        // public IList createList(Type type)
-        // {
-        //     Type genericListType = typeof(List<>).MakeGenericType(type);
-        //     return (IList)Activator.CreateInstance(genericListType);
-        // }
-        
-        
-        
+
     }
 }

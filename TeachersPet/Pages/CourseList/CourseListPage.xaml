@@ -5,7 +5,64 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       mc:Ignorable="d"
       Title="Course List" Height="450" Width="800">
+    
+    <Page.Resources>
+        
+        <!-- TODO: Finish these styles -->
+        <!-- Course button can probably be "based off" the semester header one -->
+
+        <Style x:Key="CourseButton" TargetType="{x:Type ListViewItem}">
+            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="CourseButtonClick" />
+        </Style>
+        
+        <!-- TODO: I found this online, try to understand it Matty -->
+        <ControlTemplate x:Key="BetterLvItems" TargetType="ListViewItem">
+            <Border x:Name="border" Background="Transparent">
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Disabled" />
+                    </VisualStateGroup>
+                    <VisualStateGroup x:Name="SelectionStates">
+                        <VisualState x:Name="Unselected" />
+                        <VisualState x:Name="Selected">
+                            <Storyboard>
+                                <ColorAnimationUsingKeyFrames Storyboard.TargetName="border"
+                                                              Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
+                                    <EasingColorKeyFrame KeyTime="0" Value="LightBlue" />
+                                </ColorAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </VisualState>
+                        <VisualState x:Name="SelectedUnfocused">
+                            <Storyboard>
+                                <ColorAnimationUsingKeyFrames Storyboard.TargetName="border"
+                                                              Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
+                                    <EasingColorKeyFrame KeyTime="0" Value="SkyBlue" />
+                                </ColorAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+                <ContentPresenter/>
+            </Border>
+        </ControlTemplate>
+        
+        
+        
+        <Style x:Key="SemesterHeader" TargetType="{x:Type ListViewItem}">
+            <Setter Property="Template" Value="{StaticResource BetterLvItems}"/>
+        </Style>
+        
+        <Style x:Key="ListStyle">
+           
+        </Style>
+    </Page.Resources>
+    
+    
     <Grid>
-        <StackPanel x:Name="StackPanel" Orientation="Vertical"/>  
+        <ListView x:Name="ListView" Style="{StaticResource ListStyle}">
+            
+            
+        </ListView>
     </Grid>
 </Page>

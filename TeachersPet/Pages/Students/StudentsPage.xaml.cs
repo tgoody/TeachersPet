@@ -23,7 +23,6 @@ namespace TeachersPet.Pages.Students {
             students = new ObservableCollection<StudentModel>();
             Task.Run(GetStudents);
             UiStudentList.ItemsSource = students;
-
             //have some loading bar
             //currently just having a text box that says loading, which we will change in the async func
 
@@ -33,7 +32,7 @@ namespace TeachersPet.Pages.Students {
 
         private async Task GetStudents() {
             
-            var studentJsonList = await CanvasAPI.GetStudentListFromCourseId(App.CurrentClassData["id"]?.ToString());
+            var studentJsonList = await CanvasAPI.GetStudentListFromCourseId(App.CurrentClassData.Id);
             foreach (var student in studentJsonList) {
                 var studentModel = student.ToObject<StudentModel>();
                 Dispatcher.InvokeAsync(() => {

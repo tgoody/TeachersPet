@@ -1,6 +1,8 @@
 using System.Windows.Controls;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TeachersPet.BaseModules;
+using TeachersPet.Models;
 using TeachersPet.Services;
 
 namespace TeachersPet.Pages.CourseInfo {
@@ -9,10 +11,10 @@ namespace TeachersPet.Pages.CourseInfo {
             InitializeComponent();
         }
 
-        public CourseInfoPage(JToken courseData) {
+        public CourseInfoPage(CourseModel courseData) {
             InitializeComponent();
             GenerateModuleService.CreateWrapPanel(typeof(CourseInfoModule), ref WrapPanel);
-            TextBlock.Text = courseData.ToString();
+            TextBlock.Text = JsonConvert.SerializeObject(courseData);
         }
         
     }
