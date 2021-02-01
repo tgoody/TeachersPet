@@ -6,15 +6,27 @@
       xmlns:local="clr-namespace:TeachersPet.Pages.StudentInfo"
       mc:Ignorable="d"
       Title="StudentInfo" Height="600" Width="1000">
-    <Canvas>
+    
+    <Page.Resources>
+        <Style x:Key="Header" TargetType="Canvas">
+            <Style.Resources>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="Canvas.Left" Value="165"/>
+                    <Setter Property="FontSize" Value="16"/>
+                </Style>
+            </Style.Resources>
+        </Style>
+    </Page.Resources>
+    
+    <Canvas Style="{StaticResource Header}" Name="HeaderCanvas">
         <Ellipse Width="150" Height="150">
             <Ellipse.Fill>
-                <ImageBrush x:Name="Avatar"/>
+                <ImageBrush x:Name="Avatar" ImageSource="{Binding AvatarUrl}"/>
             </Ellipse.Fill>
         </Ellipse>
-        <TextBlock x:Name="StudentName" Canvas.Left="165" FontWeight="Bold" FontSize="24"/>
-        <TextBlock x:Name="StudentId" Canvas.Left="165" Canvas.Top="30" FontSize="16"/>
-        <TextBlock x:Name="StudentEmail" Canvas.Left="165" Canvas.Top="50" FontSize="16"/>
-        <TextBlock x:Name="StudentCanvId" Canvas.Left="165" Canvas.Top="70" FontSize="16"/>
+        <TextBlock x:Name="StudentName" FontWeight="Bold" FontSize="24" Text="{Binding Name}"/>
+        <TextBlock x:Name="StudentId" Canvas.Top="30" Text="{Binding Id}"/>
+        <TextBlock x:Name="StudentEmail" Canvas.Top="50" Text="{Binding Email}"/>
+        <TextBlock x:Name="StudentSisUserId" Canvas.Top="70" Text="{Binding SisUserId}"/>
     </Canvas>
 </Page>

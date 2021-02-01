@@ -5,20 +5,21 @@ using TeachersPet.Models;
 
 namespace TeachersPet.Pages.StudentInfo {
     public partial class StudentInfo : Page {
+
+        private StudentModel _studentModel;
+
         public StudentInfo() {
             InitializeComponent();
+            _studentModel = new StudentModel();
+            throw new Exception("StudentInfo page should be generated with StudentModel param");
         }
 
 
         public StudentInfo(StudentModel student) {
             InitializeComponent();
-            StudentName.Text = $"{student.Name}";
-            StudentId.Text = $"UFID: {student.SisUserId}";
-            StudentEmail.Text = $"Email: {student.Email}";
-            StudentCanvId.Text = $"Canvas ID: {student.Id}";
-            Avatar.ImageSource = new BitmapImage(new Uri(student.AvatarUrl));
-
-
+            _studentModel = student;
+            DataContext = _studentModel;
+            HeaderCanvas.DataContext = _studentModel;
         }
         
         
