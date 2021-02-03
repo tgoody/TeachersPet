@@ -1,37 +1,43 @@
 using System;
+using System.Linq;
+using Newtonsoft.Json;
 
 namespace TeachersPet.Models {
     public class AssignmentModel {
         public string Id {
-            get => id;
-            set => id = value;
+            get => _id;
+            set => _id = value;
         }
 
         public string Name {
-            get => name;
-            set => name = value;
+            get => _name;
+            set => _name = value;
         }
 
         public string Description {
-            get => description;
-            set => description = value;
+            get => _description;
+            set => _description = value;
         }
 
-        public DateTime DueDate {
-            get => dueDate;
-            set => dueDate = value;
+        [JsonProperty("due_at")]
+        public DateTime? DueDate {
+            get => _dueDate;
+            set => _dueDate = value;
         }
 
+        public string DueDateString => _dueDate == null || !_dueDate.ToString().Trim().Any() ? "N/A" : _dueDate.Value.ToShortDateString();
+
+        [JsonProperty("points_possible")]
         public string PointsPossible {
-            get => points_possible;
-            set => points_possible = value;
+            get => _pointsPossible;
+            set => _pointsPossible = value;
         }
 
-        private string id;
-        private string name;
-        private string description;
-        private DateTime dueDate;
-        private string points_possible;
+        private string _id;
+        private string _name;
+        private string _description;
+        private DateTime? _dueDate;
+        private string _pointsPossible;
 
     }
 }

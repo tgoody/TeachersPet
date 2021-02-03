@@ -65,6 +65,12 @@ namespace TeachersPet.Services {
             var result = await CanvasApiRequest($"courses/{courseId}/assignments");
             return result as JArray;
         }
+
+        public static async Task<JArray> GetSubmissionsFromUserAndCourseId(string userId, string courseId) {
+            var result = await CanvasApiRequest($"courses/{courseId}/students/submissions?student_ids[]={userId}&include[]=assignment");
+            return result as JArray;
+        }
+        
         
         //TODO: Look into finding a way to run async function and set "global" value in it        
         

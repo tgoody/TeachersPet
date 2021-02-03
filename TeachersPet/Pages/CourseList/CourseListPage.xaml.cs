@@ -92,7 +92,7 @@ namespace TeachersPet.Pages.CourseList {
 
             var item = sender as ListViewItem;
             var courseModel = item?.Tag as CourseModel;
-            App.CurrentClassData = courseModel;
+            App.CurrentCourseModel = courseModel;
             Task.Run(async () => {
                 var assignmentArray = await CanvasAPI.GetAssignmentListFromCourseId(courseModel.Id);
                 App.CurrentClassAssignmentModels?.Clear();

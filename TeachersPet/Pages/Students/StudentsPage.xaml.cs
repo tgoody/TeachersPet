@@ -21,6 +21,11 @@ namespace TeachersPet.Pages.Students {
         private ObservableCollection<StudentModel> students;
         private ICollectionView filteredStudents;
 
+        //TODO: Should we use this weird ICollectionView solution
+        //Or just make another list that contains the full data of students
+        //and a second one that contains the matched students from the filter
+        //and just display that second one?
+        //That latter option is more intuitive, but probably not the "best" way
         public StudentsPage() {
             InitializeComponent();
             students = new ObservableCollection<StudentModel>();
@@ -37,10 +42,10 @@ namespace TeachersPet.Pages.Students {
 
         private async Task GetStudents() {
             
-            var studentJsonList = await CanvasAPI.GetStudentListFromCourseId(App.CurrentClassData.Id);
+            var studentJsonList = await CanvasAPI.GetStudentListFromCourseId(App.CurrentCourseModel.Id);
             foreach (var student in studentJsonList) {
                 var studentModel = student.ToObject<StudentModel>();
-                Dispatcher.InvokeAsync(() => {
+                Dispatcher.Invoke(() => {
                     students.Add(studentModel);
                 });
 
@@ -84,11 +89,14 @@ namespace TeachersPet.Pages.Students {
             if (string.IsNullOrWhiteSpace(SearchBar.Text)) {
                 return true;
             }
-
-            return sender is StudentModel student && student.Name.Contains(SearchBar.Text);
+            //TODO: better search method, allow for typos, searching multiple things
+            return sender is StudentModel student && 
+                (student.Name.ToLower().Contains(SearchBar.Text.ToLower()) || 
+                student.SisUserId.ToString().ToLower().Contains(SearchBar.Text.ToLower()));
         }
 
         private void RefreshList(object sender, TextChangedEventArgs textChangedEventArgs) {
+            //TODO: investigate why this throws undefined/null exception -- comes from Activator()
             filteredStudents?.Refresh();
         }
         

@@ -19,7 +19,7 @@ namespace TeachersPet {
         //Developer could add other partial class definitions to add more variables if they wanted
         //Or just change this one, because at that point, I wouldn't know the difference.
 
-        public static CourseModel CurrentClassData { get; set; }
+        public static CourseModel CurrentCourseModel { get; set; }
         public static List<AssignmentModel> CurrentClassAssignmentModels { get; set; }
 
 

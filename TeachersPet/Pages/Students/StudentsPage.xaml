@@ -41,17 +41,7 @@
             <ListView.ItemTemplate>
                 <DataTemplate DataType="models:StudentModel">
                     <WrapPanel>
-                        
-                        <!-- TODO: Why do ellipse imagebrushes take longer to render than just image? -->
-                        <!-- <Ellipse Width="50" Height="50"> -->
-                        <!--     <Ellipse.Fill> -->
-                        <!--         <ImageBrush x:Name="StudentAvatar" ImageSource="{Binding AvatarUrl}"/> -->
-                        <!--     </Ellipse.Fill> -->
-                        <!-- </Ellipse> -->
-                        
                         <!-- <Image Width="50" Height="50" Source="{Binding AvatarUrl}" ImageFailed="SetDefaultAvatar"/> -->
-                        
-                        
                         <TextBlock Text="Name: " />
                         <TextBlock Text="{Binding Name}" FontWeight="Bold" />
                         <TextBlock Text=", " />
