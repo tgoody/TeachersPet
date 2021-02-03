@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Newtonsoft.Json;
@@ -17,10 +19,13 @@ namespace TeachersPet.Pages.Students {
     public partial class StudentsPage : Page, CourseInfoModule {
 
         private ObservableCollection<StudentModel> students;
+        private ICollectionView filteredStudents;
 
         public StudentsPage() {
             InitializeComponent();
             students = new ObservableCollection<StudentModel>();
+            filteredStudents = CollectionViewSource.GetDefaultView(students);
+            filteredStudents.Filter = FilterStudents;
             Task.Run(GetStudents);
             UiStudentList.ItemsSource = students;
             //have some loading bar
@@ -73,9 +78,19 @@ namespace TeachersPet.Pages.Students {
         {
             ((Image)sender).Source = new BitmapImage(new Uri("/Resources/Images/defaultAvatar.png", UriKind.Relative));
         }
-        
-        
-        
+
+        private bool FilterStudents(object sender)
+        {
+            if (string.IsNullOrWhiteSpace(SearchBar.Text)) {
+                return true;
+            }
+
+            return sender is StudentModel student && student.Name.Contains(SearchBar.Text);
+        }
+
+        private void RefreshList(object sender, TextChangedEventArgs textChangedEventArgs) {
+            filteredStudents?.Refresh();
+        }
         
         
         
