@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using Newtonsoft.Json.Linq;
 using TeachersPet.Models;
+using TeachersPet.Services;
 
 namespace TeachersPet {
     /// <summary>
@@ -24,6 +25,7 @@ namespace TeachersPet {
 
 
         private App() {
+            
             var types = Assembly.GetExecutingAssembly().GetTypes();
             var baseModules = types.Where(type => type.Namespace?.Contains("BaseModules") ?? false);
 

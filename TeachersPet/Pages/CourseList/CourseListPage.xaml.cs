@@ -97,6 +97,7 @@ namespace TeachersPet.Pages.CourseList {
                 var assignmentArray = await CanvasAPI.GetAssignmentListFromCourseId(courseModel.Id);
                 App.CurrentClassAssignmentModels?.Clear();
                 App.CurrentClassAssignmentModels = assignmentArray.Select(assignment => assignment.ToObject<AssignmentModel>()).ToList();
+                App.CurrentClassAssignmentModels.ForEach(assignment => assignment.CourseId = courseModel.Id);
             });
             NavigationService?.Navigate(new CourseInfoPage(item?.Tag as CourseModel));
 

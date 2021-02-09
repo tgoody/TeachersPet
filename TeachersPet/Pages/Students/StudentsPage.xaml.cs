@@ -54,6 +54,7 @@ namespace TeachersPet.Pages.Students {
             Dispatcher.Invoke(() => {
                 UiLoadingBlock.Visibility = Visibility.Collapsed;
                 UiStudentList.Visibility = Visibility.Visible;
+                SearchBar.Visibility = Visibility.Visible;
             });
 
 

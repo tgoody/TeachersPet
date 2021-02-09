@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TeachersPet.Models;
 
 namespace TeachersPet.Services {
     
@@ -14,6 +15,9 @@ namespace TeachersPet.Services {
     public static class CanvasAPI {
         private static HttpClient httpClient = new HttpClient();
         private static string canvasAPIUrl;
+
+        public static string CanvasApiUrl => canvasAPIUrl;
+
         private static bool betaMode;
         
         static CanvasAPI() {
@@ -71,11 +75,21 @@ namespace TeachersPet.Services {
             return result as JArray;
         }
         
+        public static async Task<JToken> UpdateGradeFromSubmissionModel(SubmissionModel submissionModel, string comment=null) {
+            var urlPath =
+                $"courses/{App.CurrentCourseModel.Id}/assignments/{submissionModel.AssignmentId}/submissions/{submissionModel.UserId}";
+            var jsonData = new Dictionary<string, string> {
+                {"submission[posted_grade]", submissionModel.Score},
+                {"comment[text_comment]", comment}
+            };
+            var result = await PutCanvasApiRequest(urlPath, jsonData);
+            return result;
+        }
+
         
         //TODO: Look into finding a way to run async function and set "global" value in it        
-        
-        
-        
+
+    
         
         
         
@@ -88,6 +102,14 @@ namespace TeachersPet.Services {
             return JsonConvert.DeserializeObject<JToken>(content);
         }
 
+        private static async Task<JToken> PutCanvasApiRequest(string urlParameters, Dictionary<string, string> jsonData) {
+
+            var payload = new FormUrlEncodedContent(jsonData);
+            var response = httpClient.PutAsync(canvasAPIUrl + urlParameters, payload).Result;
+            var content = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(content);
+            return content;
+        }
 
 
         private static async Task<JArray> HandlePaginationRequest(string urlParameters) {

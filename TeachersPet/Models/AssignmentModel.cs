@@ -33,11 +33,18 @@ namespace TeachersPet.Models {
             set => _pointsPossible = value;
         }
 
+        public string CourseId {
+            get => courseID;
+            set => courseID = value;
+        }
+        
         private string _id;
         private string _name;
         private string _description;
         private DateTime? _dueDate;
         private string _pointsPossible;
+        private string courseID;
 
+       
     }
 }

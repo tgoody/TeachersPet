@@ -35,7 +35,7 @@
             TextChanged="RefreshList"
             Width = "300"
             Height= "30"
-            
+            Visibility="Collapsed"
         />
         <ListView x:Name="UiStudentList" ItemContainerStyle="{StaticResource ListItemStyle}" Visibility="Collapsed" Grid.Row="1">
             <ListView.ItemTemplate>

@@ -24,10 +24,18 @@ namespace TeachersPet.Models {
             get => _assignmentModel;
             set => _assignmentModel = value;
         }
+        [JsonProperty("user_id")]
+        public string UserId {
+            get => userId;
+            set => userId = value;
+        }
 
         private string assignmentId;
         private string grade;
         private string score;
+        private string userId;
+        
+
         private AssignmentModel _assignmentModel;
     }
 }

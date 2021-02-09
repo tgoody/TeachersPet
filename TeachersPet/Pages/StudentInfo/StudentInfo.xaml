@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:TeachersPet.Pages.StudentInfo"
+      xmlns:customControls="clr-namespace:TeachersPet.CustomControls"
       mc:Ignorable="d"
       Title="StudentInfo" Height="600" Width="1000">
     
@@ -16,13 +17,10 @@
                 </Style>
             </Style.Resources>
         </Style>
-        
-        <Style x:Key="AssignmentStyle" TargetType="ListViewItem">
-            
-        </Style>
     </Page.Resources>
     
     <Canvas Style="{StaticResource Header}" Name="HeaderCanvas">
+        <!-- <Image Width="150" Height="150" Source="{Binding AvatarUrl}"/> -->
         <Ellipse Width="150" Height="150">
             <Ellipse.Fill>
                 <ImageBrush x:Name="Avatar" ImageSource="{Binding AvatarUrl}"/>
@@ -33,7 +31,7 @@
         <TextBlock x:Name="StudentEmail" Canvas.Top="50" Text="{Binding Email}"/>
         <TextBlock x:Name="StudentSisUserId" Canvas.Top="70" Text="{Binding SisUserId}"/>
         
-        <ListView x:Name="AssignmentList" Canvas.Top="200" ItemContainerStyle="{StaticResource AssignmentStyle}">
+        <ListView x:Name="AssignmentList" Canvas.Top="200" Height = "400" MaxHeight = "400" Width = "800">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <WrapPanel> 
@@ -41,9 +39,12 @@
                         <TextBlock Text=", Due date: "/>
                         <TextBlock Text="{Binding AssignmentModel.DueDateString}"/>
                         <TextBlock Text=". Grade: "/>
-                        <TextBox Text="{Binding Score}"/>
+                        <TextBox Text="{Binding Score, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="ScoreTextChanged"/>
                         <TextBlock Text=" / "/>
                         <TextBlock Text="{Binding AssignmentModel.PointsPossible}"/>
+                        <customControls:PlaceHolderTextBox x:Name="NewCommentBox" Text="(optional)Comments..." Visibility="Collapsed" Height="100" Width="200"/>
+                        <Image Height="25" Width="25" Name="ConfirmChanges" Source="/Resources/Images/checkmark.png" Visibility="Hidden" PreviewMouseLeftButtonDown="SubmitGradeChange" Tag="{Binding}" Cursor="Hand"/>
+                        <Image Height="25" Width="25" Source="/Resources/Images/Speedgrader.png" PreviewMouseLeftButtonDown="OpenSpeedGrader" Tag="{Binding}" Cursor="Hand"/>
                     </WrapPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>

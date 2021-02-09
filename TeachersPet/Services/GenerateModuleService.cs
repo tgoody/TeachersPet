@@ -27,6 +27,8 @@ namespace TeachersPet.Services {
             if (!App.Current.Properties.Contains(moduleType)) return;
             
             foreach (Type subType in (IList) App.Current.Properties[moduleType]) {
+                //TODO: some way to store data in module interface so we could use it to pass data around here?
+                //Like we could take the current object, copy it, store it as a reference?
                 var module = (BaseModule) Activator.CreateInstance(subType);
                 var newButton = new Button {
                     Content = module?.GetName(),
