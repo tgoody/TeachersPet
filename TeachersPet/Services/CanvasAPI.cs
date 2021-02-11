@@ -77,7 +77,7 @@ namespace TeachersPet.Services {
         
         public static async Task<JToken> UpdateGradeFromSubmissionModel(SubmissionModel submissionModel, string comment=null) {
             var urlPath =
-                $"courses/{App.CurrentCourseModel.Id}/assignments/{submissionModel.AssignmentId}/submissions/{submissionModel.UserId}";
+                $"courses/{submissionModel.AssignmentModel.CourseId}/assignments/{submissionModel.AssignmentId}/submissions/{submissionModel.UserId}";
             var jsonData = new Dictionary<string, string> {
                 {"submission[posted_grade]", submissionModel.Score},
                 {"comment[text_comment]", comment}

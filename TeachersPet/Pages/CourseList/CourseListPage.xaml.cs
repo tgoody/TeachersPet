@@ -92,13 +92,13 @@ namespace TeachersPet.Pages.CourseList {
 
             var item = sender as ListViewItem;
             var courseModel = item?.Tag as CourseModel;
-            App.CurrentCourseModel = courseModel;
-            Task.Run(async () => {
-                var assignmentArray = await CanvasAPI.GetAssignmentListFromCourseId(courseModel.Id);
-                App.CurrentClassAssignmentModels?.Clear();
-                App.CurrentClassAssignmentModels = assignmentArray.Select(assignment => assignment.ToObject<AssignmentModel>()).ToList();
-                App.CurrentClassAssignmentModels.ForEach(assignment => assignment.CourseId = courseModel.Id);
-            });
+            //TODO: replace this with setting data in the cache -- an intermediary for global stuff
+            // Task.Run(async () => {
+            //     var assignmentArray = await CanvasAPI.GetAssignmentListFromCourseId(courseModel.Id);
+            //     App.CurrentClassAssignmentModels?.Clear();
+            //     App.CurrentClassAssignmentModels = assignmentArray.Select(assignment => assignment.ToObject<AssignmentModel>()).ToList();
+            //     App.CurrentClassAssignmentModels.ForEach(assignment => assignment.CourseId = courseModel.Id);
+            // });
             NavigationService?.Navigate(new CourseInfoPage(item?.Tag as CourseModel));
 
         }

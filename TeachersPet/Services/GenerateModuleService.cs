@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
@@ -22,7 +23,8 @@ namespace TeachersPet.Services {
         /// </summary>
         /// <param name="moduleType"></param>
         /// <param name="panel"></param>
-        public static void CreateWrapPanel(Type moduleType, ref WrapPanel panel) {
+        /// <param name="parentObj"></param>
+        public static void CreateWrapPanel(Type moduleType, ref WrapPanel panel, object parentObj) {
             
             if (!App.Current.Properties.Contains(moduleType)) return;
             
@@ -30,6 +32,8 @@ namespace TeachersPet.Services {
                 //TODO: some way to store data in module interface so we could use it to pass data around here?
                 //Like we could take the current object, copy it, store it as a reference?
                 var module = (BaseModule) Activator.CreateInstance(subType);
+                module.SetParentData(parentObj);
+                module.InitializeData();
                 var newButton = new Button {
                     Content = module?.GetName(),
                     Tag = module

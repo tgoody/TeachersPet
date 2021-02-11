@@ -1,0 +1,24 @@
+<Page x:Class="TeachersPet.Pages.CourseAssignments.CourseAssignmentsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:TeachersPet.Pages.CourseAssignments"
+      mc:Ignorable="d"
+      Title="CourseAssignmentsPage" Height="450" Width="800">
+    <Grid>
+        
+        <ListView x:Name="AssignmentList" Height = "400" MaxHeight = "400" Width = "800">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <WrapPanel> 
+                       
+                        
+                    </WrapPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        
+        
+    </Grid>
+</Page>

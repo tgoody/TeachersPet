@@ -20,14 +20,16 @@ namespace TeachersPet.Pages.StudentInfo {
     public partial class StudentInfo : Page {
 
         private StudentModel _studentModel;
+        private CourseModel _courseModel;
         private ObservableCollection<SubmissionModel> _submissions;
         private ICollectionView _submissionsView;
 
         //TODO: Understand why ICollectionView works with ObservableCollection vs List<>
         
-        public StudentInfo(StudentModel student) {
+        public StudentInfo(StudentModel student, CourseModel courseModel) {
             InitializeComponent();
             _studentModel = student;
+            _courseModel = courseModel;
             _submissions = new ObservableCollection<SubmissionModel>();
             _submissionsView = CollectionViewSource.GetDefaultView(_submissions);
             _submissionsView.SortDescriptions.Add(new SortDescription("AssignmentModel.Name", ListSortDirection.Ascending));
@@ -40,7 +42,7 @@ namespace TeachersPet.Pages.StudentInfo {
 
         private async Task GetSubmissions() {
             var submissionJson = await 
-                CanvasAPI.GetSubmissionsFromUserAndCourseId(_studentModel.Id, App.CurrentCourseModel.Id);
+                CanvasAPI.GetSubmissionsFromUserAndCourseId(_studentModel.Id, _courseModel.Id);
             foreach (var submission in submissionJson) {
                 var submissionObject = submission.ToObject<SubmissionModel>();
                 Dispatcher.Invoke( () => _submissions.Add(submissionObject));
@@ -80,7 +82,7 @@ namespace TeachersPet.Pages.StudentInfo {
             var image = sender as Image;
             var submission = image.Tag as SubmissionModel;
             var url = CanvasAPI.CanvasApiUrl.Replace("api/v1/", "") +
-                      $"courses/{App.CurrentCourseModel.Id}/gradebook/speed_grader?assignment_id={submission.AssignmentId}&student_id={submission.UserId}";
+                      $"courses/{_courseModel.Id}/gradebook/speed_grader?assignment_id={submission.AssignmentId}&student_id={submission.UserId}";
             //should be able to just do Process.Start(url) but I was getting an error, so this should fix it.
             Process.Start(new ProcessStartInfo(url){UseShellExecute = true});
 

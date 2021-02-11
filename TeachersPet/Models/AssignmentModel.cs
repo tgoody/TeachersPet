@@ -32,7 +32,7 @@ namespace TeachersPet.Models {
             get => _pointsPossible;
             set => _pointsPossible = value;
         }
-
+        [JsonProperty("course_id")]
         public string CourseId {
             get => courseID;
             set => courseID = value;

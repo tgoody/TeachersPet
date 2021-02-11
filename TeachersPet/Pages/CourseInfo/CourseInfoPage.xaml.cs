@@ -7,13 +7,18 @@ using TeachersPet.Services;
 
 namespace TeachersPet.Pages.CourseInfo {
     public partial class CourseInfoPage : Page {
+        public CourseModel CourseModel => _courseModel;
+
+        private CourseModel _courseModel;
+        
         public CourseInfoPage() {
             InitializeComponent();
         }
 
         public CourseInfoPage(CourseModel courseData) {
             InitializeComponent();
-            GenerateModuleService.CreateWrapPanel(typeof(CourseInfoModule), ref WrapPanel);
+            _courseModel = courseData;
+            GenerateModuleService.CreateWrapPanel(typeof(CourseInfoModule), ref WrapPanel, this);
             TextBlock.Text = JsonConvert.SerializeObject(courseData);
         }
         

@@ -22,8 +22,7 @@ namespace TeachersPet {
 
         public static CourseModel CurrentCourseModel { get; set; }
         public static List<AssignmentModel> CurrentClassAssignmentModels { get; set; }
-
-
+        
         private App() {
             
             var types = Assembly.GetExecutingAssembly().GetTypes();

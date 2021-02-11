@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TeachersPet.BaseModules;
 using TeachersPet.Models;
+using TeachersPet.Pages.CourseInfo;
 using TeachersPet.Services;
 
 namespace TeachersPet.Pages.Students {
@@ -20,6 +21,7 @@ namespace TeachersPet.Pages.Students {
 
         private ObservableCollection<StudentModel> students;
         private ICollectionView filteredStudents;
+        private CourseModel _courseModel;
 
         //TODO: Should we use this weird ICollectionView solution
         //Or just make another list that contains the full data of students
@@ -31,26 +33,19 @@ namespace TeachersPet.Pages.Students {
             students = new ObservableCollection<StudentModel>();
             filteredStudents = CollectionViewSource.GetDefaultView(students);
             filteredStudents.Filter = FilterStudents;
-            Task.Run(GetStudents);
             UiStudentList.ItemsSource = students;
-            //have some loading bar
-            //currently just having a text box that says loading, which we will change in the async func
-
         }
-
-
 
         private async Task GetStudents() {
             
-            var studentJsonList = await CanvasAPI.GetStudentListFromCourseId(App.CurrentCourseModel.Id);
+            //TODO: race condition here? this gets run from activator, but coursemodel relies on the setdata function, which comes after activator
+            var studentJsonList = await CanvasAPI.GetStudentListFromCourseId(_courseModel.Id);
             foreach (var student in studentJsonList) {
                 var studentModel = student.ToObject<StudentModel>();
                 Dispatcher.Invoke(() => {
                     students.Add(studentModel);
                 });
-
             }
-
             Dispatcher.Invoke(() => {
                 UiLoadingBlock.Visibility = Visibility.Collapsed;
                 UiStudentList.Visibility = Visibility.Visible;
@@ -73,7 +68,7 @@ namespace TeachersPet.Pages.Students {
                 student.Email = (string) studentProfile["email"] ?? (string) studentProfile["login_id"];
             }
 
-            NavigationService.Navigate(new StudentInfo.StudentInfo(student));
+            NavigationService.Navigate(new StudentInfo.StudentInfo(student, _courseModel));
         }
 
         
@@ -106,6 +101,13 @@ namespace TeachersPet.Pages.Students {
         //Module data
         public string GetName() {
             return "View Students";
+        }
+        public void SetParentData(object parentInstance) {
+            var parent = parentInstance as CourseInfoPage;
+            _courseModel = parent.CourseModel;
+        }
+        public void InitializeData() {
+            Task.Run(GetStudents);
         }
     }
 }
