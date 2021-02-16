@@ -44,8 +44,6 @@ namespace TeachersPet.Models {
         private string email;
         private string avatarUrl; //image
 
-
-
-
+        
     }
 }

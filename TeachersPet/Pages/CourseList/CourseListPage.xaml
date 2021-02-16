@@ -52,17 +52,13 @@
         <Style x:Key="SemesterHeader" TargetType="{x:Type ListViewItem}">
             <Setter Property="Template" Value="{StaticResource BetterLvItems}"/>
         </Style>
-        
         <Style x:Key="ListStyle">
-           
         </Style>
     </Page.Resources>
     
     
     <Grid>
         <ListView x:Name="ListView" Style="{StaticResource ListStyle}">
-            
-            
         </ListView>
     </Grid>
 </Page>

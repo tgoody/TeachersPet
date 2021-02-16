@@ -58,7 +58,7 @@ namespace TeachersPet.Pages.Students {
         private async void ClickStudent(object sender, MouseButtonEventArgs e) {
 
             var listBoxItem = sender as ListBoxItem;
-            var student = students.SingleOrDefault(s => s.Id == (string) listBoxItem.Tag);
+            var student = listBoxItem.Tag as StudentModel;
 
             if (student.Email == null) {
                 var studentProfile = await CanvasAPI.GetStudentProfileFromStudentId(student.Id);

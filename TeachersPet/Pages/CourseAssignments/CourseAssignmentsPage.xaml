@@ -4,16 +4,29 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:TeachersPet.Pages.CourseAssignments"
+      xmlns:models="clr-namespace:TeachersPet.Models"
       mc:Ignorable="d"
       Title="CourseAssignmentsPage" Height="450" Width="800">
+    
+    <Page.Resources>
+        <Style x:Key="ListItemStyle" TargetType="{x:Type ListViewItem}">
+            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ClickAssignment" />
+            <Setter Property="Height" Value="55"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Tag" Value="{Binding}"/>
+        </Style>
+    </Page.Resources>
+    
+    
+    
     <Grid>
-        
-        <ListView x:Name="AssignmentList" Height = "400" MaxHeight = "400" Width = "800">
+        <ListView x:Name="AssignmentList" Height = "400" MaxHeight = "400" Width = "800" ItemContainerStyle="{StaticResource ListItemStyle}">
             <ListView.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate DataType="models:AssignmentModel">
                     <WrapPanel> 
-                       
-                        
+                        <TextBlock Text="{Binding Name}"/>
+                        <TextBlock Text=", Due date: "/>
+                        <TextBlock Text="{Binding DueDateString}"/>
                     </WrapPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>

@@ -17,8 +17,6 @@ namespace TeachersPet.Services {
         private static string canvasAPIUrl;
 
         public static string CanvasApiUrl => canvasAPIUrl;
-
-        private static bool betaMode;
         
         static CanvasAPI() {
             canvasAPIUrl = App.Current.Properties["CanvasAPIUrl"] as string;
@@ -86,6 +84,14 @@ namespace TeachersPet.Services {
             return result;
         }
 
+        public static async Task<JToken> UpdateGradesFromStudentModelsAndScores(Dictionary<StudentModel, string> userIdsAndScores, string courseId, string assignmentId) {
+
+            var dataForJson = userIdsAndScores.ToDictionary(user => $"grade_data[{user.Key.Id}][posted_grade]", user => user.Value);
+            return PostCanvasApiRequest($"courses/{courseId}/assignments/{assignmentId}/submissions/update_grades", dataForJson).Result;
+        }
+        
+        
+        
         
         //TODO: Look into finding a way to run async function and set "global" value in it        
 
@@ -106,6 +112,16 @@ namespace TeachersPet.Services {
 
             var payload = new FormUrlEncodedContent(jsonData);
             var response = httpClient.PutAsync(canvasAPIUrl + urlParameters, payload).Result;
+            var content = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(content);
+            return content;
+        }
+
+        private static async Task<JToken> PostCanvasApiRequest(string urlParameters,
+            Dictionary<string, string> jsonData) {
+            
+            var payload = new FormUrlEncodedContent(jsonData);
+            var response = httpClient.PostAsync(canvasAPIUrl + urlParameters, payload).Result;
             var content = await response.Content.ReadAsStringAsync();
             Console.WriteLine(content);
             return content;

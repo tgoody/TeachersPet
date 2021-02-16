@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Input;
 using TeachersPet.BaseModules;
 using TeachersPet.Models;
 using TeachersPet.Pages.CourseInfo;
@@ -32,12 +33,17 @@ namespace TeachersPet.Pages.CourseAssignments {
             }
             Dispatcher.Invoke( () => AssignmentList.ItemsSource = assignments);
         }
+        
+        private void ClickAssignment(object sender, MouseButtonEventArgs e) {
+
+            var clickedItem = sender as ListViewItem;
+            var assignmentModel = clickedItem.Tag as AssignmentModel;
+            NavigationService.Navigate(new AssignmentInfo.AssignmentInfo(assignmentModel));
 
 
+        }
 
-
-
-
+        
         public string GetName() {
             return "View Assignments";
         }
@@ -49,5 +55,7 @@ namespace TeachersPet.Pages.CourseAssignments {
         public void InitializeData() {
             Task.Run(GetAssignments);
         }
+
+        
     }
 }

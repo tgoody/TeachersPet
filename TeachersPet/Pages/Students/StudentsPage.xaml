@@ -16,7 +16,7 @@
             <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ClickStudent" />
             <Setter Property="Height" Value="55"/>
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-            <Setter Property="Tag" Value="{Binding Id}"/>
+            <Setter Property="Tag" Value="{Binding }"/>
         </Style>
     </Page.Resources>
     
