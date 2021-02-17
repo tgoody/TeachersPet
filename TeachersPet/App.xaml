@@ -5,5 +5,13 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          <!-- this spot is for global styling - use this to keep things consistent -->
+        <Style x:Key="ModuleButton" TargetType="Button">
+            <Setter Property="Background" Value="#00DDDDDD" />
+            <Setter Property="FontFamily" Value="Bahnschrift" />
+            <Setter Property="FontSize" Value="24" />
+            <Setter Property="Foreground" Value="#FF000000" />
+            <Setter Property="BorderBrush" Value="#00000000" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+        </Style>
     </Application.Resources>
 </Application>

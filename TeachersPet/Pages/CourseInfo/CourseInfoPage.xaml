@@ -8,6 +8,6 @@
       Title="CourseInfo" Height="450" Width="800">
     <Grid>
         <TextBlock Name="TextBlock"/>
-        <WrapPanel Name="WrapPanel"/>
+        <WrapPanel Name="WrapPanel" Orientation="Vertical"/>
     </Grid>
 </Page>

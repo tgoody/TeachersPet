@@ -26,10 +26,18 @@
                 <ImageBrush x:Name="Avatar" ImageSource="{Binding AvatarUrl}"/>
             </Ellipse.Fill>
         </Ellipse>
-        <TextBlock x:Name="StudentName" FontWeight="Bold" FontSize="24" Text="{Binding Name}"/>
-        <TextBlock x:Name="StudentId" Canvas.Top="30" Text="{Binding Id}"/>
-        <TextBlock x:Name="StudentEmail" Canvas.Top="50" Text="{Binding Email}"/>
-        <TextBlock x:Name="StudentSisUserId" Canvas.Top="70" Text="{Binding SisUserId}"/>
+        <TextBlock x:Name="StudentName" FontWeight="Bold" FontSize="24">
+            <Run Text="Name: " /> <!-- space -->
+            <Run Text="{Binding Name}" />
+        </TextBlock>
+        <TextBlock x:Name="StudentEmail" Canvas.Top="30">
+            <Run Text="Email: " /> <!-- space -->
+            <Run Text="{Binding Email}" />
+        </TextBlock>
+        <TextBlock x:Name="StudentSisUserId" Canvas.Top="50">
+            <Run Text="UFID: " /> <!-- space -->
+            <Run Text="{Binding SisUserId}" />
+        </TextBlock>
         
         <ListView x:Name="AssignmentList" Canvas.Top="200" Height = "400" MaxHeight = "400" Width = "800">
             <ListView.ItemTemplate>

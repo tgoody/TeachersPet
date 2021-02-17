@@ -5,16 +5,16 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       mc:Ignorable="d"
       Title="Course List" Height="450" Width="800">
-    
+
     <Page.Resources>
-        
+
         <!-- TODO: Finish these styles -->
         <!-- Course button can probably be "based off" the semester header one -->
 
         <Style x:Key="CourseButton" TargetType="{x:Type ListViewItem}">
             <EventSetter Event="PreviewMouseLeftButtonDown" Handler="CourseButtonClick" />
         </Style>
-        
+
         <!-- TODO: I found this online, try to understand it Matty -->
         <ControlTemplate x:Key="BetterLvItems" TargetType="ListViewItem">
             <Border x:Name="border" Background="Transparent">
@@ -29,7 +29,7 @@
                             <Storyboard>
                                 <ColorAnimationUsingKeyFrames Storyboard.TargetName="border"
                                                               Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
-                                    <EasingColorKeyFrame KeyTime="0" Value="LightBlue" />
+                                    <EasingColorKeyFrame KeyTime="0" Value="LightBlue"/>
                                 </ColorAnimationUsingKeyFrames>
                             </Storyboard>
                         </VisualState>
@@ -46,19 +46,21 @@
                 <ContentPresenter/>
             </Border>
         </ControlTemplate>
-        
-        
-        
+
+
+
         <Style x:Key="SemesterHeader" TargetType="{x:Type ListViewItem}">
             <Setter Property="Template" Value="{StaticResource BetterLvItems}"/>
+            <Setter Property="FontFamily" Value="Bahnschrift"/>
         </Style>
         <Style x:Key="ListStyle">
         </Style>
     </Page.Resources>
-    
-    
+
+
+
     <Grid>
-        <ListView x:Name="ListView" Style="{StaticResource ListStyle}">
-        </ListView>
+        <TextBlock Text="Courses" FontFamily="Bahnschrift SemiBold" FontSize="36"></TextBlock>
+        <ListView x:Name="ListView" Style="{StaticResource ListStyle}" Background="Transparent" BorderBrush="#00ABADB3" FontSize="24" Padding="0,0,0,1" Margin="0,47,0,0" FontFamily="Bahnschrift Light"/>
     </Grid>
 </Page>

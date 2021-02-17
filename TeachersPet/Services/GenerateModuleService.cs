@@ -36,8 +36,9 @@ namespace TeachersPet.Services {
                 module.InitializeData();
                 var newButton = new Button {
                     Content = module?.GetName(),
-                    Tag = module
-                };
+                    Tag = module,
+                    Style = (Style)App.Current.Resources["ModuleButton"]
+            };
                 newButton.Click += (Button_Click);
                 panel.Children.Add(newButton);
             }
