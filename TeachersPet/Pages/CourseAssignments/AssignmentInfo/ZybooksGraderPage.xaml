@@ -26,5 +26,6 @@
         <Canvas x:Name="DragDropBox" Height="400" Width="800" Background="Aqua" Style="{StaticResource DragDropCanvas}">
         </Canvas>
         <Button x:Name="GradeButton" Height="50" Width="100" Content="Grade students" PreviewMouseLeftButtonDown="UpdateGrades" Visibility="Collapsed"/>
+        <TextBlock x:Name="StudentsGradedProgress" Height="50" Width="100" Visibility="Collapsed"/>
     </Grid>
 </Page>
