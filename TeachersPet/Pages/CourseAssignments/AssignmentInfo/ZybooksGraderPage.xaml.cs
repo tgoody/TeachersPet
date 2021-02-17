@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Newtonsoft.Json.Linq;
 using TeachersPet.BaseModules;
 using TeachersPet.Models;
 using TeachersPet.Services;
@@ -97,7 +98,7 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
             var files = (string[])e.Data.GetData(DataFormats.FileDrop);
             ConvertZybooksCSV(files[0]);
             var canvas = sender as Canvas;
-            canvas.Background = new SolidColorBrush(Colors.Chartreuse);
+            canvas.Background = new SolidColorBrush(Colors.DarkBlue);
             GradeButton.Visibility = Visibility.Visible;
         }
         
@@ -157,10 +158,46 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
             }
             
             
-            CanvasAPI.UpdateGradesFromStudentModelsAndScores(combinedData, _assignment.CourseId, _assignment.Id);
+            var canvasProgress = CanvasAPI.UpdateGradesFromStudentModelsAndScores(combinedData, _assignment.CourseId, _assignment.Id).Result;
+            Task.Run(() => CheckProgressOfGrades(canvasProgress));
             GradeButton.Visibility = Visibility.Collapsed;
-            DragDropBox.Background = new SolidColorBrush(Colors.Coral);
+            StudentsGradedProgress.Visibility = Visibility.Visible;
+            DragDropBox.Background = new SolidColorBrush(Colors.Orange);
 
+        }
+
+        void CheckProgressOfGrades(JToken canvasProgressResponse) {
+
+            
+            //It seems that the progress response from Canvas API gets turned into a JValue instead of JToken
+            //This is a quick fix to change it, but unsure why we're getting that result
+            try {
+                var testForStringResponse = canvasProgressResponse["workflow_state"];
+            }
+            catch (InvalidOperationException) {
+                canvasProgressResponse = JToken.Parse(canvasProgressResponse.ToString());
+            }
+            if (canvasProgressResponse["workflow_state"] == null && canvasProgressResponse["completion"] == null) {
+                return;
+            }
+
+            while ((string) canvasProgressResponse["workflow_state"] != "completed" &&
+                   (string) canvasProgressResponse["completion"] != "100") {
+                Thread.Sleep(2000);
+                Dispatcher.Invoke(() => {
+                    StudentsGradedProgress.Text =
+                        $"{canvasProgressResponse["workflow_state"]}...";
+                });
+                canvasProgressResponse = CanvasAPI.RefreshProgress(canvasProgressResponse).Result;
+                Console.WriteLine(canvasProgressResponse);
+            }
+
+            Dispatcher.Invoke(() => {
+
+                DragDropBox.Background = new SolidColorBrush(Colors.Chartreuse);
+                StudentsGradedProgress.Text = "Completed!";
+
+            });
         }
     }
 }

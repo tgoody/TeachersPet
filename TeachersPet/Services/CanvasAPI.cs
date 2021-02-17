@@ -85,12 +85,19 @@ namespace TeachersPet.Services {
         }
 
         public static async Task<JToken> UpdateGradesFromStudentModelsAndScores(Dictionary<StudentModel, string> userIdsAndScores, string courseId, string assignmentId) {
-
-            var dataForJson = userIdsAndScores.ToDictionary(user => $"grade_data[{user.Key.Id}][posted_grade]", user => user.Value);
+            var dataForJson = new Dictionary<string, string>();
+            foreach (var (key, value) in userIdsAndScores) {
+                dataForJson.Add($"grade_data[{key.Id}][posted_grade]", value);
+                dataForJson.Add($"grade_data[{key.Id}][text_comment]", $"Autograded on: {DateTime.Now.Date:d}\nIf this grade is incorrect, please contact your TA.");
+            }
             return PostCanvasApiRequest($"courses/{courseId}/assignments/{assignmentId}/submissions/update_grades", dataForJson).Result;
         }
-        
-        
+
+        public static async Task<JToken> RefreshProgress(JToken progressObject) {
+            var url = (string)progressObject["url"];
+            var progressRoute = url.Substring(url.IndexOf("progress"));
+            return await CanvasApiRequest(progressRoute);
+        }
         
         
         //TODO: Look into finding a way to run async function and set "global" value in it        
