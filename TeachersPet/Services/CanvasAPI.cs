@@ -39,9 +39,9 @@ namespace TeachersPet.Services {
 
             //If a teacher, use all courses where you are a teacher
             //else, you will get no results, so you must be a TA, so only show  courses where you are a TA
-            var result = await CanvasApiRequest("courses?enrollment_type=teacher");
+            var result = await GetCanvasApiRequest("courses?enrollment_type=teacher");
             if(!result.HasValues)
-                result = await CanvasApiRequest("courses?enrollment_type=ta");
+                result = await GetCanvasApiRequest("courses?enrollment_type=ta");
             try {
                 foreach (var course in (JArray) result) {
                     Console.WriteLine((string) course["id"]);
@@ -54,22 +54,22 @@ namespace TeachersPet.Services {
         }
         
         public static async Task<JArray> GetStudentListFromCourseId(string courseID) { //TODO: Figure out retrieving emails on student list page
-            var result = await CanvasApiRequest($"courses/{courseID}/users?enrollment_type[]=student&include[]=avatar_url&include[]=sis_user_id");
+            var result = await GetCanvasApiRequest($"courses/{courseID}/users?enrollment_type[]=student&include[]=avatar_url&include[]=sis_user_id");
             return result as JArray;
         }
 
         public static async Task<JToken> GetStudentProfileFromStudentId(string studentId) {
-            var result = await CanvasApiRequest($"users/{studentId}/profile");
+            var result = await GetCanvasApiRequest($"users/{studentId}/profile");
             return result;
         }
 
         public static async Task<JArray> GetAssignmentListFromCourseId(string courseId) {
-            var result = await CanvasApiRequest($"courses/{courseId}/assignments");
+            var result = await GetCanvasApiRequest($"courses/{courseId}/assignments");
             return result as JArray;
         }
 
         public static async Task<JArray> GetSubmissionsFromUserAndCourseId(string userId, string courseId) {
-            var result = await CanvasApiRequest($"courses/{courseId}/students/submissions?student_ids[]={userId}&include[]=assignment");
+            var result = await GetCanvasApiRequest($"courses/{courseId}/students/submissions?student_ids[]={userId}&include[]=assignment");
             return result as JArray;
         }
         
@@ -96,27 +96,32 @@ namespace TeachersPet.Services {
         public static async Task<JToken> RefreshProgress(JToken progressObject) {
             var url = (string)progressObject["url"];
             var progressRoute = url.Substring(url.IndexOf("progress"));
-            return await CanvasApiRequest(progressRoute);
+            return await GetCanvasApiRequest(progressRoute);
         }
         
         
         //TODO: Look into finding a way to run async function and set "global" value in it        
 
-    
-        
-        
-        
-        private static async Task<JToken> CanvasApiRequest(string urlParameters) {
-            var response = httpClient.GetAsync(canvasAPIUrl + urlParameters).Result;
+
+
+        private static async Task<JToken> GetCanvasApiRequest(string route) {
+            var task = new Task<JToken>(() => CreateGetCanvasApiRequest(route).Result);
+            CacheService.Set(route, task);
+            return await CacheService.Get(route);
+        }
+
+
+        private static async Task<JToken> CreateGetCanvasApiRequest(string route) {
+            Console.WriteLine(route);
+            var response = httpClient.GetAsync(canvasAPIUrl + route).Result;
             if (response.Headers.Contains("Link")) {
-                return await HandlePaginationRequest(urlParameters);
+                return await HandlePaginationRequest(route);
             }
             var content = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<JToken>(content);
         }
 
         private static async Task<JToken> PutCanvasApiRequest(string urlParameters, Dictionary<string, string> jsonData) {
-
             var payload = new FormUrlEncodedContent(jsonData);
             var response = httpClient.PutAsync(canvasAPIUrl + urlParameters, payload).Result;
             var content = await response.Content.ReadAsStringAsync();
@@ -126,7 +131,6 @@ namespace TeachersPet.Services {
 
         private static async Task<JToken> PostCanvasApiRequest(string urlParameters,
             Dictionary<string, string> jsonData) {
-            
             var payload = new FormUrlEncodedContent(jsonData);
             var response = httpClient.PostAsync(canvasAPIUrl + urlParameters, payload).Result;
             var content = await response.Content.ReadAsStringAsync();

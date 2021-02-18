@@ -47,7 +47,7 @@ namespace TeachersPet.Pages.CourseList {
                 //For all courses, put them into semester categories
                 var currentSemesterString = "";
                 foreach (var course in courseData) {
-                    var semesterString = CreateTermStringFromDateTime(course.StartDateTime);
+                    var semesterString = CreateTermStringFromDateTime((DateTime)course.StartDateTime);
                     if (currentSemesterString != semesterString) {
                         currentSemesterString = semesterString;
 
@@ -72,6 +72,10 @@ namespace TeachersPet.Pages.CourseList {
 
         private static string CreateTermStringFromDateTime(DateTime semesterDateTime) {
 
+            if (semesterDateTime == DateTime.MaxValue) {
+                return "Other";
+            }
+            
             var monthOfDateTime = semesterDateTime.Month;
             var yearOfDateTime = semesterDateTime.Year;
 

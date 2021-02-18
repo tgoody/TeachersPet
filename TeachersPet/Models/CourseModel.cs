@@ -5,11 +5,14 @@ namespace TeachersPet.Models {
     public class CourseModel {
         
         [JsonProperty("start_at")]
-        public DateTime StartDateTime {
+        public DateTime? StartDateTime {
             get => startDateTime;
-            set => startDateTime = value;
+            set {
+                if (value != null) startDateTime = (DateTime) value;
+                else StartDateTime = DateTime.MaxValue;
+            }
         }
-        
+
         [JsonProperty("total_students")]
         public int TotalStudents {
             get => totalStudents;
