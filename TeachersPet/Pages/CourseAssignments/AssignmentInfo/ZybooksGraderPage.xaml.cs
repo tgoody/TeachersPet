@@ -98,8 +98,9 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
             var files = (string[])e.Data.GetData(DataFormats.FileDrop);
             ConvertZybooksCSV(files[0]);
             var canvas = sender as Canvas;
-            canvas.Background = new SolidColorBrush(Colors.DarkBlue);
+            GradientBrush.GradientStops.ElementAt(0).Color = (Color)ColorConverter.ConvertFromString("#7F0770A3");
             GradeButton.Visibility = Visibility.Visible;
+            DragDropText.Text = "File Loaded";
         }
         
         public string GetName() {
@@ -162,7 +163,8 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
             Task.Run(() => CheckProgressOfGrades(canvasProgress));
             GradeButton.Visibility = Visibility.Collapsed;
             StudentsGradedProgress.Visibility = Visibility.Visible;
-            DragDropBox.Background = new SolidColorBrush(Colors.Orange);
+            GradientBrush.GradientStops.ElementAt(0).Color = (Color)ColorConverter.ConvertFromString("#7FA38007");
+            DragDropText.Text = "Grading...";
 
         }
 
@@ -194,7 +196,8 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
 
             Dispatcher.Invoke(() => {
 
-                DragDropBox.Background = new SolidColorBrush(Colors.Chartreuse);
+                GradientBrush.GradientStops.ElementAt(0).Color = (Color)ColorConverter.ConvertFromString("#7F07A332");
+                DragDropText.Text = "Grading Complete.";
                 StudentsGradedProgress.Text = "Completed!";
 
             });

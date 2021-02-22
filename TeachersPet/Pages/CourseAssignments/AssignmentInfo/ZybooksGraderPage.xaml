@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:TeachersPet.Pages.CourseAssignments.AssignmentInfo"
       mc:Ignorable="d"
       Title="ZybooksGraderPage" Height="450" Width="800">
-    
+
     <Page.Resources>
         <Style x:Key="DragDropCanvas" TargetType="{x:Type Canvas}">
             <Setter Property="Height" Value="185"/>
@@ -18,14 +18,22 @@
             <!-- <Setter Property="Tag" Value="{Binding}"/> -->
         </Style>
     </Page.Resources>
-    
-    
-    
-    
+
+
+
+
     <Grid>
-        <Canvas x:Name="DragDropBox" Height="400" Width="800" Background="Aqua" Style="{StaticResource DragDropCanvas}">
+
+        <Canvas x:Name="DragDropBox" Height="400" Width="800" Style="{StaticResource DragDropCanvas}">
+            <Canvas.Background>
+                <RadialGradientBrush x:Name="GradientBrush">
+                    <GradientStop Color="#7F5D5D5D" Offset="0.5"/>
+                    <GradientStop Color="Transparent" Offset="1"/>
+                </RadialGradientBrush>
+            </Canvas.Background>
         </Canvas>
-        <Button x:Name="GradeButton" Height="50" Width="100" Content="Grade students" PreviewMouseLeftButtonDown="UpdateGrades" Visibility="Collapsed"/>
-        <TextBlock x:Name="StudentsGradedProgress" Height="50" Width="100" Visibility="Collapsed"/>
+        <TextBlock x:Name="DragDropText" Text="Drag Zybooks Report Here" FontFamily="Bahnschrift" FontSize="24" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Button x:Name="GradeButton" Height="50" Content="Grade students" PreviewMouseLeftButtonDown="UpdateGrades" Visibility="Collapsed" Background="#00DDDDDD" BorderBrush="#00707070" VerticalAlignment="Top" Margin="0,294,0,0" FontFamily="Bahnschrift Light" FontSize="20" HorizontalAlignment="Center"/>
+        <TextBlock x:Name="StudentsGradedProgress" Height="50" Width="100" Visibility="Collapsed" Margin="350,239,350,161" FontFamily="Bahnschrift Light" FontSize="14" TextAlignment="Center"/>
     </Grid>
 </Page>
