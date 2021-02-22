@@ -5,9 +5,10 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:TeachersPet.Pages.CourseInfo"
       mc:Ignorable="d"
-      Title="CourseInfo" Height="450" Width="800">
+      Title="CourseInfo" Height="600" Width="800">
     <Grid>
-        <TextBlock Name="TextBlock"/>
-        <WrapPanel Name="WrapPanel" Orientation="Vertical"/>
+        <TextBlock Name="CourseName" FontFamily="Bahnschrift" FontSize="24"/>
+        <TextBlock Name="CourseInfo" FontFamily="Bahnschrift Light" FontSize="24" Margin="0,30,0,0"/>
+        <WrapPanel Name="WrapPanel" Orientation="Vertical" Margin="0,64,0,0"/>
     </Grid>
 </Page>

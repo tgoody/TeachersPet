@@ -6,8 +6,8 @@
     <Application.Resources>
          <!-- this spot is for global styling - use this to keep things consistent -->
         <Style x:Key="ModuleButton" TargetType="Button">
-            <Setter Property="Background" Value="#00DDDDDD" />
-            <Setter Property="FontFamily" Value="Bahnschrift" />
+            <Setter Property="Background" Value="#FFF0F0F0" />
+            <Setter Property="FontFamily" Value="Bahnschrift Light" />
             <Setter Property="FontSize" Value="24" />
             <Setter Property="Foreground" Value="#FF000000" />
             <Setter Property="BorderBrush" Value="#00000000" />

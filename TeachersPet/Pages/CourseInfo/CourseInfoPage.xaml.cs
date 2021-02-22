@@ -1,3 +1,4 @@
+using System;
 using System.Windows.Controls;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -19,7 +20,9 @@ namespace TeachersPet.Pages.CourseInfo {
             InitializeComponent();
             _courseModel = courseData;
             GenerateModuleService.CreateWrapPanel(typeof(CourseInfoModule), ref WrapPanel, this);
-            TextBlock.Text = JsonConvert.SerializeObject(courseData);
+            CourseName.Text = courseData.CourseCode + ": " + courseData.CourseName;
+            CourseInfo.Text = courseData.Id;
+            Console.WriteLine(JsonConvert.SerializeObject(courseData));
         }
         
     }
