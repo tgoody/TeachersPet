@@ -39,12 +39,12 @@
             <Run Text="{Binding SisUserId}" />
         </TextBlock>
 
-        <ListView x:Name="AssignmentList" Canvas.Top="200" Height = "400" MaxHeight = "400" Width = "500">
+        <ListView x:Name="AssignmentList" Canvas.Top="200" Height = "400" MaxHeight = "400" Width = "500" SelectionChanged="SelectAssignment">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <WrapPanel>
                         <TextBlock Text="{Binding AssignmentModel.Name}"/>
-                        <TextBlock Text=", Due date: "/>
+                        <!--<TextBlock Text=", Due date: "/>
                         <TextBlock Text="{Binding AssignmentModel.DueDateString}"/>
                         <TextBlock Text=". Grade: "/>
                         <TextBox Text="{Binding Score, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="ScoreTextChanged"/>
@@ -52,26 +52,26 @@
                         <TextBlock Text="{Binding AssignmentModel.PointsPossible}"/>
                         <customControls:PlaceHolderTextBox x:Name="NewCommentBox" Text="(optional)Comments..." Visibility="Collapsed" Height="100" Width="200"/>
                         <Image Height="25" Width="25" Name="ConfirmChanges" Source="/Resources/Images/checkmark.png" Visibility="Hidden" PreviewMouseLeftButtonDown="SubmitGradeChange" Tag="{Binding}" Cursor="Hand"/>
-                        <Image Height="25" Width="25" Source="/Resources/Images/Speedgrader.png" PreviewMouseLeftButtonDown="OpenSpeedGrader" Tag="{Binding}" Cursor="Hand"/>
+                        <Image Height="25" Width="25" Source="/Resources/Images/Speedgrader.png" PreviewMouseLeftButtonDown="OpenSpeedGrader" Tag="{Binding}" Cursor="Hand"/> -->
                     </WrapPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <WrapPanel x:Name="AssignmentInfo" Canvas.Top="200" Height = "400" MaxHeight = "400" Width = "500" Canvas.Left="500" Orientation="Vertical">
+        <WrapPanel x:Name="AssignmentInfoPanel" Canvas.Top="200" Height = "400" MaxHeight = "400" Width = "500" Canvas.Left="500" Orientation="Vertical" Visibility="Hidden">
             <TextBlock Text="{Binding AssignmentModel.Name}" Height="30" FontFamily="Bahnschrift Light" FontSize="24"/>
             <TextBlock Height="30" FontFamily="Bahnschrift Light" FontSize="24" Margin="0,5,0,0">
                 <Run Text="Due date: "/>
-                <Run Text="{Binding AssignmentModel.DueDateString}"/>
+                <Run Text="{Binding AssignmentModel.DueDateString, Mode=OneWay}"/>
             </TextBlock>
             <WrapPanel x:Name="GradePanel" Height="30" Margin="0,5,0,0">
                 <TextBlock Text="Grade: " Height="30" FontFamily="Bahnschrift Light" FontSize="24"/>
-                <TextBox Text="{Binding Score, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="ScoreTextChanged" Height="30" FontFamily="Bahnschrift Light" FontSize="24"/>
+                <TextBox Text="{Binding Score, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="30" FontFamily="Bahnschrift Light" FontSize="24"/>
                 <TextBlock Text=" / " Height="30" FontFamily="Bahnschrift Light" FontSize="24"/>
                 <TextBlock Text="{Binding AssignmentModel.PointsPossible}" Height="30" FontFamily="Bahnschrift Light" FontSize="24"/>
                 <Image Height="25" Width="25" Name="ConfirmChanges" Source="/Resources/Images/checkmark.png" Visibility="Hidden" PreviewMouseLeftButtonDown="SubmitGradeChange" Tag="{Binding}" Cursor="Hand"/>
                 <Image Height="25" Width="25" Source="/Resources/Images/Speedgrader.png" PreviewMouseLeftButtonDown="OpenSpeedGrader" Tag="{Binding}" Cursor="Hand"/>
             </WrapPanel>
-            <customControls:PlaceHolderTextBox x:Name="NewCommentBox" Text="(optional)Comments..." Visibility="Collapsed" Height="100" Width="200" Margin="0,5,0,0"/>
+            <customControls:PlaceHolderTextBox x:Name="NewCommentBox" Text="(optional)Comments..." Visibility="Visible" Height="100" Width="200" Margin="0,5,0,0"/>
         </WrapPanel>
     </Canvas>
 

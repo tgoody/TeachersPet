@@ -36,7 +36,6 @@ namespace TeachersPet.Services {
         }
         
         public static async Task<JArray> GetCourseList() {
-
             //If a teacher, use all courses where you are a teacher
             //else, you will get no results, so you must be a TA, so only show  courses where you are a TA
             var result = await GetCanvasApiRequest("courses?enrollment_type=teacher");
@@ -81,6 +80,11 @@ namespace TeachersPet.Services {
                 {"comment[text_comment]", comment}
             };
             var result = await PutCanvasApiRequest(urlPath, jsonData);
+            //TODO: find better solution to handle this
+            var updateTask = new Task<JToken>(() => GetSubmissionsFromUserAndCourseId(submissionModel.UserId, submissionModel.AssignmentModel.CourseId).Result);
+            CacheService.Update(
+                $"courses/{submissionModel.AssignmentModel.CourseId}/students/submissions?student_ids[]={submissionModel.UserId}&include[]=assignment",
+                updateTask);
             return result;
         }
 

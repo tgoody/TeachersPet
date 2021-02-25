@@ -20,7 +20,14 @@ namespace TeachersPet.Services {
             _cache.Add(route, token);
             token.Start();
         }
-        
 
+        public static void Update(string route, Task<JToken> token) {
+            if (!_cache.ContainsKey(route)) {
+                return;
+            }
+
+            _cache[route] = token;
+            token.Start();
+        }
     }
 }

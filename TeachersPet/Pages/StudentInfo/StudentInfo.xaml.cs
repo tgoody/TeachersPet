@@ -60,8 +60,6 @@ namespace TeachersPet.Pages.StudentInfo {
             var commentBox = parent.Children.OfType<PlaceHolderTextBox>().SingleOrDefault(sibling => sibling.Name == "NewCommentBox");
             checkbox.Visibility = Visibility.Visible;
             commentBox.Visibility = Visibility.Visible;
-
-
         }
 
         private void SubmitGradeChange(object sender, MouseButtonEventArgs e) {
@@ -85,6 +83,16 @@ namespace TeachersPet.Pages.StudentInfo {
                       $"courses/{_courseModel.Id}/gradebook/speed_grader?assignment_id={submission.AssignmentId}&student_id={submission.UserId}";
             //should be able to just do Process.Start(url) but I was getting an error, so this should fix it.
             Process.Start(new ProcessStartInfo(url){UseShellExecute = true});
+
+        }
+
+        private void SelectAssignment(object sender, SelectionChangedEventArgs e) {
+
+            var itemSelected = (sender as ListView).SelectedItem as SubmissionModel;
+            AssignmentInfoPanel.DataContext = itemSelected;
+            AssignmentInfoPanel.Visibility = Visibility.Visible;
+
+
 
         }
     }
