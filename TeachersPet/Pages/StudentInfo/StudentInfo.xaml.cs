@@ -50,28 +50,21 @@ namespace TeachersPet.Pages.StudentInfo {
             Dispatcher.Invoke( () => _submissionsView.Refresh());
 
         }
-
-
-        private void ScoreTextChanged(object sender, TextChangedEventArgs e) {
-
-            var textBox = sender as TextBox;
-            var parent = textBox.Parent as WrapPanel;
-            var checkbox = parent.Children.OfType<Image>().SingleOrDefault(sibling => sibling.Name == "ConfirmChanges");
-            var commentBox = parent.Children.OfType<PlaceHolderTextBox>().SingleOrDefault(sibling => sibling.Name == "NewCommentBox");
-            checkbox.Visibility = Visibility.Visible;
-            commentBox.Visibility = Visibility.Visible;
-        }
-
+        
         private void SubmitGradeChange(object sender, MouseButtonEventArgs e) {
             
             //TODO: error handling that input is decimal or int
-            var image = sender as Image;
-            var parent = image.Parent as WrapPanel;
-            var commentBox = parent.Children.OfType<PlaceHolderTextBox>().SingleOrDefault(sibling => sibling.Name == "NewCommentBox");
-            image.Visibility = Visibility.Hidden;
-            commentBox.Visibility = Visibility.Collapsed;
-            var submission = image.Tag as SubmissionModel;
-            var result = CanvasAPI.UpdateGradeFromSubmissionModel(submission, commentBox.Text).Result;
+            var button = sender as Button;
+            var previousData = button.DataContext as SubmissionModel;
+            ChangeStatus.Visibility = Visibility.Visible;
+            if (NewCommentBox.Text.Length == 0 && previousData.Score == ScoreTextBox.Text) {
+                ChangeStatus.Text = "No changes detected!";
+                return;
+            }
+
+            previousData.Score = ScoreTextBox.Text;
+            var result = CanvasAPI.UpdateGradeFromSubmissionModel(previousData, NewCommentBox.Text).Result;
+            ChangeStatus.Text = "Submission updated!";
 
         }
 

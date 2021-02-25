@@ -65,13 +65,14 @@
             </TextBlock>
             <WrapPanel x:Name="GradePanel" Height="30" Margin="0,5,0,0">
                 <TextBlock Text="Grade: " Height="30" FontFamily="Bahnschrift Light" FontSize="24"/>
-                <TextBox Text="{Binding Score, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="30" FontFamily="Bahnschrift Light" FontSize="24"/>
+                <TextBox Name="ScoreTextBox" Text="{Binding Score}" Height="30" FontFamily="Bahnschrift Light" FontSize="24"/>
                 <TextBlock Text=" / " Height="30" FontFamily="Bahnschrift Light" FontSize="24"/>
                 <TextBlock Text="{Binding AssignmentModel.PointsPossible}" Height="30" FontFamily="Bahnschrift Light" FontSize="24"/>
-                <Image Height="25" Width="25" Name="ConfirmChanges" Source="/Resources/Images/checkmark.png" Visibility="Hidden" PreviewMouseLeftButtonDown="SubmitGradeChange" Tag="{Binding}" Cursor="Hand"/>
                 <Image Height="25" Width="25" Source="/Resources/Images/Speedgrader.png" PreviewMouseLeftButtonDown="OpenSpeedGrader" Tag="{Binding}" Cursor="Hand"/>
             </WrapPanel>
-            <customControls:PlaceHolderTextBox x:Name="NewCommentBox" Text="(optional)Comments..." Visibility="Visible" Height="100" Width="200" Margin="0,5,0,0"/>
+            <customControls:PlaceHolderTextBox x:Name="NewCommentBox" Text="(optional)Comments..." Height="100" Width="200" Margin="0,5,0,0"/>
+            <Button Height="25" Width="200" Name="ConfirmChanges" Content="Submit Changes" PreviewMouseLeftButtonDown="SubmitGradeChange" Tag="{Binding}" Cursor="Hand"/>
+            <TextBlock Height="50" Width="100" Name="ChangeStatus" Visibility="Hidden"/>
         </WrapPanel>
     </Canvas>
 
