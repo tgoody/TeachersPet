@@ -31,8 +31,6 @@ namespace TeachersPet.Pages {
             
             AuthenticationProvider.Instance().CanvasLogin();
             Console.WriteLine(AuthenticationProvider.Instance().ApiToken);
-            CanvasAPI.ToggleBetaCanvasMode();
-
             var courseList = CanvasAPI.GetCourseList().Result;
             NavigationService?.Navigate(new CourseListPage(courseList));
         }

@@ -39,5 +39,8 @@ namespace TeachersPet {
             Current.Properties.Add("BetaCanvasAPIUrl", "https://ufl.beta.instructure.com/api/v1/");
         }
 
+        private void App_OnExit(object sender, ExitEventArgs e) {
+            CacheService.SaveLocalCache();
+        }
     }
 }

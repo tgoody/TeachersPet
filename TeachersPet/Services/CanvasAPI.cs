@@ -15,6 +15,8 @@ namespace TeachersPet.Services {
     public static class CanvasAPI {
         private static HttpClient httpClient = new HttpClient();
         private static string canvasAPIUrl;
+        private static string bearerToken;
+        public static string BearerToken => bearerToken;
 
         public static string CanvasApiUrl => canvasAPIUrl;
         
@@ -33,14 +35,15 @@ namespace TeachersPet.Services {
         
         public static void SetBearerToken(string token) {
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            bearerToken = token;
         }
         
         public static async Task<JArray> GetCourseList() {
             //If a teacher, use all courses where you are a teacher
             //else, you will get no results, so you must be a TA, so only show  courses where you are a TA
-            var result = await GetCanvasApiRequest("courses?enrollment_type=teacher");
+            var result = await GetCacheCanvasApiRequest("courses?enrollment_type=teacher");
             if(!result.HasValues)
-                result = await GetCanvasApiRequest("courses?enrollment_type=ta");
+                result = await GetCacheCanvasApiRequest("courses?enrollment_type=ta");
             try {
                 foreach (var course in (JArray) result) {
                     Console.WriteLine((string) course["id"]);
@@ -53,17 +56,17 @@ namespace TeachersPet.Services {
         }
         
         public static async Task<JArray> GetStudentListFromCourseId(string courseID) { //TODO: Figure out retrieving emails on student list page
-            var result = await GetCanvasApiRequest($"courses/{courseID}/users?enrollment_type[]=student&include[]=avatar_url&include[]=sis_user_id");
+            var result = await GetCacheCanvasApiRequest($"courses/{courseID}/users?enrollment_type[]=student&include[]=avatar_url&include[]=sis_user_id");
             return result as JArray;
         }
 
         public static async Task<JToken> GetStudentProfileFromStudentId(string studentId) {
-            var result = await GetCanvasApiRequest($"users/{studentId}/profile");
+            var result = await GetCacheCanvasApiRequest($"users/{studentId}/profile");
             return result;
         }
 
         public static async Task<JArray> GetAssignmentListFromCourseId(string courseId) {
-            var result = await GetCanvasApiRequest($"courses/{courseId}/assignments");
+            var result = await GetCacheCanvasApiRequest($"courses/{courseId}/assignments");
             return result as JArray;
         }
 
@@ -108,14 +111,14 @@ namespace TeachersPet.Services {
 
 
 
-        private static async Task<JToken> GetCanvasApiRequest(string route) {
-            var task = new Task<JToken>(() => CreateGetCanvasApiRequest(route).Result);
+        private static async Task<JToken> GetCacheCanvasApiRequest(string route) {
+            var task = new Task<JToken>(() => GetCanvasApiRequest(route).Result);
             CacheService.Set(route, task);
             return await CacheService.Get(route);
         }
 
 
-        private static async Task<JToken> CreateGetCanvasApiRequest(string route) {
+        private static async Task<JToken> GetCanvasApiRequest(string route) {
             Console.WriteLine(route);
             var response = httpClient.GetAsync(canvasAPIUrl + route).Result;
             if (response.Headers.Contains("Link")) {
@@ -129,7 +132,6 @@ namespace TeachersPet.Services {
             var payload = new FormUrlEncodedContent(jsonData);
             var response = httpClient.PutAsync(canvasAPIUrl + urlParameters, payload).Result;
             var content = await response.Content.ReadAsStringAsync();
-            Console.WriteLine(content);
             return content;
         }
 
@@ -138,7 +140,6 @@ namespace TeachersPet.Services {
             var payload = new FormUrlEncodedContent(jsonData);
             var response = httpClient.PostAsync(canvasAPIUrl + urlParameters, payload).Result;
             var content = await response.Content.ReadAsStringAsync();
-            Console.WriteLine(content);
             return content;
         }
 

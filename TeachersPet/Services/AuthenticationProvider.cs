@@ -25,6 +25,8 @@ namespace TeachersPet.Services {
             //TODO: Implement OAUTH here, use HTTP Listeners
             apiToken = RetrieveAPITokenFromEnvironment(); //This will change to be set to OAuth info.
             CanvasAPI.SetBearerToken(apiToken);
+            CanvasAPI.ToggleBetaCanvasMode();
+            CacheService.LoadLocalCache();
         }
 
 
@@ -33,9 +35,9 @@ namespace TeachersPet.Services {
         }
 
         //TODO: Figure out whether canvas API uses production tokens for beta URLs
-        private string RetrieveBetaAPITokenFromEnvironment() {
-            return System.Environment.GetEnvironmentVariable("BetaCanvasAPIToken", EnvironmentVariableTarget.User);
-        }
-        
+        // private string RetrieveBetaAPITokenFromEnvironment() {
+        //     return Environment.GetEnvironmentVariable("BetaCanvasAPIToken", EnvironmentVariableTarget.User);
+        // }
+        //
     }
 }
