@@ -57,8 +57,8 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <WrapPanel x:Name="AssignmentInfoPanel" Canvas.Top="200" Height = "400" MaxHeight = "400" Width = "500" Canvas.Left="500" Orientation="Vertical" Visibility="Hidden">
-            <TextBlock Text="{Binding AssignmentModel.Name}" Height="30" FontFamily="Bahnschrift Light" FontSize="24"/>
+        <WrapPanel x:Name="AssignmentInfoPanel" Canvas.Top="200" Height = "400" MaxHeight = "400" Width = "500" Canvas.Left="500" Orientation="Vertical" Visibility="Hidden" Margin="25,0,0,0">
+            <TextBlock Text="{Binding AssignmentModel.Name}" Height="30" FontFamily="Bahnschrift" FontSize="24"/>
             <TextBlock Height="30" FontFamily="Bahnschrift Light" FontSize="24" Margin="0,5,0,0">
                 <Run Text="Due date: "/>
                 <Run Text="{Binding AssignmentModel.DueDateString, Mode=OneWay}"/>
@@ -68,11 +68,11 @@
                 <TextBox Name="ScoreTextBox" Text="{Binding Score}" Height="30" FontFamily="Bahnschrift Light" FontSize="24"/>
                 <TextBlock Text=" / " Height="30" FontFamily="Bahnschrift Light" FontSize="24"/>
                 <TextBlock Text="{Binding AssignmentModel.PointsPossible}" Height="30" FontFamily="Bahnschrift Light" FontSize="24"/>
-                <Image Height="25" Width="25" Source="/Resources/Images/Speedgrader.png" PreviewMouseLeftButtonDown="OpenSpeedGrader" Tag="{Binding}" Cursor="Hand"/>
+                <Image Height="20" Width="20" Source="/Resources/Images/Speedgrader.png" PreviewMouseLeftButtonDown="OpenSpeedGrader" Tag="{Binding}" Cursor="Hand" Margin="10,0,0,0"/>
             </WrapPanel>
-            <customControls:PlaceHolderTextBox x:Name="NewCommentBox" Text="(optional)Comments..." Height="100" Width="200" Margin="0,5,0,0"/>
-            <Button Height="25" Width="200" Name="ConfirmChanges" Content="Submit Changes" PreviewMouseLeftButtonDown="SubmitGradeChange" Tag="{Binding}" Cursor="Hand"/>
-            <TextBlock Height="50" Width="100" Name="ChangeStatus" Visibility="Hidden"/>
+            <customControls:PlaceHolderTextBox x:Name="NewCommentBox" Text="(optional) Comments..." Height="200" Width="300" Margin="0,5,0,0"/>
+            <Button Height="50" Width="300" Name="ConfirmChanges" Content="Submit Changes" PreviewMouseLeftButtonDown="SubmitGradeChange" Tag="{Binding}" Cursor="Hand" Background="#00DDDDDD" FontFamily="Bahnschrift" FontSize="20" Foreground="#FF0770A3" BorderBrush="#00707070"/>
+            <TextBlock Height="30" Width="200" Name="ChangeStatus" Visibility="Hidden" FontFamily="Bahnschrift Light" FontSize="16" TextAlignment="Center" Margin="0,10,0,0"/>
         </WrapPanel>
     </Canvas>
 
