@@ -35,10 +35,10 @@ namespace TeachersPet.Services {
                 module.SetParentData(parentObj);
                 module.InitializeData();
                 var newButton = new Button {
-                    Content = module?.GetName(),
+                    Content = module.GetName(),
                     Tag = module,
                     Style = (Style)App.Current.Resources["ModuleButton"]
-            };
+                };
                 newButton.Click += (Button_Click);
                 panel.Children.Add(newButton);
             }

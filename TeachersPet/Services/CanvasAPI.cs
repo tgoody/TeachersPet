@@ -69,9 +69,19 @@ namespace TeachersPet.Services {
             var result = await GetCacheCanvasApiRequest($"courses/{courseId}/assignments");
             return result as JArray;
         }
+        
+        public static async Task<JArray> GetSubmissionsFromCourseAndAssignmentId(string courseId, string assignmentId) {
+            var result = await GetCanvasApiRequest($"courses/{courseId}/assignments/{assignmentId}/submissions");
+            return result as JArray;
+        }
 
         public static async Task<JArray> GetSubmissionsFromUserAndCourseId(string userId, string courseId) {
             var result = await GetCanvasApiRequest($"courses/{courseId}/students/submissions?student_ids[]={userId}&include[]=assignment");
+            return result as JArray;
+        }
+
+        public static async Task<JArray> GetSectionsFromCourseId(string courseId) {
+            var result = await GetCacheCanvasApiRequest($"courses/{courseId}/sections?include[]=students");
             return result as JArray;
         }
         

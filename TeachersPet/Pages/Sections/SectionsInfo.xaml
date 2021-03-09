@@ -1,0 +1,26 @@
+<Page x:Class="TeachersPet.Pages.Sections.Sections"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:models="clr-namespace:TeachersPet.Models"
+      mc:Ignorable="d"
+      Title="Sections" Height="450" Width="800">
+    
+    <Page.Resources>
+        <DataTemplate x:Key="SectionModelDataTemplate" DataType="models:SectionModel">
+            <WrapPanel>
+                <TextBlock Text="{Binding Name}"/>
+                <TextBlock Text=" - ("/>
+                <TextBlock Text="{Binding Students.Count}"/>
+                <TextBlock Text=" students)"/>
+            </WrapPanel>
+        </DataTemplate>
+    </Page.Resources>
+    
+    
+    <Grid>
+        <ListView x:Name="SectionsListView" ItemTemplate="{StaticResource SectionModelDataTemplate}">
+        </ListView>
+    </Grid>
+</Page>
