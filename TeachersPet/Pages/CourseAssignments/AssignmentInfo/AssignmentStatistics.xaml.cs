@@ -14,6 +14,8 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
         private class StatisticData {
             public SectionModel Section { get; set; }
             public double AssignmentAverageForSection { get; set; }
+            public double AssignmentMinForSection { get; set; }
+            public double AssignmentMaxForSection { get; set; }
         }
         
         
@@ -55,7 +57,9 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
                 foreach (var section in _sections) {
                     var stat = new StatisticData {
                         Section = section,
-                        AssignmentAverageForSection = CalculateMeanForSection(section)
+                        AssignmentAverageForSection = CalculateMeanForSection(section),
+                        AssignmentMinForSection = FindMinScoreForSection(section),
+                        AssignmentMaxForSection = FindMaxScoreForSection(section)
                     };
                     Dispatcher.InvokeAsync(() => _statisticDataObjects.Add(stat));
                 }
@@ -73,7 +77,27 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
             }
         }
         
+        private double FindMinScoreForSection(SectionModel sectionModel) {
+            try {
+                var sectionSubmissions = _submissionsForAssignment.Where(submission =>
+                    sectionModel.Students.Select(student => student.Id).Contains(submission.UserId)).ToList();
+                return sectionSubmissions.Select(submission => double.Parse(submission.Score)).ToList().Min();
+            }
+            catch {
+                return 0.0;
+            }
+        }
         
+        private double FindMaxScoreForSection(SectionModel sectionModel) {
+            try {
+                var sectionSubmissions = _submissionsForAssignment.Where(submission =>
+                    sectionModel.Students.Select(student => student.Id).Contains(submission.UserId)).ToList();
+                return sectionSubmissions.Select(submission => double.Parse(submission.Score)).ToList().Max();
+            }
+            catch {
+                return 0.0;
+            }
+        }
         
         
     }

@@ -12,9 +12,13 @@
         <DataTemplate x:Key="StatisticModelDataTemplate" DataType="local:AssignmentStatistics+StatisticData">
             <WrapPanel>
                 <TextBlock Text="{Binding Section.Name}"/>
-                <TextBlock Text=" -> Average: "/>
+                <TextBlock Text="        &lt;-- Min: "/>
+                <TextBlock Text="{Binding AssignmentMinForSection}"/>
+                <TextBlock Text="        Avg: "/>
                 <TextBlock Text="{Binding AssignmentAverageForSection}"/>
-                <TextBlock Text=""/>
+                <TextBlock Text="        Max: "/>
+                <TextBlock Text="{Binding AssignmentMaxForSection}"/>
+                <TextBlock Text=" --&gt;"/>
             </WrapPanel>
         </DataTemplate>
     </Page.Resources>
