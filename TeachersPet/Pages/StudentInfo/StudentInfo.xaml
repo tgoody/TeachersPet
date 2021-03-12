@@ -68,7 +68,8 @@
                 <TextBox Name="ScoreTextBox" Text="{Binding Score}" Height="30" FontFamily="Bahnschrift Light" FontSize="24"/>
                 <TextBlock Text=" / " Height="30" FontFamily="Bahnschrift Light" FontSize="24"/>
                 <TextBlock Text="{Binding AssignmentModel.PointsPossible}" Height="30" FontFamily="Bahnschrift Light" FontSize="24"/>
-                <Image Height="20" Width="20" Source="/Resources/Images/Speedgrader.png" PreviewMouseLeftButtonDown="OpenSpeedGrader" Tag="{Binding}" Cursor="Hand" Margin="10,0,0,0"/>
+                <Image Height="20" Width="20" Source="/Resources/Images/Speedgrader.png" PreviewMouseLeftButtonDown="OpenSpeedGrader" Tag="{Binding}" Cursor="Hand" Margin="15,0,0,0"/>
+                <Button Name="RegretClause" Content="Regret Clause" Height="30" FontFamily="Bahnschrift Light" FontSize="16" Background="#00DDDDDD" BorderBrush="#00707070" Foreground="#FFFF2121" Margin="10,0,0,0"/>
             </WrapPanel>
             <customControls:PlaceHolderTextBox x:Name="NewCommentBox" Text="(optional) Comments..." Height="200" Width="300" Margin="0,5,0,0"/>
             <Button Height="50" Width="300" Name="ConfirmChanges" Content="Submit Changes" PreviewMouseLeftButtonDown="SubmitGradeChange" Tag="{Binding}" Cursor="Hand" Background="#00DDDDDD" FontFamily="Bahnschrift" FontSize="20" Foreground="#FF0770A3" BorderBrush="#00707070"/>
