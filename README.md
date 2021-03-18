@@ -1,7 +1,4 @@
-<p align="center">
-  <img src="TeachersPet/Resources/Images/TeachersPetLogo.png" alt="Teacher's Pet Logo" width="512" height="512"/>
-</p>
-
+<img src="TeachersPet/Resources/Images/TeachersPetLogo.png" alt="Teacher's Pet Logo" width="512" height="512"/>
 Senior Project
 
 
