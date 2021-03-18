@@ -7,7 +7,17 @@
     <Application.Resources>
          <!-- this spot is for global styling - use this to keep things consistent -->
         <Style x:Key="ModuleButton" TargetType="Button">
-            <Setter Property="Background" Value="#FFF0F0F0" />
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0.5,1" EndPoint="0.5,0">
+                        <GradientStop Color="Transparent"/>
+                        <GradientStop Color="#25EF5300" Offset="0.25"/>
+                        <GradientStop Color="#55EF5300" Offset="0.5"/>
+                        <GradientStop Color="#25EF5300" Offset="0.75"/>
+                        <GradientStop Color="Transparent" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
             <Setter Property="FontFamily" Value="Bahnschrift Light" />
             <Setter Property="FontSize" Value="24" />
             <Setter Property="Foreground" Value="#FF000000" />
