@@ -6,6 +6,6 @@
         xmlns:local="clr-namespace:TeachersPet"
         mc:Ignorable="d"
         Title="TeachersPet" Height="800" Width="1200"
-        Icon="/Resources/Images/GatorsLogo.png">
+        Icon="/Resources/Images/TeachersPetLogo.png">
     <Frame Source="/Pages/LoginPage.xaml" Name="Frame"/>
 </Window>
