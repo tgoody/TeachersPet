@@ -35,9 +35,7 @@ namespace TeachersPet.Pages.StudentInfo {
             _submissionsView.SortDescriptions.Add(new SortDescription("AssignmentModel.Name", ListSortDirection.Ascending));
             AssignmentList.ItemsSource = _submissionsView;
             DataContext = _studentModel;
-            //TODO: Loading bar for submissions data
             Task.Run(GetSubmissions);
-            
         }
 
         private async Task GetSubmissions() {
@@ -46,8 +44,8 @@ namespace TeachersPet.Pages.StudentInfo {
             foreach (var submission in submissionJson) {
                 var submissionObject = submission.ToObject<SubmissionModel>();
                 Dispatcher.Invoke( () => _submissions.Add(submissionObject));
+                Dispatcher.Invoke( () => _submissionsView.Refresh());
             }
-            Dispatcher.Invoke( () => _submissionsView.Refresh());
 
         }
         

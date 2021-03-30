@@ -44,14 +44,6 @@ namespace TeachersPet.Services {
             var result = await GetCacheCanvasApiRequest("courses?enrollment_type=teacher");
             if(!result.HasValues)
                 result = await GetCacheCanvasApiRequest("courses?enrollment_type=ta");
-            try {
-                foreach (var course in (JArray) result) {
-                    Console.WriteLine((string) course["id"]);
-                }
-            } 
-            catch (Exception e) {
-                throw new Exception($"Error retrieving courses for your Canvas account: {e.Message}");
-            }
             return (JArray) result;
         }
         
@@ -69,7 +61,11 @@ namespace TeachersPet.Services {
             var result = await GetCacheCanvasApiRequest($"courses/{courseId}/assignments");
             return result as JArray;
         }
-        
+
+        public static async Task<JToken> GetSubmissionForAssignmentForStudent(string courseId, string assignmentId, string studentId) {
+            var result = await GetCanvasApiRequest($"courses/{courseId}/assignments/{assignmentId}/submissions/{studentId}");
+            return result;
+        }
         public static async Task<JArray> GetSubmissionsFromCourseAndAssignmentId(string courseId, string assignmentId) {
             var result = await GetCanvasApiRequest($"courses/{courseId}/assignments/{assignmentId}/submissions");
             return result as JArray;
@@ -100,7 +96,7 @@ namespace TeachersPet.Services {
                 updateTask);
             return result;
         }
-
+        
         public static async Task<JToken> UpdateGradesFromStudentModelsAndScores(Dictionary<StudentModel, string> userIdsAndScores, string courseId, string assignmentId) {
             var dataForJson = new Dictionary<string, string>();
             foreach (var (key, value) in userIdsAndScores) {
@@ -110,24 +106,27 @@ namespace TeachersPet.Services {
             return PostCanvasApiRequest($"courses/{courseId}/assignments/{assignmentId}/submissions/update_grades", dataForJson).Result;
         }
 
+        public static async Task<JToken> UpdateSingleGradeFromStudentModelAndScore(StudentModel student, string score,
+            string courseId, string assignmentId) {
+            var dataForJson = new Dictionary<string, string>();
+                dataForJson.Add("submission[posted_grade]", score);
+                dataForJson.Add("comment[text_comment]",
+                    $"Autograded on: {DateTime.Now.Date:d}\nIf this grade is incorrect, please contact your TA.");
+                return PutCanvasApiRequest($"courses/{courseId}/assignments/{assignmentId}/submissions/{student.Id}", dataForJson).Result;
+        }
+
         public static async Task<JToken> RefreshProgress(JToken progressObject) {
             var url = (string)progressObject["url"];
             var progressRoute = url.Substring(url.IndexOf("progress"));
             return await GetCanvasApiRequest(progressRoute);
         }
         
-        
-        //TODO: Look into finding a way to run async function and set "global" value in it        
-
-
-
         private static async Task<JToken> GetCacheCanvasApiRequest(string route) {
             var task = new Task<JToken>(() => GetCanvasApiRequest(route).Result);
             CacheService.Set(route, task);
             return await CacheService.Get(route);
         }
-
-
+        
         private static async Task<JToken> GetCanvasApiRequest(string route) {
             Console.WriteLine(route);
             var response = httpClient.GetAsync(canvasAPIUrl + route).Result;

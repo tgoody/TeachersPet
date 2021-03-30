@@ -50,9 +50,6 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
             });
 
             Task.Run(async () => {
-                Console.WriteLine("trying to wait on these tasks");
-                Console.WriteLine(task1.Status);
-                Console.WriteLine(task2.Status);
                 await Task.WhenAll(task1, task2);
                 foreach (var section in _sections) {
                     var stat = new StatisticData {
@@ -61,7 +58,7 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
                         AssignmentMinForSection = FindMinScoreForSection(section),
                         AssignmentMaxForSection = FindMaxScoreForSection(section)
                     };
-                    Dispatcher.InvokeAsync(() => _statisticDataObjects.Add(stat));
+                    Dispatcher.Invoke(() => _statisticDataObjects.Add(stat));
                 }
             });
         }

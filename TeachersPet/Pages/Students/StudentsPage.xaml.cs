@@ -40,11 +40,10 @@ namespace TeachersPet.Pages.Students {
             
             //TODO: race condition here? this gets run from activator, but coursemodel relies on the setdata function, which comes after activator
             var studentJsonList = await CanvasAPI.GetStudentListFromCourseId(_courseModel.Id);
+            
             foreach (var student in studentJsonList) {
                 var studentModel = student.ToObject<StudentModel>();
-                Dispatcher.Invoke(() => {
-                    students.Add(studentModel);
-                });
+                Dispatcher.Invoke(() => {students.Add(studentModel);});
             }
             Dispatcher.Invoke(() => {
                 UiLoadingBlock.Visibility = Visibility.Collapsed;

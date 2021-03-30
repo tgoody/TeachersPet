@@ -22,7 +22,6 @@ namespace TeachersPet.Pages.CourseInfo {
             GenerateModuleService.CreateWrapPanel(typeof(CourseInfoModule), ref WrapPanel, this);
             CourseName.Text = courseData.CourseCode + ": " + courseData.CourseName;
             CourseInfo.Text = courseData.Id;
-            Console.WriteLine(JsonConvert.SerializeObject(courseData));
         }
         
     }

@@ -28,7 +28,6 @@ namespace TeachersPet.Pages {
         }
 
         private void Button_Click(object sender, RoutedEventArgs routedEventArgs) {
-            
             AuthenticationProvider.Instance().CanvasLogin();
             Console.WriteLine(AuthenticationProvider.Instance().ApiToken);
             var courseList = CanvasAPI.GetCourseList().Result;

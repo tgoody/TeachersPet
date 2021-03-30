@@ -1,3 +1,4 @@
+using System;
 using Newtonsoft.Json;
 
 namespace TeachersPet.Models {
@@ -15,7 +16,12 @@ namespace TeachersPet.Models {
 
         [JsonProperty("score")]
         public string Score {
-            get => score ?? "N/A";
+            get {
+                if (score == null) {
+                    return "N/A";
+                }
+                return Math.Round(Convert.ToDecimal(score), 2).ToString();
+            }
             set => score = value;
         }
 

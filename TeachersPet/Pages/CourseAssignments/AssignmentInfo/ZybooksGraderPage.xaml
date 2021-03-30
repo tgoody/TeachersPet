@@ -22,8 +22,7 @@
 
 
 
-    <Grid>
-
+    <Grid x:Name="Grid">
         <Canvas x:Name="DragDropBox" Height="400" Width="800" Style="{StaticResource DragDropCanvas}">
             <Canvas.Background>
                 <RadialGradientBrush x:Name="GradientBrush">
@@ -32,8 +31,13 @@
                 </RadialGradientBrush>
             </Canvas.Background>
         </Canvas>
-        <TextBlock x:Name="DragDropText" Text="Drag Zybooks Report Here" FontFamily="Bahnschrift" FontSize="24" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+            <CheckBox x:Name="OverwriteGradeCheckbox" VerticalAlignment="Center"/>
+            <TextBlock Margin="4,0,0,0" Text="Overwrite Already Existing Grades" VerticalAlignment="Center"/>
+        </StackPanel>        <TextBlock x:Name="DragDropText" Text="Drag Zybooks Report Here" FontFamily="Bahnschrift" FontSize="24" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         <Button x:Name="GradeButton" Height="50" Content="Grade students" PreviewMouseLeftButtonDown="UpdateGrades" Visibility="Collapsed" Background="#00DDDDDD" BorderBrush="#00707070" VerticalAlignment="Top" Margin="0,294,0,0" FontFamily="Bahnschrift Light" FontSize="20" HorizontalAlignment="Center"/>
+        <Button x:Name="OpenExplorerButton" Height="50" Content="Open folder containing Zybooks Grader data for this course" PreviewMouseLeftButtonDown="OpenExplorer" Visibility="Visible" Background="#00DDDDDD" BorderBrush="#00707070" VerticalAlignment="Top" Margin="0,324,0,0" FontFamily="Bahnschrift Light" FontSize="20" HorizontalAlignment="Center"/>
         <TextBlock x:Name="StudentsGradedProgress" Height="50" Width="100" Visibility="Collapsed" Margin="350,239,350,161" FontFamily="Bahnschrift Light" FontSize="14" TextAlignment="Center"/>
+        <TextBlock x:Name="ErrorText" TextWrapping="Wrap" Visibility="Collapsed" Margin="0,400,0,0" FontFamily="Bahnschrift Light" FontSize="14" TextAlignment="Center"/>
     </Grid>
 </Page>

@@ -20,12 +20,12 @@
     </Page.Resources>
 
     <Canvas Style="{StaticResource Header}" Name="HeaderCanvas">
-        <!-- <Image Width="150" Height="150" Source="{Binding AvatarUrl}"/> -->
-        <Ellipse Width="150" Height="150">
+        <Image Width="150" Height="150" Source="{Binding AvatarUrl}"/>
+        <!--<Ellipse Width="150" Height="150">
             <Ellipse.Fill>
                 <ImageBrush x:Name="Avatar" ImageSource="{Binding AvatarUrl}"/>
             </Ellipse.Fill>
-        </Ellipse>
+        </Ellipse> -->
         <TextBlock x:Name="StudentName" FontSize="24" FontFamily="Bahnschrift">
             <Run Text="Name: " /> <!-- space -->
             <Run Text="{Binding Name}" />
