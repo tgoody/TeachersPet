@@ -17,6 +17,8 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
         public AssignmentInfo(AssignmentModel assignmentModel) {
             InitializeComponent();
             _assignment = assignmentModel;
+            AssName.Text = _assignment.Name;
+            AssDate.Text = "Due: " + _assignment.DueDateString;
             GenerateModuleService.CreateWrapPanel(typeof(AssignmentInfoModule), ref WrapPanel, this);
 
         }

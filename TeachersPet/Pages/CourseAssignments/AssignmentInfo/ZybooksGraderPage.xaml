@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:TeachersPet.Pages.CourseAssignments.AssignmentInfo"
       mc:Ignorable="d"
-      Title="ZybooksGraderPage" Height="450" Width="800">
+      Title="ZybooksGraderPage" Height="800" Width="1200">
 
     <Page.Resources>
         <Style x:Key="DragDropCanvas" TargetType="{x:Type Canvas}">
@@ -22,8 +22,8 @@
 
 
 
-    <Grid x:Name="Grid">
-        <Canvas x:Name="DragDropBox" Height="400" Width="800" Style="{StaticResource DragDropCanvas}">
+    <Grid x:Name="Grid" Height="700" Width="1000" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,100">
+        <Canvas x:Name="DragDropBox" Height="400" Width="800" Style="{StaticResource DragDropCanvas}" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Canvas.Background>
                 <RadialGradientBrush x:Name="GradientBrush">
                     <GradientStop Color="#7F5D5D5D" Offset="0.5"/>
@@ -31,13 +31,17 @@
                 </RadialGradientBrush>
             </Canvas.Background>
         </Canvas>
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+           
+        <TextBlock x:Name="DragDropText" Text="Drag Zybooks Report Here" FontFamily="Bahnschrift" FontSize="24" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <StackPanel x:Name="Checkbox" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,100,0,0" Visibility="Collapsed">
             <CheckBox x:Name="OverwriteGradeCheckbox" VerticalAlignment="Center"/>
-            <TextBlock Margin="4,0,0,0" Text="Overwrite Already Existing Grades" VerticalAlignment="Center"/>
-        </StackPanel>        <TextBlock x:Name="DragDropText" Text="Drag Zybooks Report Here" FontFamily="Bahnschrift" FontSize="24" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <Button x:Name="GradeButton" Height="50" Content="Grade students" PreviewMouseLeftButtonDown="UpdateGrades" Visibility="Collapsed" Background="#00DDDDDD" BorderBrush="#00707070" VerticalAlignment="Top" Margin="0,294,0,0" FontFamily="Bahnschrift Light" FontSize="20" HorizontalAlignment="Center"/>
-        <Button x:Name="OpenExplorerButton" Height="50" Content="Open folder containing Zybooks Grader data for this course" PreviewMouseLeftButtonDown="OpenExplorer" Visibility="Visible" Background="#00DDDDDD" BorderBrush="#00707070" VerticalAlignment="Top" Margin="0,324,0,0" FontFamily="Bahnschrift Light" FontSize="20" HorizontalAlignment="Center"/>
-        <TextBlock x:Name="StudentsGradedProgress" Height="50" Width="100" Visibility="Collapsed" Margin="350,239,350,161" FontFamily="Bahnschrift Light" FontSize="14" TextAlignment="Center"/>
-        <TextBlock x:Name="ErrorText" TextWrapping="Wrap" Visibility="Collapsed" Margin="0,400,0,0" FontFamily="Bahnschrift Light" FontSize="14" TextAlignment="Center"/>
+            <TextBlock Margin="5,0,0,0" Text="Overwrite Already Existing Grades" VerticalAlignment="Center" FontFamily="Bahnschrift Light"/>
+        </StackPanel>
+        <Button x:Name="GradeButton" Height="50" Content="Grade students" PreviewMouseLeftButtonDown="UpdateGrades" Visibility="Collapsed" Background="#00DDDDDD" BorderBrush="#00707070" VerticalAlignment="Center" Margin="0,200,0,0" FontFamily="Bahnschrift Light" FontSize="20" HorizontalAlignment="Center"/>
+        <TextBlock x:Name="noFixedNamesText" TextWrapping="Wrap" Visibility="Collapsed" Margin="0,350,0,0" FontFamily="Bahnschrift Light" FontSize="14" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock x:Name="StudentsGradedProgress" Height="50" Width="100" Visibility="Collapsed" Margin="350,239,350,161" FontFamily="Bahnschrift Light" FontSize="14" TextAlignment="Center" HorizontalAlignment="Center"/>
+        <TextBlock x:Name="ErrorText" TextWrapping="Wrap" Visibility="Collapsed" Margin="0,400,0,0" FontFamily="Bahnschrift Light" FontSize="14" TextAlignment="Center" HorizontalAlignment="Center"/>
+        <Button x:Name="OpenExplorerButton" Height="50" Content="Open folder containing Zybooks Grader data for this course" PreviewMouseLeftButtonDown="OpenExplorer" Visibility="Visible" Background="#00DDDDDD" BorderBrush="#00707070" VerticalAlignment="Bottom" FontFamily="Bahnschrift Light" FontSize="20" HorizontalAlignment="Center" Margin="0,0,0,50"/>
+        
     </Grid>
 </Page>

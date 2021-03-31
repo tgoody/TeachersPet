@@ -6,28 +6,28 @@
       xmlns:local="clr-namespace:TeachersPet.Pages.CourseAssignments.AssignmentInfo"
       xmlns:teachersPet="clr-namespace:TeachersPet"
       mc:Ignorable="d"
-      Title="AssignmentStatistics" Height="450" Width="800">
+      Title="AssignmentStatistics" Height="800" Width="1200">
     
     <Page.Resources>
         <DataTemplate x:Key="StatisticModelDataTemplate" DataType="local:AssignmentStatistics+StatisticData">
-            <WrapPanel>
-                <TextBlock Text="{Binding Section.Name}"/>
-                <TextBlock Text="        &lt;-- Min: "/>
-                <TextBlock Text="{Binding AssignmentMinForSection}"/>
-                <TextBlock Text="        Avg: "/>
-                <TextBlock Text="{Binding AssignmentAverageForSection}"/>
-                <TextBlock Text="        Max: "/>
-                <TextBlock Text="{Binding AssignmentMaxForSection}"/>
-                <TextBlock Text=" --&gt;"/>
+            <WrapPanel Height="32" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                <TextBlock Text="{Binding Section.Name}" FontFamily="Bahnschrift" FontSize="20" VerticalAlignment="Bottom"/>
+                <TextBlock Text="        &lt;-- Min: " FontFamily="Bahnschrift Light" FontSize="16" VerticalAlignment="Bottom"/>
+                <TextBlock Text="{Binding AssignmentMinForSection}" FontFamily="Bahnschrift Light" FontSize="16" VerticalAlignment="Bottom"/>
+                <TextBlock Text="        Avg: " FontFamily="Bahnschrift Light" FontSize="16" VerticalAlignment="Bottom"/>
+                <TextBlock Text="{Binding AssignmentAverageForSection}" FontFamily="Bahnschrift Light" FontSize="16" VerticalAlignment="Bottom"/>
+                <TextBlock Text="        Max: " FontFamily="Bahnschrift Light" FontSize="16" VerticalAlignment="Bottom"/>
+                <TextBlock Text="{Binding AssignmentMaxForSection}" FontFamily="Bahnschrift Light" FontSize="16" VerticalAlignment="Bottom"/>
+                <TextBlock Text=" --&gt;" FontFamily="Bahnschrift Light" FontSize="16" VerticalAlignment="Bottom"/>
             </WrapPanel>
         </DataTemplate>
     </Page.Resources>
-    
-    
-    
-    <Grid>
-        
-        <ListView x:Name="StatisticList" ItemTemplate="{StaticResource StatisticModelDataTemplate}">
+
+
+
+    <Grid Width="900" Height="700">
+        <TextBlock Text="Statistics" FontFamily="Bahnschrift" FontSize="48"/>
+        <ListView x:Name="StatisticList" ItemTemplate="{StaticResource StatisticModelDataTemplate}" Width="900" Height="400" Margin="0,0,0,64">
             
         </ListView>
         

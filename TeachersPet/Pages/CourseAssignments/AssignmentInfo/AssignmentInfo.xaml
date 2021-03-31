@@ -5,8 +5,10 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:TeachersPet.Pages.CourseAssignments.AssignmentInfo"
       mc:Ignorable="d"
-      Title="AssignmentInfo" Height="450" Width="800">
+      Title="AssignmentInfo" Height="600" Width="900">
     <Grid>
-        <WrapPanel x:Name="WrapPanel"/>
+        <TextBlock Name="AssName" FontFamily="Bahnschrift" FontSize="28"/>
+        <TextBlock Name="AssDate" FontFamily="Bahnschrift Light" FontSize="24" Margin="0,40,0,0"/>
+        <WrapPanel Name="WrapPanel" Orientation="Vertical" Margin="0,75,0,0"/>
     </Grid>
 </Page>

@@ -7,8 +7,9 @@
       mc:Ignorable="d"
       Title="CourseInfo" Height="600" Width="900">
     <Grid>
-        <TextBlock Name="CourseName" FontFamily="Bahnschrift" FontSize="28"/>
-        <TextBlock Name="CourseInfo" FontFamily="Bahnschrift Light" FontSize="24" Margin="0,40,0,0"/>
-        <WrapPanel Name="WrapPanel" Orientation="Vertical" Margin="0,75,0,0"/>
+        <TextBlock Name="CourseCode" FontFamily="Bahnschrift" FontSize="28"/>
+        <TextBlock Name="CourseName" FontFamily="Bahnschrift Light" FontSize="24" Margin="0,38,0,0"/>
+        <TextBlock Name="CourseInfo" FontFamily="Bahnschrift Light" FontSize="24" Margin="0,70,0,0"/>
+        <WrapPanel Name="WrapPanel" Orientation="Vertical" Margin="0,100,0,0"/>
     </Grid>
 </Page>

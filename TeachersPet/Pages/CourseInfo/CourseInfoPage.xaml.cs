@@ -20,7 +20,8 @@ namespace TeachersPet.Pages.CourseInfo {
             InitializeComponent();
             _courseModel = courseData;
             GenerateModuleService.CreateWrapPanel(typeof(CourseInfoModule), ref WrapPanel, this);
-            CourseName.Text = courseData.CourseCode + ": " + courseData.CourseName;
+            CourseCode.Text = courseData.CourseCode;
+            CourseName.Text = courseData.CourseName;
             CourseInfo.Text = courseData.Id;
         }
         

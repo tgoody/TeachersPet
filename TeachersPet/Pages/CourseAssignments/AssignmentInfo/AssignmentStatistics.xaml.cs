@@ -67,7 +67,7 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
             try {
                 var sectionSubmissions = _submissionsForAssignment.Where(submission =>
                     sectionModel.Students.Select(student => student.Id).Contains(submission.UserId)).ToList();
-                return sectionSubmissions.Select(submission => double.Parse(submission.Score)).ToList().Average();
+                return Math.Round(sectionSubmissions.Select(submission => double.Parse(submission.Score)).ToList().Average(), 2);
             }
             catch {
                 return 0.0;

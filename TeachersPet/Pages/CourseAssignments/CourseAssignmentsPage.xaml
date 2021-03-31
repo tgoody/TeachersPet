@@ -6,27 +6,28 @@
       xmlns:local="clr-namespace:TeachersPet.Pages.CourseAssignments"
       xmlns:models="clr-namespace:TeachersPet.Models"
       mc:Ignorable="d"
-      Title="CourseAssignmentsPage" Height="450" Width="800">
+      Title="CourseAssignmentsPage" Height="800" Width="1200">
     
     <Page.Resources>
         <Style x:Key="ListItemStyle" TargetType="{x:Type ListViewItem}">
             <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ClickAssignment" />
-            <Setter Property="Height" Value="55"/>
+            <Setter Property="Height" Value="32"/>
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
             <Setter Property="Tag" Value="{Binding}"/>
         </Style>
     </Page.Resources>
-    
-    
-    
-    <Grid>
-        <ListView x:Name="AssignmentList" Height = "400" MaxHeight = "400" Width = "800" ItemContainerStyle="{StaticResource ListItemStyle}">
+
+
+
+    <Grid Width="900" Height="700">
+        <TextBlock Text="Assignments" FontFamily="Bahnschrift" FontSize="48"/>
+        <ListView x:Name="AssignmentList" Width="800" Height="400" Margin="0,0,0,64" ItemContainerStyle="{StaticResource ListItemStyle}">
             <ListView.ItemTemplate>
                 <DataTemplate DataType="models:AssignmentModel">
-                    <WrapPanel> 
-                        <TextBlock Text="{Binding Name}"/>
-                        <TextBlock Text=", Due date: "/>
-                        <TextBlock Text="{Binding DueDateString}"/>
+                    <WrapPanel>
+                        <TextBlock Text="{Binding Name}" FontFamily="Bahnschrift" FontSize="20" VerticalAlignment="Bottom"/>
+                        <TextBlock Text=", Due date: " FontFamily="Bahnschrift Light" FontSize="16" VerticalAlignment="Bottom"/>
+                        <TextBlock Text="{Binding DueDateString}" FontFamily="Bahnschrift Light" FontSize="16" VerticalAlignment="Bottom"/>
                     </WrapPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>

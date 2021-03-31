@@ -120,20 +120,16 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
                 }
                 //This will happen if GetFixedNames throws an exception, meaning there is no fixednames.txt
                 catch (Exception) {
-                    var noFixedNamesText = new TextBlock {
-                        Text = "Warning: mismatch in number of canvas students and zybooks students!\n" +
-                               "No FixedNames.txt found, please create one"
-                    };
-                    var margin = noFixedNamesText.Margin;
-                    margin.Top = 400;
-                    noFixedNamesText.Margin = margin;
-                    Grid.Children.Add(noFixedNamesText);
+                    noFixedNamesText.Text = "Warning: mismatch in number of canvas students and zybooks students!\n" +
+                           "No FixedNames.txt found, please create one";
+                    noFixedNamesText.Visibility = Visibility.Visible;
                     GenerateBadNames(_zybooksStudentModels, _canvasStudentModels);
                 }
             }
             
             DragDropText.Text = "File Loaded";
             GradeButton.Visibility = Visibility.Visible;
+            Checkbox.Visibility = Visibility.Visible;
         }
         
         private void UpdateGrades(object sender, MouseButtonEventArgs e) {
@@ -194,6 +190,7 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
             
             //handle UI
             GradeButton.Visibility = Visibility.Collapsed;
+            Checkbox.Visibility = Visibility.Collapsed;
             StudentsGradedProgress.Visibility = Visibility.Visible;
             GradientBrush.GradientStops.ElementAt(0).Color = (Color)ColorConverter.ConvertFromString("#7FA38007");
 
@@ -230,6 +227,10 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
                     DragDropText.Text = $"Graded {counter}/{mapForStudentsToGrades.Count} students!";
                 });
             }
+            Dispatcher.Invoke(() => {
+                GradientBrush.GradientStops.ElementAt(0).Color = (Color)ColorConverter.ConvertFromString("#7F07A332");
+            });
+                
         }
         
         private void GetFixedNames() {
