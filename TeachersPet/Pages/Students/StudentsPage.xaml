@@ -7,14 +7,14 @@
       xmlns:CustomControls="clr-namespace:TeachersPet.CustomControls"
       xmlns:teachersPet="clr-namespace:TeachersPet"
       mc:Ignorable="d"
-      Title="StudentsPage" Height="450" Width="800">
+      Title="StudentsPage" Height="800" Width="1200">
     
     
     
     <Page.Resources>
         <Style x:Key="ListItemStyle" TargetType="{x:Type ListViewItem}">
             <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ClickStudent" />
-            <Setter Property="Height" Value="55"/>
+            <Setter Property="Height" Value="32"/>
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
             <Setter Property="Tag" Value="{Binding }"/>
         </Style>
@@ -22,34 +22,37 @@
     
     <!-- TODO: Find a way to get missing avatars set to default values -->
    
-    <Grid>
+    <Grid Width="900" Height="700">
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        
-        <TextBlock x:Name="UiLoadingBlock" Text="Loading..."/>
+
+        <TextBlock x:Name="Students" Text="Students" FontFamily="Bahnschrift" FontSize="48" />
+        <TextBlock x:Name="UiLoadingBlock" Text="Loading..."  FontFamily="Bahnschrift Light" FontSize="16" Margin="10,0,64,0" Grid.Row="1"/>
         <CustomControls:PlaceHolderTextBox
-            Grid.Row="0" x:Name="SearchBar" 
+            x:Name="SearchBar" 
             Text="Search..." 
             TextChanged="RefreshList"
             Width = "300"
             Height= "30"
             Visibility="Collapsed"
+            FontFamily="Bahnschrift Light"
+            FontSize="16"
+            Margin="0,0,0,500"
+            Grid.Row="2"
         />
-        <ListView x:Name="UiStudentList" ItemContainerStyle="{StaticResource ListItemStyle}" Visibility="Collapsed" Grid.Row="1">
+        <ListView x:Name="UiStudentList" ItemContainerStyle="{StaticResource ListItemStyle}" Visibility="Collapsed" Width="800" Height="400" Margin="0,20,0,40" Grid.Row="3">
             <ListView.ItemTemplate>
                 <DataTemplate DataType="models:StudentModel">
                     <WrapPanel>
                         <!-- <Image Width="50" Height="50" Source="{Binding AvatarUrl}" ImageFailed="SetDefaultAvatar"/> -->
-                        <TextBlock Text="Name: " />
-                        <TextBlock Text="{Binding Name}" FontWeight="Bold" />
-                        <TextBlock Text=", " />
-                        <TextBlock Text="UFID: " />
-                        <TextBlock Text="{Binding SisUserId}" FontWeight="Bold" />
-                        <TextBlock Text=" (" />
-                        <TextBlock Text="{Binding Email}" TextDecorations="Underline" Foreground="Blue" Cursor="Hand" />
-                        <TextBlock Text=")" />
+                        <TextBlock Text="{Binding Name}" FontFamily="Bahnschrift" FontSize="16" />
+                        <TextBlock Text=", UFID: " FontFamily="Bahnschrift Light" FontSize="16" />
+                        <TextBlock Text="{Binding SisUserId}" FontFamily="Bahnschrift Light" FontSize="16" />
+                        <TextBlock Text=" (" FontFamily="Bahnschrift Light" FontSize="16" />
+                        <TextBlock Text="{Binding Email}" TextDecorations="Underline" Foreground="Blue" Cursor="Hand" FontFamily="Bahnschrift Light" FontSize="16" />
+                        <TextBlock Text=")" FontFamily="Bahnschrift Light" FontSize="16" />
                     </WrapPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>

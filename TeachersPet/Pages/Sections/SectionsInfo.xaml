@@ -5,22 +5,25 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:models="clr-namespace:TeachersPet.Models"
       mc:Ignorable="d"
-      Title="Sections" Height="450" Width="800">
+      Title="Sections" Height="800" Width="1200">
     
     <Page.Resources>
         <DataTemplate x:Key="SectionModelDataTemplate" DataType="models:SectionModel">
-            <WrapPanel>
-                <TextBlock Text="{Binding Name}"/>
-                <TextBlock Text=" - ("/>
-                <TextBlock Text="{Binding Students.Count}"/>
-                <TextBlock Text=" students)"/>
+            <WrapPanel Height="32" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                <TextBlock Text="{Binding Name}" FontFamily="Bahnschrift" FontSize="20" VerticalAlignment="Bottom"/>
+                <TextBlock Text=" (" FontFamily="Bahnschrift Light" FontSize="16" VerticalAlignment="Bottom"/>
+                <TextBlock Text="{Binding Id}" FontFamily="Bahnschrift Light" FontSize="16" VerticalAlignment="Bottom"/>
+                <TextBlock Text="), " FontFamily="Bahnschrift Light" FontSize="16" VerticalAlignment="Bottom"/>
+                <TextBlock Text="{Binding Students.Count}" FontFamily="Bahnschrift Light" FontSize="16" VerticalAlignment="Bottom"/>
+                <TextBlock Text=" students" FontFamily="Bahnschrift Light" FontSize="16" VerticalAlignment="Bottom"/>
             </WrapPanel>
         </DataTemplate>
     </Page.Resources>
     
     
-    <Grid>
-        <ListView x:Name="SectionsListView" ItemTemplate="{StaticResource SectionModelDataTemplate}">
+    <Grid Width="900" Height="700">
+        <TextBlock Text="Sections" FontFamily="Bahnschrift" FontSize="48"/>
+        <ListView x:Name="SectionsListView" ItemTemplate="{StaticResource SectionModelDataTemplate}" Width="800" Height="400" Margin="0,0,0,64">
         </ListView>
     </Grid>
 </Page>

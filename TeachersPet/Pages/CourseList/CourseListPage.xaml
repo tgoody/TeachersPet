@@ -4,7 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       mc:Ignorable="d"
-      Title="Course List" Height="450" Width="800">
+      Title="Course List" Height="800" Width="1200">
 
     <Page.Resources>
 
@@ -52,6 +52,7 @@
         <Style x:Key="SemesterHeader" TargetType="{x:Type ListViewItem}">
             <Setter Property="Template" Value="{StaticResource BetterLvItems}"/>
             <Setter Property="FontFamily" Value="Bahnschrift"/>
+            <Setter Property="FontSize" Value="24"/>
         </Style>
         <Style x:Key="ListStyle">
         </Style>
@@ -59,8 +60,8 @@
 
 
 
-    <Grid>
-        <TextBlock Text="Courses" FontFamily="Bahnschrift SemiBold" FontSize="36"></TextBlock>
-        <ListView x:Name="ListView" Style="{StaticResource ListStyle}" Background="Transparent" BorderBrush="#00ABADB3" FontSize="24" Padding="0,0,0,1" Margin="0,47,0,0" FontFamily="Bahnschrift Light"/>
+    <Grid Height="700" Width="900">
+        <TextBlock Text="Courses" FontFamily="Bahnschrift" FontSize="48"></TextBlock>
+        <ListView x:Name="ListView" Style="{StaticResource ListStyle}" FontSize="20" Margin="0,0,0,64" FontFamily="Bahnschrift Light" Height="400" Width="800" Grid.Row="1"/>
     </Grid>
 </Page>
