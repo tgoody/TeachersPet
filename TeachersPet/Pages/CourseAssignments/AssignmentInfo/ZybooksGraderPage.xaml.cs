@@ -98,6 +98,7 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
             e.Effects = DragDropEffects.Copy;
         }
 
+        //TODO: use email to confirm zybooks student to canvas student
         private void DragDropBox_DragDrop(object sender, DragEventArgs e) {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
             var files = (string[])e.Data.GetData(DataFormats.FileDrop);
@@ -139,6 +140,10 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
                 var firstName = zybooksStudent.firstName;
                 var lastName = zybooksStudent.lastName;
                 StudentModel matchingCanvasStudent;
+                
+                //TODO: email
+                //_canvasStudentModels.SingleOrDefault(s => s.Email == zybooksStudent.schoolEmail)
+                
                 try {
                     matchingCanvasStudent =
                         _canvasStudentModels.SingleOrDefault(s => s.Name.ToLower().Contains($"{firstName.ToLower()}") && s.Name.ToLower().Contains($"{lastName.ToLower()}"));
@@ -281,7 +286,8 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
             fixedNames = new Dictionary<string, string>();
             var workingDirectory = System.Reflection.Assembly.GetExecutingAssembly().Location;
             workingDirectory = Path.GetDirectoryName(workingDirectory);
-            var zybooksModulePath = Directory.CreateDirectory($"{workingDirectory}/ZybooksGrader").FullName;
+            var modulePath = Directory.CreateDirectory($"{workingDirectory}/Modules").FullName;
+            var zybooksModulePath = Directory.CreateDirectory($"{modulePath}/ZybooksGrader").FullName;
             pathToZybooksGraderFolder =
                 Directory.CreateDirectory($"{zybooksModulePath}/{_assignment.CourseId}").FullName;
         }

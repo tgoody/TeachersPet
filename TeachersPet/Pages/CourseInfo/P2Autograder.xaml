@@ -6,7 +6,47 @@
       xmlns:local="clr-namespace:TeachersPet.Pages.CourseInfo"
       mc:Ignorable="d"
       Title="P2Autograder" Height="450" Width="800">
+    
+    <Page.Resources>
+        <Style x:Key="DragDropCanvas" TargetType="{x:Type Canvas}">
+            <Setter Property="Height" Value="185"/>
+            <Setter Property="Width" Value="400" />
+            <Setter Property="AllowDrop" Value="True"/>
+            <!-- <Setter Property="HorizontalContentAlignment" Value="Stretch"/> -->
+            <!-- <Setter Property="Tag" Value="{Binding}"/> -->
+        </Style>
+    </Page.Resources>
+    
+    
     <Grid>
+        <Canvas x:Name="DragDropBox" Height="400" Width="800" Style="{StaticResource DragDropCanvas}" HorizontalAlignment="Center" VerticalAlignment="Center" DragEnter="DragDropBox_DragEnter" Drop="DragDropBox_DragDrop">
+            <Canvas.Background>
+                <RadialGradientBrush x:Name="GradientBrush">
+                    <GradientStop Color="#7F5D5D5D" Offset="0.5"/>
+                    <GradientStop Color="Transparent" Offset="1"/>
+                </RadialGradientBrush>
+            </Canvas.Background>
+        </Canvas>
+        <Canvas x:Name="ExamplesDragDropBox" Height="400" Width="800" Style="{StaticResource DragDropCanvas}" HorizontalAlignment="Center" VerticalAlignment="Center" DragEnter="DragDropBox_DragEnter" Drop="ExamplesDragDropBox_OnDrop" Visibility="Collapsed">
+            <Canvas.Background>
+                <RadialGradientBrush x:Name="GradientBrush">
+                    <GradientStop Color="#7F5D5D5D" Offset="0.5"/>
+                    <GradientStop Color="Transparent" Offset="1"/>
+                </RadialGradientBrush>
+            </Canvas.Background>
+        </Canvas>
+        <Canvas x:Name="InputDragDropBox" Height="400" Width="800" Style="{StaticResource DragDropCanvas}" HorizontalAlignment="Center" VerticalAlignment="Center" DragEnter="DragDropBox_DragEnter" Drop="InputDragDropBox_OnDrop" Visibility="Collapsed">
+            <Canvas.Background>
+                <RadialGradientBrush x:Name="GradientBrush">
+                    <GradientStop Color="#7F5D5D5D" Offset="0.5"/>
+                    <GradientStop Color="Transparent" Offset="1"/>
+                </RadialGradientBrush>
+            </Canvas.Background>
+        </Canvas>
         
+        <TextBlock x:Name="DragDropText" Text="Drag Zybooks Report Here" FontFamily="Bahnschrift" FontSize="24" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Button x:Name="GradeButton" Height="50" Content="Grade students" PreviewMouseLeftButtonDown="RunGrader" Visibility="Collapsed" Background="#00DDDDDD" BorderBrush="#00707070" VerticalAlignment="Center" Margin="0,200,0,0" FontFamily="Bahnschrift Light" FontSize="20" HorizontalAlignment="Center"/>
+        <TextBlock x:Name="ErrorText" TextWrapping="Wrap" Visibility="Collapsed" Margin="0,400,0,0" FontFamily="Bahnschrift Light" FontSize="14" TextAlignment="Center" HorizontalAlignment="Center"/>
+
     </Grid>
 </Page>
