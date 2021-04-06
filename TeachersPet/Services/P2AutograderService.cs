@@ -31,7 +31,7 @@ namespace TeachersPet.Services {
             totalSubmissionZipPath = pathToSubmissionsZip;
             modulePath = pathToModuleDirectory;
         }
-        public async void RunSetup() {
+        public async Task RunSetup() {
             var studentZipDirectory = Directory.CreateDirectory($"{modulePath}/StudentZips");
             Empty(studentZipDirectory);
             ZipFile.ExtractToDirectory(totalSubmissionZipPath, studentZipDirectory.FullName, true);
@@ -39,7 +39,43 @@ namespace TeachersPet.Services {
             studentFolderDirectory = await UnzipStudentZipsToFolders(studentZipDirectory.FullName);
             VerifyMakefiles();
             //await MakeStudentsSubmissions();
-            await RunStudentsSubmissions();
+            //await RunStudentsSubmissions();
+        }
+
+        public void SetExamplesDirectory(string pathToDirectory) {
+            var extension = Path.GetExtension(pathToDirectory);
+            exampleFolderDirectory = Directory.CreateDirectory($"{modulePath}/examples").FullName;
+            Empty(new DirectoryInfo(exampleFolderDirectory));
+            if (extension == ".zip") {
+                ZipFile.ExtractToDirectory(pathToDirectory, exampleFolderDirectory);
+            }
+            else if(extension.Length == 0) {
+                var dirInfo = new DirectoryInfo(pathToDirectory);
+                foreach (var image in dirInfo.GetFiles()) {
+                    File.Copy(image.FullName, exampleFolderDirectory + $"/{image.Name}");
+                }
+            }
+            else {
+                throw new Exception("Bad examples folder");
+            }
+        }
+        
+        public void SetInputDirectory(string pathToDirectory) {
+            var extension = Path.GetExtension(pathToDirectory);
+            inputFolderDirectory = Directory.CreateDirectory($"{modulePath}/input").FullName;
+            Empty(new DirectoryInfo(inputFolderDirectory));
+            if (extension == ".zip") {
+                ZipFile.ExtractToDirectory(pathToDirectory, inputFolderDirectory);
+            }
+            else if(extension.Length == 0) {
+                var dirInfo = new DirectoryInfo(pathToDirectory);
+                foreach (var image in dirInfo.GetFiles()) {
+                    File.Copy(image.FullName, inputFolderDirectory + $"/{image.Name}");
+                }
+            }
+            else {
+                throw new Exception("Bad examples folder");
+            }
         }
 
         private async Task<string> UnzipStudentZipsToFolders(string studentZipDirectory) {

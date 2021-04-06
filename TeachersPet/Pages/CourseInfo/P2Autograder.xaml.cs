@@ -1,8 +1,10 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using TeachersPet.BaseModules;
 using TeachersPet.Services;
 
@@ -44,26 +46,33 @@ namespace TeachersPet.Pages.CourseInfo {
         }
 
 
-        private void RunGrader(object sender, MouseButtonEventArgs e) {
+        private async void RunGrader(object sender, MouseButtonEventArgs e) {
 
             try {
-                _p2AutograderService.RunSetup();
+                await _p2AutograderService.RunSetup();
                 GradeButton.Visibility = Visibility.Collapsed;
-                
+                ExamplesDragDropBox.Visibility = Visibility.Visible;
+                InputDragDropBox.Visibility = Visibility.Visible;
+                DragDropBox.Visibility = Visibility.Collapsed;
             }
             catch (Exception exception) {
                 ErrorText.Visibility = Visibility.Visible;
                 ErrorText.Text = exception.Message;
             }
-
         }
 
         private void ExamplesDragDropBox_OnDrop(object sender, DragEventArgs e) {
-            throw new NotImplementedException();
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+            var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            _p2AutograderService.SetExamplesDirectory(files[0]);
+            ExampleGradient.GradientStops.ElementAt(0).Color = (Color)ColorConverter.ConvertFromString("#7F07A332");
         }
 
         private void InputDragDropBox_OnDrop(object sender, DragEventArgs e) {
-            throw new NotImplementedException();
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+            var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            _p2AutograderService.SetInputDirectory(files[0]);
+            InputGradient.GradientStops.ElementAt(0).Color = (Color)ColorConverter.ConvertFromString("#7F07A332");
         }
     }
 }
