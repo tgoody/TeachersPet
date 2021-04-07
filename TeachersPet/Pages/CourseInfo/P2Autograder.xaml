@@ -59,6 +59,7 @@
         <Button x:Name="CopyImagesButton" Height="50" Content="Copy Images" PreviewMouseLeftButtonDown="CopyImages" Visibility="Collapsed" Background="#00DDDDDD" BorderBrush="#00707070" VerticalAlignment="Center" Margin="0,200,0,0" FontFamily="Bahnschrift Light" FontSize="20" HorizontalAlignment="Center"/>
         <Button x:Name="RunGraderButton" Height="50" Content="Run Grader" PreviewMouseLeftButtonDown="RunGrader" Visibility="Collapsed" Background="#00DDDDDD" BorderBrush="#00707070" VerticalAlignment="Center" Margin="0,200,0,0" FontFamily="Bahnschrift Light" FontSize="20" HorizontalAlignment="Center"/>
         <Button x:Name="OpenFolderButton" Height="50" Content="Open Directory Containing Results" PreviewMouseLeftButtonDown="OpenDirectory" Visibility="Collapsed" Background="#00DDDDDD" BorderBrush="#00707070" VerticalAlignment="Center" Margin="0,200,0,0" FontFamily="Bahnschrift Light" FontSize="20" HorizontalAlignment="Center"/>
-        
+        <TextBlock x:Name="ProgressText" TextWrapping="Wrap" Visibility="Collapsed" Margin="0,20,0,0" FontFamily="Bahnschrift Light" FontSize="14" TextAlignment="Center" HorizontalAlignment="Center"/>
+
     </Grid>
 </Page>

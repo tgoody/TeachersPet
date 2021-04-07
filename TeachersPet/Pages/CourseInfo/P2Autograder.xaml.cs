@@ -2,6 +2,8 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -47,18 +49,33 @@ namespace TeachersPet.Pages.CourseInfo {
         }
 
 
-        private async void SetupGrader(object sender, MouseButtonEventArgs e) {
+        private void SetupGrader(object sender, MouseButtonEventArgs e) {
 
             try {
                 InitialSetupButton.Visibility = Visibility.Collapsed;
                 DragDropText.Text = "Making students' programs now...";
                 _p2AutograderService.TaskScore = int.Parse(TaskScore.Text);
                 _p2AutograderService.EcScore = int.Parse(ECScore.Text);
-                await _p2AutograderService.RunSetup();
-                ExamplesDragDropBox.Visibility = Visibility.Visible;
-                InputDragDropBox.Visibility = Visibility.Visible;
-                DragDropBox.Visibility = Visibility.Collapsed;
-                DragDropText.Visibility = Visibility.Collapsed;
+                var task = _p2AutograderService.RunSetup();
+                Task.Run(() => {
+                    while (!task.IsCompleted) {
+                        Dispatcher.Invoke(() => {
+                            ProgressText.Visibility = Visibility.Visible;
+                            ProgressText.Text =
+                                $"{_p2AutograderService.NumProjectsMade}/{_p2AutograderService.NumStudentFolders}";
+                        });
+                        Thread.Sleep(1000);
+                    }
+                    
+                    Dispatcher.Invoke(() => {
+                        ProgressText.Visibility = Visibility.Collapsed;
+                        DragDropBox.Visibility = Visibility.Collapsed;
+                        DragDropText.Visibility = Visibility.Collapsed;
+                        ExamplesDragDropBox.Visibility = Visibility.Visible;
+                        InputDragDropBox.Visibility = Visibility.Visible;
+                    });
+                });
+                
                 TaskScorePanel.Visibility = Visibility.Collapsed;
                 ECScorePanel.Visibility = Visibility.Collapsed;
             }
@@ -88,21 +105,55 @@ namespace TeachersPet.Pages.CourseInfo {
             }
         }
 
-        private async void CopyImages(object sender, MouseButtonEventArgs e) {
+        private void CopyImages(object sender, MouseButtonEventArgs e) {
 
             CopyImagesButton.Visibility = Visibility.Collapsed;
-            await _p2AutograderService.CopyImagesToStudentFolders();
-            InputDragDropBox.Visibility = Visibility.Collapsed;
-            ExamplesDragDropBox.Visibility = Visibility.Collapsed;
-            RunGraderButton.Visibility = Visibility.Visible;
+            DragDropText.Text = "Copying images to student directories...";
+            var task = Task.Run(() => _p2AutograderService.CopyImagesToStudentFolders());
+            Task.Run(() => {
+                while (!task.IsCompleted) {
+                    Dispatcher.Invoke(() => {
+                        DragDropText.Visibility = Visibility.Visible;
+                        ProgressText.Visibility = Visibility.Visible;
+                        ProgressText.Text =
+                            $"{_p2AutograderService.NumFoldersImagesCopiedTo}/{_p2AutograderService.NumStudentFolders}";
+                    });
+                    Thread.Sleep(1000);
+                }
 
+                Dispatcher.Invoke(() => {
+                    DragDropText.Visibility = Visibility.Collapsed;
+                    ProgressText.Visibility = Visibility.Collapsed;
+                    InputDragDropBox.Visibility = Visibility.Collapsed;
+                    ExamplesDragDropBox.Visibility = Visibility.Collapsed;
+                    RunGraderButton.Visibility = Visibility.Visible;
+                });
+            });
         }
 
         private void RunGrader(object sender, MouseButtonEventArgs e) {
-            _p2AutograderService.RunGrader();
+            var task = Task.Run(() => _p2AutograderService.RunGrader());
+            DragDropText.Text = "Grading students...";
             RunGraderButton.Visibility = Visibility.Collapsed;
-            DragDropText.Visibility = Visibility.Visible;
-            DragDropText.Text = "All finished! Please view the StudentScores.txt and StudentLogs.txt files.";
+
+            Task.Run(() => {
+                while(!task.IsCompleted) {
+                    Dispatcher.Invoke(() => {
+                        DragDropText.Visibility = Visibility.Visible;
+                        ProgressText.Visibility = Visibility.Visible;
+                        ProgressText.Text =
+                            $"{_p2AutograderService.NumStudentsGraded}/{_p2AutograderService.NumStudentFolders}";
+                    });
+                    
+                    Thread.Sleep(1000);
+                }
+
+                Dispatcher.Invoke(() => {
+                    DragDropText.Visibility = Visibility.Collapsed;
+                    DragDropText.Visibility = Visibility.Visible;
+                    DragDropText.Text = "All finished! Please view the StudentScores.txt and StudentLogs.txt files.";
+                });
+            });
         }
 
         private void OpenDirectory(object sender, MouseButtonEventArgs e) {

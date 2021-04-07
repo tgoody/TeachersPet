@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 
 namespace TeachersPet.Services {
     public class P2AutograderService {
-        
         private class StudentData {
             public string name = "";
             public bool namingError = false;
@@ -24,7 +23,7 @@ namespace TeachersPet.Services {
 
         private static class UnzipHelper {
             public static void Unzip(string sourceName, string targetDirectory, bool overwrite = true) {
-                
+
                 ZipFile.ExtractToDirectory(sourceName, targetDirectory, overwrite);
                 var dirInfo = new DirectoryInfo(targetDirectory);
                 var files = dirInfo.GetDirectories();
@@ -32,48 +31,62 @@ namespace TeachersPet.Services {
                 if (files.Any(file => file.Name.Contains("__MACOSX"))) {
                     Directory.Delete(files.Single(file => file.Name.Contains("__MACOSX")).FullName, true);
                 }
+
                 files = dirInfo.GetDirectories();
                 if (files.Length != 1 || dirInfo.GetFiles().Length != 0) return;
                 var innerDir = new DirectoryInfo(files[0].FullName);
-                
+
                 foreach (var innerFile in innerDir.GetFiles()) {
                     File.Move(innerFile.FullName, targetDirectory + $"/{innerFile.Name}");
                 }
+
                 foreach (var subDir in innerDir.GetDirectories()) {
                     Directory.Move(subDir.FullName, targetDirectory + $"/{subDir.Name}");
                 }
+
                 Directory.Delete(innerDir.FullName, true);
             }
         }
-        
+
         private readonly string p2GraderName = "P2GraderExec";
-        private int taskScore = 9; 
+        private int taskScore = 9;
         private int ecScore = 10;
         private string totalSubmissionZipPath;
         private string modulePath;
         private string studentFolderDirectory;
         private string exampleFolderDirectory;
         private string inputFolderDirectory;
+        private int numStudentFolders;
+        private int numProjectsMade;
+        private int numFoldersImagesCopiedTo;
+        private int numStudentsGraded;
         private ConcurrentDictionary<string, StudentData> studentData = new ConcurrentDictionary<string, StudentData>();
-        
+
         //Getters
         public string ExampleFolderDirectory => exampleFolderDirectory;
         public string InputFolderDirectory => inputFolderDirectory;
         public string ModulePath => modulePath;
+        public int NumStudentFolders => numStudentFolders;
+        public int NumProjectsMade => numProjectsMade;
+        public int NumFoldersImagesCopiedTo => numFoldersImagesCopiedTo;
+        public int NumStudentsGraded => numStudentsGraded;
+
         public int TaskScore {
             get => taskScore;
             set => taskScore = value;
         }
+
         public int EcScore {
             get => ecScore;
             set => ecScore = value;
         }
-        
+
         public void Init(string pathToModuleDirectory, string pathToSubmissionsZip) {
             totalSubmissionZipPath = pathToSubmissionsZip;
             modulePath = pathToModuleDirectory;
             Empty(new DirectoryInfo(modulePath));
         }
+
         public async Task RunSetup() {
             var studentZipDirectory = Directory.CreateDirectory($"{modulePath}/StudentZips");
             Empty(studentZipDirectory);
@@ -91,7 +104,7 @@ namespace TeachersPet.Services {
             if (extension == ".zip") {
                 UnzipHelper.Unzip(pathToDirectory, exampleFolderDirectory);
             }
-            else if(extension.Length == 0) {
+            else if (extension.Length == 0) {
                 var dirInfo = new DirectoryInfo(pathToDirectory);
                 foreach (var image in dirInfo.GetFiles()) {
                     File.Copy(image.FullName, exampleFolderDirectory + $"/{image.Name}");
@@ -101,7 +114,7 @@ namespace TeachersPet.Services {
                 throw new Exception("Bad examples folder");
             }
         }
-        
+
         public void SetInputDirectory(string pathToDirectory) {
             var extension = Path.GetExtension(pathToDirectory);
             inputFolderDirectory = Directory.CreateDirectory($"{modulePath}/input").FullName;
@@ -109,7 +122,7 @@ namespace TeachersPet.Services {
             if (extension == ".zip") {
                 UnzipHelper.Unzip(pathToDirectory, inputFolderDirectory);
             }
-            else if(extension.Length == 0) {
+            else if (extension.Length == 0) {
                 var dirInfo = new DirectoryInfo(pathToDirectory);
                 foreach (var image in dirInfo.GetFiles()) {
                     File.Copy(image.FullName, inputFolderDirectory + $"/{image.Name}");
@@ -120,127 +133,146 @@ namespace TeachersPet.Services {
             }
         }
 
-        public async Task CopyImagesToStudentFolders() {
+        public void CopyImagesToStudentFolders() {
 
             var studentFolderDirInfo = new DirectoryInfo(studentFolderDirectory);
             var inputFolderDirInfo = new DirectoryInfo(inputFolderDirectory);
             var exampleFolderDirInfo = new DirectoryInfo(exampleFolderDirectory);
 
             foreach (var studentFolder in studentFolderDirInfo.GetDirectories()) {
-                
-                    Directory.CreateDirectory($"{studentFolder.FullName}/input");
-                    Directory.CreateDirectory($"{studentFolder.FullName}/output");
-                    Directory.CreateDirectory($"{studentFolder.FullName}/examples");
-                    foreach (var image in inputFolderDirInfo.GetFiles()) {
-                        File.Copy(image.FullName, studentFolder.FullName + $"/input/{image.Name}");
-                    }
 
-                    foreach (var image in exampleFolderDirInfo.GetFiles()) {
-                        File.Copy(image.FullName, studentFolder.FullName + $"/examples/{image.Name}");
-                    }
+                Directory.CreateDirectory($"{studentFolder.FullName}/input");
+                Directory.CreateDirectory($"{studentFolder.FullName}/output");
+                Directory.CreateDirectory($"{studentFolder.FullName}/examples");
+                foreach (var image in inputFolderDirInfo.GetFiles()) {
+                    File.Copy(image.FullName, studentFolder.FullName + $"/input/{image.Name}");
+                }
+
+                foreach (var image in exampleFolderDirInfo.GetFiles()) {
+                    File.Copy(image.FullName, studentFolder.FullName + $"/examples/{image.Name}");
+                }
+
+                numFoldersImagesCopiedTo++;
             }
         }
-        
-        
-        public void RunGrader() {
 
+        public void RunGrader() {
             var studentFolderDirInfo = new DirectoryInfo(studentFolderDirectory);
             var directories = studentFolderDirInfo.GetDirectories();
             Parallel.ForEach(directories, studentFolder => {
+                    numStudentsGraded++;
+                    //no makefile, return, also get student object to store logs in later
+                    studentData.TryGetValue(studentFolder.Name, out var studentObject);
+                    if (!studentObject.containsMakefile) {
+                        return;
+                    }
 
-                //no makefile, return, also get student object to store logs in later
-                studentData.TryGetValue(studentFolder.Name, out var studentObject);
-                if (!studentObject.containsMakefile) {
-                    return;
-                }
+                    //find a .out executable
+                    var studentExec = studentFolder.GetFiles().SingleOrDefault(file => file.Name.EndsWith(".out"));
 
-                //find a .out executable
-                var studentExec = studentFolder.GetFiles().SingleOrDefault(file => file.Name.EndsWith(".out"));
+                    //if they didn't name the executable right
+                    if (studentExec == null || !studentExec.Exists) {
+                        //get makefile
+                        var makefilePath = studentFolder.GetFiles()
+                            .Single(file => file.Name.ToLower() == "makefile").FullName;
+                        //read data of makefile
+                        var makefileString = new StreamReader(makefilePath).ReadToEnd();
+                        //split all elements of makefile up (on whitespace)
+                        var elementsOfMakefile = makefileString.Split();
+                        var currIndex = 0;
+                        //find all -o flags, see if any of the names after them exist as files in the directory
+                        while (studentExec == null || !studentExec.Exists) {
+                            try {
+                                currIndex = elementsOfMakefile.ToList().FindIndex(currIndex, s => s == "-o");
+                                //return if no more found
+                                if (currIndex < 0) {
+                                    throw new Exception("No index found");
+                                }
 
-                //if they didn't name the executable right
-                if (studentExec == null || !studentExec.Exists) {
-                    //get makefile
-                    var makefilePath = studentFolder.GetFiles()
-                        .Single(file => file.Name.ToLower() == "makefile").FullName;
-                    //read data of makefile
-                    var makefileString = new StreamReader(makefilePath).ReadToEnd();
-                    //split all elements of makefile up (on whitespace)
-                    var elementsOfMakefile = makefileString.Split();
-                    var currIndex = 0;
-                    //find all -o flags, see if any of the names after them exist as files in the directory
-                    while (studentExec == null || !studentExec.Exists) {
-                        currIndex = elementsOfMakefile.ToList().FindIndex(currIndex, s => s == "-o");
-                        //return if no more found
-                        if (currIndex < 0) {
-                            return;
-                        }
-                        
-                        if (studentFolder.GetFiles().Any(file => file.Name == elementsOfMakefile[currIndex + 1])) {
-                            studentExec = studentFolder.GetFiles()
-                                .Single(file => file.Name == elementsOfMakefile[currIndex + 1]);
+                                if (studentFolder.GetFiles()
+                                    .Any(file => file.Name == elementsOfMakefile[++currIndex])) {
+                                    studentExec = studentFolder.GetFiles()
+                                        .Single(file => file.Name == elementsOfMakefile[currIndex]);
+                                }
+                            }
+                            catch (Exception e) {
+                                studentObject.errorLogs.Add("No executable found to run, compilation error?");
+                                return;
+                            }
                         }
                     }
-                }
 
-                var startInfo = new ProcessStartInfo {
-                    WorkingDirectory = studentFolder.FullName,
-                    Arguments = $"timeout 1500s ./{studentExec.Name} | head -n200",
-                    CreateNoWindow = true,
-                    FileName = "wsl.exe",
-                    RedirectStandardInput = true,
-                    RedirectStandardError = true,
-                    RedirectStandardOutput = false,
-                    UseShellExecute = false
-                };
-                Console.WriteLine($"Running {studentFolder.Name}");
-                var proc = Process.Start(startInfo);
-                Thread.Sleep(4000);
-                while (!proc.HasExited) {
-                    var processesWithName = Process.GetProcessesByName(studentExec.Name);
-                    processesWithName.Where(p => p.VirtualMemorySize64 > 1073741824).ToList().ForEach(p => {
-                        Console.Error.WriteLine($"Killing process {p.ProcessName}");
-                        p.Kill();
-                    });
+                    var startInfo = new ProcessStartInfo {
+                        WorkingDirectory = studentFolder.FullName,
+                        Arguments = $"timeout 30s ./{studentExec.Name} | head -n200",
+                        CreateNoWindow = true,
+                        FileName = "wsl.exe",
+                        RedirectStandardInput = true,
+                        RedirectStandardError = true,
+                        RedirectStandardOutput = false,
+                        UseShellExecute = false
+                    };
+                    //Console.WriteLine($"Running {studentFolder.Name}");
+                    var proc = Process.Start(startInfo);
                     Thread.Sleep(2000);
-                }
-                var outputError = proc?.StandardError.ReadToEnd();
-                //store logs in student data
-                studentObject.errorLogs.Add(outputError);
+                    while (!proc.HasExited) {
+                        var processesWithName = Process.GetProcessesByName(studentExec.Name);
+                        processesWithName.Where(p => p.PrivateMemorySize64 > 2147483648).ToList().ForEach(p => {
+                            Console.Error.WriteLine($"Killing process {p.ProcessName}");
+                            try {
+                                p.Kill();
+                            }
+                            catch (InvalidOperationException) {
+                            }
+                        });
+                        Thread.Sleep(2000);
+                    }
 
-                var outputInfo = new DirectoryInfo($"{studentFolder.FullName}/output");
-                var filesCreated = outputInfo.GetFiles().Aggregate("STUDENT FILES CREATED:\n",
-                    (current, file) => current + (file.Name + "\n"));
-                studentObject.logs.Add(filesCreated);
+                    var outputError = proc?.StandardError.ReadToEnd();
+                    //store logs in student data
+                    studentObject.errorLogs.Add(outputError);
 
-                //swap files for error checking, see P2Grader.cpp
-                File.Move($"{studentFolder.FullName}/examples/EXAMPLE_part2.tga",
-                    $"{studentFolder.FullName}/examples/EXAMPLE_part2old.tga");
-                File.Copy($"{studentFolder.FullName}/examples/EXAMPLE_part3.tga",
-                    $"{studentFolder.FullName}/examples/EXAMPLE_part2.tga", true);
+                    var outputInfo = new DirectoryInfo($"{studentFolder.FullName}/output");
+                    var filesCreated = outputInfo.GetFiles().Aggregate("STUDENT FILES CREATED:\n",
+                        (current, file) => current + (file.Name + "\n"));
+                    studentObject.logs.Add(filesCreated);
 
-                File.Copy($"{modulePath}/{p2GraderName}", $"{studentFolder.FullName}/{p2GraderName}");
-                startInfo = new ProcessStartInfo {
-                    WorkingDirectory = studentFolder.FullName,
-                    Arguments = $"/C wsl ./{p2GraderName} {taskScore} {ecScore}",
-                    CreateNoWindow = true,
-                    FileName = "cmd.exe",
-                    RedirectStandardInput = true,
-                    RedirectStandardError = true,
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false
-                };
-                var graderProc = Process.Start(startInfo);
-                graderProc?.WaitForExit();
-                Console.WriteLine($"Finished grading {studentFolder.Name}");
-                var graderOutputNormal = graderProc?.StandardOutput.ReadToEnd();
-                var graderOutputError = graderProc?.StandardError.ReadToEnd();
-                studentObject.graderOutput = graderOutputNormal;
-                //getting last line from output and storing it for text file
-                studentObject.finalGraderLine =
-                    graderOutputNormal?.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None)[^2];
-            });
+                    //swap files for error checking, see P2Grader.cpp
+                    File.Move($"{studentFolder.FullName}/examples/EXAMPLE_part2.tga",
+                        $"{studentFolder.FullName}/examples/EXAMPLE_part2old.tga");
+                    File.Copy($"{studentFolder.FullName}/examples/EXAMPLE_part3.tga",
+                        $"{studentFolder.FullName}/examples/EXAMPLE_part2.tga", true);
 
-            WriteOutputFiles();
+                    File.Copy($"{modulePath}/{p2GraderName}", $"{studentFolder.FullName}/{p2GraderName}");
+                    startInfo = new ProcessStartInfo {
+                        WorkingDirectory = studentFolder.FullName,
+                        Arguments = $"/C wsl ./{p2GraderName} {taskScore} {ecScore}",
+                        CreateNoWindow = true,
+                        FileName = "cmd.exe",
+                        RedirectStandardInput = true,
+                        RedirectStandardError = true,
+                        RedirectStandardOutput = true,
+                        UseShellExecute = false
+                    };
+                    var graderProc = Process.Start(startInfo);
+                    graderProc?.WaitForExit();
+                    Console.WriteLine($"Finished grading {studentFolder.Name}");
+                    var graderOutputNormal = graderProc?.StandardOutput.ReadToEnd();
+                    studentObject.graderOutput = graderOutputNormal;
+                    //getting last line from output and storing it for text file
+                    studentObject.finalGraderLine =
+                        graderOutputNormal?.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None)[^2];
+                    Directory.Delete($"{studentFolder.FullName}/input", true);
+                    Directory.Delete($"{studentFolder.FullName}/examples", true);
+                    Directory.Delete($"{studentFolder.FullName}/output", true);
+                });
+
+            try {
+                WriteOutputFiles();
+            }
+            catch (Exception e) {
+                Console.Error.WriteLine(e.Message);
+            }
         }
 
         private void WriteOutputFiles() {
@@ -274,9 +306,14 @@ namespace TeachersPet.Services {
                     validErrorMessages.ForEach(error => writer.WriteLine(error));
                     writer.WriteLine();
                 }
-                value.logs.ForEach(log => writer.WriteLine(log));
+                writer.WriteLine("Console output:");
+                value.logs.ForEach(log => {
+                    if (log.Length > 0) {
+                        writer.WriteLine(log);
+                    }
+                });
                 writer.WriteLine();
-                writer.WriteLine(value.graderOutput);
+                writer.WriteLine(value.graderOutput ?? "No grader output");
                 writer.WriteLine();
             }
             writer.Close();
@@ -335,6 +372,8 @@ namespace TeachersPet.Services {
             catch (Exception) {
                 Console.Error.WriteLine($"{studentZip} is an invalid zip file");
             }
+
+            numStudentFolders++;
         }
 
         private async Task ClearStudentFolders() {
@@ -390,7 +429,7 @@ namespace TeachersPet.Services {
                     if (!temp.containsMakefile) {
                         return;
                     }
-                    Console.WriteLine($"Making {temp.name}");
+                    //Console.WriteLine($"Making {temp.name}");
                     var oldtemp = temp;
                     var startInfo = new ProcessStartInfo
                     {
@@ -410,6 +449,7 @@ namespace TeachersPet.Services {
                     temp.logs.Add(outputNormal);
                     temp.errorLogs.Add(outputError);
                     studentData.TryUpdate(dir.Name, temp, oldtemp);
+                    numProjectsMade++;
                 }));
             }
             //Raise exception as each task ends
