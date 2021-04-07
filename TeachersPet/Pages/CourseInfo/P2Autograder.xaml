@@ -44,13 +44,13 @@
             </Canvas.Background>
         </Canvas>
         
-        <StackPanel Orientation="Horizontal" x:Name="TaskScorePanel">
-            <TextBlock Text="Score per task: "/>
-            <TextBox x:Name="TaskScore" Text="9"/>
+        <StackPanel Orientation="Horizontal" x:Name="TaskScorePanel" Height="32" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="50,0,0,50">
+            <TextBlock Text="Score per task: " FontFamily="Bahnschrift Light" FontSize="24"/>
+            <TextBox x:Name="TaskScore" Text="9" FontFamily="Bahnschrift Light" FontSize="24" TextAlignment="Center" MinWidth="32" MaxWidth="64"/>
         </StackPanel>
-        <StackPanel Orientation="Horizontal" x:Name="ECScorePanel">
-            <TextBlock Text="Extra Credit points: "/>
-            <TextBox x:Name="ECScore" Text="10"/>
+        <StackPanel Orientation="Horizontal" x:Name="ECScorePanel" Height="32" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,50,50">
+            <TextBlock Text="Extra Credit points: " FontFamily="Bahnschrift Light" FontSize="24"/>
+            <TextBox x:Name="ECScore" Text="10" FontFamily="Bahnschrift Light" FontSize="24" TextAlignment="Center" MinWidth="32" MaxWidth="64"/>
         </StackPanel>
         
         <TextBlock x:Name="DragDropText" Text="Drag Canvas Submissions for P2 Here" FontFamily="Bahnschrift" FontSize="24" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
