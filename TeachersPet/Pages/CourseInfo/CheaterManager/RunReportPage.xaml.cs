@@ -131,12 +131,12 @@ namespace TeachersPet.Pages.CourseInfo.CheaterManager {
                 Task.Run(() => {
                     resultHyperLink = MossReportService.RunReportOnDirectory(_workingDirectory, language, numSimilarLines,
                         numReports, nameOfReport, excludedFiles).Trim();
-                    if (string.IsNullOrEmpty(resultHyperLink)) {
-                        throw new Exception("No link available for MOSS");
-                    }
+                    
                     Dispatcher.Invoke(() => {
                         LoadingTextBlock.Visibility = Visibility.Collapsed;
-                        ResultsButton.Visibility = Visibility.Visible;
+                        if (!string.IsNullOrEmpty(resultHyperLink)) {
+                            ResultsButton.Visibility = Visibility.Visible;
+                        }
                     });
                 });
                 LoadingTextBlock.Visibility = Visibility.Visible;
