@@ -62,9 +62,11 @@ namespace TeachersPet.Pages.Students {
             if (student.Email == null) {
                 var studentProfile = await CanvasAPI.GetStudentProfileFromStudentId(student.Id);
                 if (studentProfile["email"] == null && studentProfile["login_id"] == null) {
-                    throw new Exception("Couldn't retrieve email.");
+                    student.Email = "Error loading email";
                 }
-                student.Email = (string) studentProfile["email"] ?? (string) studentProfile["login_id"];
+                else {
+                    student.Email = (string) studentProfile["email"] ?? (string) studentProfile["login_id"];
+                }
             }
 
             NavigationService.Navigate(new StudentInfo.StudentInfo(student, _courseModel));
