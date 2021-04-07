@@ -44,9 +44,21 @@
             </Canvas.Background>
         </Canvas>
         
-        <TextBlock x:Name="DragDropText" Text="Drag Zybooks Report Here" FontFamily="Bahnschrift" FontSize="24" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <Button x:Name="GradeButton" Height="50" Content="Grade students" PreviewMouseLeftButtonDown="RunGrader" Visibility="Collapsed" Background="#00DDDDDD" BorderBrush="#00707070" VerticalAlignment="Center" Margin="0,200,0,0" FontFamily="Bahnschrift Light" FontSize="20" HorizontalAlignment="Center"/>
+        <StackPanel Orientation="Horizontal" x:Name="TaskScorePanel">
+            <TextBlock Text="Score per task: "/>
+            <TextBox x:Name="TaskScore" Text="9"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" x:Name="ECScorePanel">
+            <TextBlock Text="Extra Credit points: "/>
+            <TextBox x:Name="ECScore" Text="10"/>
+        </StackPanel>
+        
+        <TextBlock x:Name="DragDropText" Text="Drag Canvas Submissions for P2 Here" FontFamily="Bahnschrift" FontSize="24" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Button x:Name="InitialSetupButton" Height="50" Content="Extract Student Submissions" PreviewMouseLeftButtonDown="SetupGrader" Visibility="Collapsed" Background="#00DDDDDD" BorderBrush="#00707070" VerticalAlignment="Center" Margin="0,200,0,0" FontFamily="Bahnschrift Light" FontSize="20" HorizontalAlignment="Center"/>
         <TextBlock x:Name="ErrorText" TextWrapping="Wrap" Visibility="Collapsed" Margin="0,400,0,0" FontFamily="Bahnschrift Light" FontSize="14" TextAlignment="Center" HorizontalAlignment="Center"/>
-
+        <Button x:Name="CopyImagesButton" Height="50" Content="Copy Images" PreviewMouseLeftButtonDown="CopyImages" Visibility="Collapsed" Background="#00DDDDDD" BorderBrush="#00707070" VerticalAlignment="Center" Margin="0,200,0,0" FontFamily="Bahnschrift Light" FontSize="20" HorizontalAlignment="Center"/>
+        <Button x:Name="RunGraderButton" Height="50" Content="Run Grader" PreviewMouseLeftButtonDown="RunGrader" Visibility="Collapsed" Background="#00DDDDDD" BorderBrush="#00707070" VerticalAlignment="Center" Margin="0,200,0,0" FontFamily="Bahnschrift Light" FontSize="20" HorizontalAlignment="Center"/>
+        <Button x:Name="OpenFolderButton" Height="50" Content="Open Directory Containing Results" PreviewMouseLeftButtonDown="OpenDirectory" Visibility="Collapsed" Background="#00DDDDDD" BorderBrush="#00707070" VerticalAlignment="Center" Margin="0,200,0,0" FontFamily="Bahnschrift Light" FontSize="20" HorizontalAlignment="Center"/>
+        
     </Grid>
 </Page>

@@ -84,7 +84,7 @@ Image::Image(string fileName)
     
     if (someFile.is_open())
     {
-        // Go through all of the data from the header
+        // Go through all of the data from the headerr))
         someFile.read((char *)&headerInfo.idLength, sizeof(headerInfo.idLength));
         someFile.read((char *)&headerInfo.colorMapType, sizeof(headerInfo.colorMapType));
         someFile.read((char *)&headerInfo.dataTypeCode, sizeof(headerInfo.dataTypeCode));
@@ -141,6 +141,23 @@ int main(int argc, char** argv)
     chdir(argv[0]);
     int SCORE = 0;
     int EC = 0;
+    int SCOREPERTASK = 9;
+	int ECSCORE = 10;
+    
+    //Try to take in a score as a parameter
+    if(argc > 1){
+        try{
+            SCOREPERTASK = stoi(argv[1]);
+        }
+        catch(invalid_argument& e){}
+		
+		if(argc > 2){
+			try{
+				ECSCORE = stoi(argv[2]);
+			}
+			catch(invalid_argument& e){}
+		}
+    }
     
     cout << "RUNNING TESTS" << endl;
     
@@ -149,7 +166,7 @@ int main(int argc, char** argv)
     {
         Image output1("output/part1.tga");
         if(CheckingFunction(output1, "examples/EXAMPLE_part1.tga", 1))
-        SCORE+=9;
+        SCORE+=SCOREPERTASK;
     }
 
     /*==================Part 2==================*/
@@ -163,7 +180,7 @@ int main(int argc, char** argv)
         
         if(!CheckingFunction(output2, "examples/EXAMPLE_part2.tga", 2) &&
            CheckingFunction(output2, "examples/EXAMPLE_part2old.tga", 2))
-        SCORE+=9;
+        SCORE+=SCOREPERTASK;
         
         
         
@@ -174,35 +191,35 @@ int main(int argc, char** argv)
     {
         Image output3("output/part3.tga");
         if(CheckingFunction(output3, "examples/EXAMPLE_part3.tga", 3))
-        SCORE+=9;
+        SCORE+=SCOREPERTASK;
     }
 
     /*==================Part 4==================*/
     {
         Image output4("output/part4.tga");
         if(CheckingFunction(output4, "examples/EXAMPLE_part4.tga", 4))
-        SCORE+=9;
+        SCORE+=SCOREPERTASK;
     }
 
     /*==================Part 5==================*/
     {
         Image output5("output/part5.tga");
         if(CheckingFunction(output5, "examples/EXAMPLE_part5.tga", 5))
-        SCORE+=9;
+        SCORE+=SCOREPERTASK;
     }
 
     /*==================Part 6==================*/
     {
         Image output6("output/part6.tga");
         if(CheckingFunction(output6, "examples/EXAMPLE_part6.tga", 6))
-        SCORE+=9;
+        SCORE+=SCOREPERTASK;
     }
 
     /*==================Part 7==================*/
     {
         Image output7("output/part7.tga");
         if(CheckingFunction(output7, "examples/EXAMPLE_part7.tga", 7))
-        SCORE+=9;
+        SCORE+=SCOREPERTASK;
     }
 
     /*==================Part 8==================*/
@@ -217,7 +234,7 @@ int main(int argc, char** argv)
         if(CheckingFunction(carR, "examples/EXAMPLE_part8_r.tga", 81) &&
            CheckingFunction(carG, "examples/EXAMPLE_part8_g.tga", 82) &&
            CheckingFunction(carB, "examples/EXAMPLE_part8_b.tga", 83))
-        SCORE+=9;
+        SCORE+=SCOREPERTASK;
 
     }
 
@@ -225,21 +242,21 @@ int main(int argc, char** argv)
     {
         Image output9("output/part9.tga");
         if(CheckingFunction(output9, "examples/EXAMPLE_part9.tga", 9))
-        SCORE+=9;
+        SCORE+=SCOREPERTASK;
     }
 
     /*=================Part 10==================*/
     {
         Image output10("output/part10.tga");
         if(CheckingFunction(output10, "examples/EXAMPLE_part10.tga", 10))
-        SCORE+=9;
+        SCORE+=SCOREPERTASK;
     }
 
     /*================Extra Credit==============*/
     {
         Image outputEC("output/extraCredit.tga");
-        if(CheckingFunction(outputEC, "examples/EXAMPLE_extraCredit.tga", 100))
-        EC=10;
+        if(CheckingFunction(outputEC, "examples/EXAMPLE_extraCredit.tga", 99999))
+        EC=ECSCORE;
     }
 
     
