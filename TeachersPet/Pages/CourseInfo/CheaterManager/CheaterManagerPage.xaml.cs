@@ -12,7 +12,7 @@ using TeachersPet.CustomControls;
 using TeachersPet.Models;
 using TeachersPet.Services;
 
-namespace TeachersPet.Pages.CourseInfo {
+namespace TeachersPet.Pages.CourseInfo.CheaterManager {
     public partial class CheaterManagerPage : Page, CourseInfoModule {
         private CourseModel parentData;
         private DirectoryInfo moduleDirectoryInfo;
@@ -72,7 +72,7 @@ namespace TeachersPet.Pages.CourseInfo {
 
         private void ViewDirectory(object sender, RoutedEventArgs e) {
             try {
-                Process.Start($@"{(CheaterDirectoryListView.SelectedItem as DirectoryInfo).FullName}");
+                Process.Start("explorer.exe",@$"{(CheaterDirectoryListView.SelectedItem as DirectoryInfo).FullName}");
             }
             catch (Exception exception) {
                 ErrorTextBlock.Visibility = Visibility.Visible;
@@ -81,7 +81,7 @@ namespace TeachersPet.Pages.CourseInfo {
         }
 
         private void RunReport(object sender, RoutedEventArgs e) {
-            MossReportService.RunReportOnDirectory(CheaterDirectoryListView.SelectedItem as DirectoryInfo);
+            NavigationService?.Navigate(new RunReportPage(CheaterDirectoryListView.SelectedItem as DirectoryInfo));
         }
 
         private void DeleteDirectory(object sender, RoutedEventArgs e) {

@@ -1,4 +1,4 @@
-<Page x:Class="TeachersPet.Pages.CourseInfo.CheaterManagerPage"
+<Page x:Class="TeachersPet.Pages.CourseInfo.CheaterManager.CheaterManagerPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -41,6 +41,6 @@
         <Button x:Name="RunReportButton" Content="Run Report" Click="RunReport" Visibility="Hidden" Grid.Column="1"  Margin="0,15,0,15" Grid.Row="1"/>
         <Button x:Name="DeleteDirectoryButton" Content="Delete Directory" Click="DeleteDirectory"  Visibility="Hidden"  Grid.Row="1" Grid.Column="2" Margin="40,15,160,15"/>
         <Button x:Name="ConfirmDeleteButton" Content="Confirm Deletion" Click="ConfirmDelete" Visibility="Collapsed" Margin="50,0,170,30" Grid.Row="2" Grid.Column="2"/>
-        <TextBlock x:Name="ErrorTextBlock" Visibility="Collapsed" Grid.ColumnSpan="2" Grid.RowSpan="3"/>
+        <TextBlock x:Name="ErrorTextBlock" Visibility="Collapsed" Foreground="Red" Margin="10,10,285,167"/>
     </Grid>
 </Page>

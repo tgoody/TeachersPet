@@ -195,7 +195,7 @@ namespace TeachersPet.Services {
                                         .Single(file => file.Name == elementsOfMakefile[currIndex]);
                                 }
                             }
-                            catch (Exception e) {
+                            catch (Exception) {
                                 studentObject.errorLogs.Add("No executable found to run, compilation error?");
                                 return;
                             }

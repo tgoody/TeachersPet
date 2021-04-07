@@ -61,6 +61,29 @@ namespace TeachersPet.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to #!/usr/bin/perl
+        ///#
+        ///# Please read all the comments down to the line that says &quot;TOP&quot;.
+        ///# These comments are divided into three sections:
+        ///#
+        ///#     1. usage instructions
+        ///#     2. installation instructions
+        ///#     3. standard copyright
+        ///#
+        ///# Feel free to share this script with other instructors of programming
+        ///# classes, but please do not place the script in a publicly accessible
+        ///# place.  Comments, questions, and bug reports should be sent to
+        ///# moss-request@moss.stanford.edu.
+        ///#
+        ///# IMPORTANT: This script is known to work [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string MossPerlScript {
+            get {
+                return ResourceManager.GetString("MossPerlScript", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to #include &lt;iostream&gt;
         ///#include &lt;vector&gt;
         ///#include &lt;fstream&gt;
