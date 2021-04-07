@@ -26,7 +26,7 @@ namespace TeachersPet.CustomControls {
         }
 
         //when the control loses focus, the placeholder is shown
-        private void SetPlaceholder()
+        public void SetPlaceholder()
         {
             if (string.IsNullOrEmpty(base.Text))
             {
