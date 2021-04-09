@@ -1,23 +1,18 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
-using TeachersPet.CustomControls;
 using TeachersPet.Models;
 using TeachersPet.Services;
 
 namespace TeachersPet.Pages.StudentInfo {
-    public partial class StudentInfo : Page {
+    public partial class StudentInfoPage : Page {
 
         private StudentModel _studentModel;
         private CourseModel _courseModel;
@@ -26,7 +21,7 @@ namespace TeachersPet.Pages.StudentInfo {
 
         //TODO: Understand why ICollectionView works with ObservableCollection vs List<>
         
-        public StudentInfo(StudentModel student, CourseModel courseModel) {
+        public StudentInfoPage(StudentModel student, CourseModel courseModel) {
             InitializeComponent();
             _studentModel = student;
             _courseModel = courseModel;
@@ -34,8 +29,28 @@ namespace TeachersPet.Pages.StudentInfo {
             _submissionsView = CollectionViewSource.GetDefaultView(_submissions);
             _submissionsView.SortDescriptions.Add(new SortDescription("AssignmentModel.Name", ListSortDirection.Ascending));
             AssignmentList.ItemsSource = _submissionsView;
-            DataContext = _studentModel;
+            
+            Task.Run(async () => {
+                await MergeProfileData();
+                Dispatcher.Invoke(() => {
+                    DataContext = null; //This is bad, but I'm not sure if it's worse than the "refresh all bindings" option discussed (also bad)
+                    DataContext = _studentModel; //The correct solution is using INotifyPropertyChanged, but it would take too long to write that out for each property
+                });
+            });
             Task.Run(GetSubmissions);
+        }
+
+        //cool reflection way to merge in null values
+        private async Task MergeProfileData()
+        {
+            var studentProfile = (await CanvasAPI.GetStudentProfileFromStudentId(_studentModel.Id)).ToObject<StudentModel>();
+
+            if (string.IsNullOrEmpty(_studentModel.AvatarUrl) && !string.IsNullOrEmpty(studentProfile.AvatarUrl)) {
+                _studentModel.AvatarUrl = studentProfile.AvatarUrl;
+            }
+            if (string.IsNullOrEmpty(_studentModel.Email) && !string.IsNullOrEmpty(studentProfile.Email)) {
+                _studentModel.Email = studentProfile.Email;
+            }
         }
 
         private async Task GetSubmissions() {
@@ -84,6 +99,14 @@ namespace TeachersPet.Pages.StudentInfo {
             AssignmentInfoPanel.Visibility = Visibility.Visible;
 
 
+
+        }
+
+        private void FillRegretClause(object sender, RoutedEventArgs e) {
+
+            ScoreTextBox.Text = "0";
+            NewCommentBox.RemovePlaceHolder();
+            NewCommentBox.Text = "Student has used the regret clause.";
 
         }
     }

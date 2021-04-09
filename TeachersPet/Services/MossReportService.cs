@@ -5,6 +5,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using TeachersPet.Pages.CourseInfo.CheaterManager;
 
 namespace TeachersPet.Services {
@@ -20,16 +21,16 @@ namespace TeachersPet.Services {
         /// <param name="nameOfReport"></param>
         /// <param name="excludedFiles"></param>
         /// <returns>URL to resultant MOSS report</returns>
-        public static string RunReportOnDirectory(DirectoryInfo workingDirectory, RunReportPage.MOSSLanguageObject language, int numSimilarLines,
+        public static Process RunReportOnDirectory(DirectoryInfo workingDirectory, RunReportPage.MOSSLanguageObject language, int numSimilarLines,
             int numReports, string nameOfReport, List<string> excludedFiles) {
             
             var resultantFiles = WalkDirectories(workingDirectory, excludedFiles, language.AcceptedExtensions);
             File.WriteAllText($"{workingDirectory.FullName}/moss.pl", Properties.Resources.MossPerlScript);
-            
+            var resultantFilesList = resultantFiles.Select(ConvertPathToWslPath).Select(path =>
+                path.Replace($"{ConvertPathToWslPath(workingDirectory.FullName)}/", "")).ToList();
             var startInfo = new ProcessStartInfo
             {
                 WorkingDirectory = workingDirectory.FullName,
-                Arguments = $"./moss.pl -l {language.LanguageCode} -n {numReports} -m {numSimilarLines} -x -c \"{nameOfReport}\" -d {string.Join(" ", resultantFiles.Select(ConvertPathToWslPath))} | tail -1",
                 CreateNoWindow = true,
                 FileName = "wsl.exe",
                 RedirectStandardInput = true,
@@ -38,31 +39,84 @@ namespace TeachersPet.Services {
                 UseShellExecute = false
             };
             var proc = Process.Start(startInfo);
-            proc?.WaitForExit();
-            return proc?.StandardOutput.ReadToEnd();
+            //WITHOUT THIS EVERYTHING WILL BREAK BECAUSE WINDOWS USES \r\n FOR RETURNS
+            proc.StandardInput.NewLine = "\n";
+            proc.StandardInput.WriteLine($"results=()");
+            foreach (var file in resultantFilesList) {
+                proc.StandardInput.WriteLine($"results+=( \"{file}\" )");
+            }
+            
+            //Writes the command, presses enter, then will close program after moss runs
+            proc.StandardInput.WriteLine($"./moss.pl -l {language.LanguageCode} -n {numReports} -m {numSimilarLines} -x -c \"{nameOfReport}\" ${{results[@]}}");
+            proc.StandardInput.Close();
+            return proc;
+
 
         }
         
         private static IEnumerable<string> WalkDirectories(DirectoryInfo directory, List<string> excludedFiles, List<string> acceptedExtensions) {
 
             var pathsOfCorrectFiles = new List<string>();
-            foreach (var innerDir in directory.GetDirectories()) {
-                if (innerDir.FullName.Contains("__MACOSX")) {
+            var dirs = directory.GetDirectories();
+            for (var index = 0; index < dirs.Length; index++) {
+                var innerDir = dirs[index];
+
+                //removing spaces
+                if (innerDir.Name.Contains(' ')) {
+                    var newName = innerDir.Name.Replace(' ', '_');
+                    Directory.Move(innerDir.FullName, $"{directory.FullName}/{newName}");
+                    innerDir = new DirectoryInfo($"{directory.FullName}/{newName}");
+                }
+
+                var potentialFixedName = Regex.Replace(innerDir.Name, $"[^A-Za-z0-9-_.]", "");
+                if (innerDir.Name != potentialFixedName) {
+                    Directory.Move(innerDir.FullName, $"{directory.FullName}/{potentialFixedName}");
+                    innerDir = new DirectoryInfo($"{directory.FullName}/{potentialFixedName}");
+                }
+
+                if (innerDir.FullName.Contains("__MACOSX") || innerDir.FullName.ToLower().Contains("cmake")) {
                     continue;
                 }
-                pathsOfCorrectFiles.AddRange(WalkDirectories(innerDir, excludedFiles, acceptedExtensions).Where(item => !pathsOfCorrectFiles.Contains(item)));
+
+                pathsOfCorrectFiles.AddRange(WalkDirectories(innerDir, excludedFiles, acceptedExtensions)
+                    .Where(item => !pathsOfCorrectFiles.Contains(item)));
             }
 
-            foreach (var innerFile in directory.GetFiles()) {
+            var files = directory.GetFiles();
+            for (var index = 0; index < files.Length; index++) {
+                var innerFile = files[index];
+                if (innerFile.FullName.ToLower().Contains("cmake")) {
+                    continue;
+                }
+
+                //removing spaces
+                if (innerFile.Name.Contains(' ')) {
+                    var newName = innerFile.Name.Replace(' ', '_');
+                    File.Move(innerFile.FullName, $"{directory.FullName}/{newName}");
+                    innerFile = new FileInfo($"{directory.FullName}/{newName}");
+                }
+
+                var potentialFixedName = Regex.Replace(innerFile.Name, $"[^A-Za-z0-9-_\\.]", "");
+                if (innerFile.Name != potentialFixedName) {
+                    File.Move(innerFile.FullName, $"{directory.FullName}/{potentialFixedName}");
+                    innerFile = new FileInfo($"{directory.FullName}/{potentialFixedName}");
+                }
+
                 if (Path.GetExtension(innerFile.FullName) == ".zip") {
+                    var tempDir = directory;
                     try {
-                        ZipFile.ExtractToDirectory(innerFile.FullName, directory.FullName);
+                        tempDir = Directory.CreateDirectory(
+                            $"{directory.FullName}/{Path.GetFileNameWithoutExtension(innerFile.Name)}");
+                        ZipFile.ExtractToDirectory(innerFile.FullName, tempDir.FullName);
                     }
-                    catch (Exception) {}
+                    catch (Exception) {
+                    }
 
                     File.Delete(innerFile.FullName);
-                    pathsOfCorrectFiles.AddRange(WalkDirectories(directory, excludedFiles, acceptedExtensions).Where(item => !pathsOfCorrectFiles.Contains(item)));
+                    pathsOfCorrectFiles.AddRange(WalkDirectories(tempDir, excludedFiles, acceptedExtensions)
+                        .Where(item => !pathsOfCorrectFiles.Contains(item)));
                 }
+
 
                 if (excludedFiles.Contains(innerFile.Name)) {
                     continue;

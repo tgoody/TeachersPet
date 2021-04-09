@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,7 +13,7 @@ using System.Windows.Navigation;
 using TeachersPet.Services;
 
 namespace TeachersPet.Pages.CourseInfo.CheaterManager {
-    public partial class RunReportPage : Page {
+    public partial class RunReportPage : Page, INotifyPropertyChanged {
 
         public class MOSSLanguageObject {
             public string LanguageCode { get; set; }
@@ -24,6 +26,23 @@ namespace TeachersPet.Pages.CourseInfo.CheaterManager {
         private List<MOSSLanguageObject> availableLanguages;
         private List<string> excludedFiles;
         private string resultHyperLink;
+        private string consoleOutput = "Working...";
+        private bool autoscroll = true;
+
+
+        public string ConsoleOutput {
+            get => consoleOutput;
+            set {
+                consoleOutput = value;
+                RaisePropertyChanged("ConsoleOutput");
+            } 
+        }
+        private void RaisePropertyChanged(string propName) {
+            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propName));
+
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+
 
         public string ResultHyperlink => resultHyperLink;
 
@@ -31,6 +50,7 @@ namespace TeachersPet.Pages.CourseInfo.CheaterManager {
             InitializeComponent();
             _workingDirectory = directoryToRunReport;
             InitializeLanguages();
+            this.DataContext = this;
             LanguageComboBox.ItemsSource = availableLanguages;
             LanguageComboBox.SelectedIndex = 0;
             excludedFiles =new List<string>();
@@ -42,7 +62,7 @@ namespace TeachersPet.Pages.CourseInfo.CheaterManager {
                 new MOSSLanguageObject {
                     LanguageCode = "cc",
                     LanguageDisplayString = "C++",
-                    AcceptedExtensions = new List<string>{".cpp", ".h", ".hpp", ".cc"}
+                    AcceptedExtensions = new List<string>{".cpp"}
                 },
                 new MOSSLanguageObject {
                     LanguageCode = "c",
@@ -128,18 +148,54 @@ namespace TeachersPet.Pages.CourseInfo.CheaterManager {
                 var numSimilarLines = int.Parse(NumSimilarLinesTextBox.Text);
                 var numReports = int.Parse(NumReportsTextBox.Text);
                 var nameOfReport = ReportNameTextBox.Text;
+                Process mossReportProcess = null;
                 Task.Run(() => {
-                    resultHyperLink = MossReportService.RunReportOnDirectory(_workingDirectory, language, numSimilarLines,
-                        numReports, nameOfReport, excludedFiles).Trim();
-                    
-                    Dispatcher.Invoke(() => {
-                        LoadingTextBlock.Visibility = Visibility.Collapsed;
-                        if (!string.IsNullOrEmpty(resultHyperLink)) {
-                            ResultsButton.Visibility = Visibility.Visible;
-                        }
-                    });
+                    mossReportProcess = MossReportService.RunReportOnDirectory(_workingDirectory, language, numSimilarLines,
+                        numReports, nameOfReport, excludedFiles);
+
+                    if (mossReportProcess != null) {
+                        Dispatcher.Invoke(() => {
+                            LoadingTextBlock.Visibility = Visibility.Collapsed;
+                            ScrollViewer.Visibility = Visibility.Visible;
+                            ConsoleOutputTextBlock.Visibility = Visibility.Visible;
+                        });
+                    }
+                    else {
+                        throw new Exception("Error starting MOSS process");
+                    }
                 });
                 LoadingTextBlock.Visibility = Visibility.Visible;
+
+                Task.Run(() => {
+
+                      while (mossReportProcess == null) {
+                          Thread.Sleep(200);
+                      }
+
+                      var latestOutput = mossReportProcess.StandardOutput.ReadLine();
+                      while (!string.IsNullOrEmpty(latestOutput)) {
+                          Dispatcher.Invoke(() => {
+                              ConsoleOutput += "\n" + latestOutput;
+                          });
+                          latestOutput = mossReportProcess.StandardOutput.ReadLine();
+                          Console.WriteLine(latestOutput);
+                      }
+
+                      Dispatcher.Invoke(() => {
+                          resultHyperLink = consoleOutput.Trim().Split('\n')[^1];
+                          var result = Uri.TryCreate(resultHyperLink, UriKind.Absolute, out var uriResult) 
+                                       && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+                          if (!result) {
+                              throw new Exception(
+                                  "Sorry, we couldn't complete the request to MOSS. \n" +
+                                  "This can happen if they're busy. Maybe try again later?");
+                          }
+                          ResultsButton.Visibility = Visibility.Visible;
+                      });
+
+                });
+
+
             }
             catch (Exception exception) {
                 ErrorMessageBlock.Visibility = Visibility.Visible;
@@ -150,5 +206,25 @@ namespace TeachersPet.Pages.CourseInfo.CheaterManager {
         private void ViewResults(object sender, RoutedEventArgs e) {
             Process.Start(new ProcessStartInfo(resultHyperLink){UseShellExecute = true});
         }
+
+
+        //Found https://stackoverflow.com/a/19315242
+
+        private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            // User scroll event : set or unset auto-scroll mode
+            if (e.ExtentHeightChange == 0) { // Content unchanged : user scroll event
+                autoscroll = ScrollViewer.VerticalOffset == ScrollViewer.ScrollableHeight;
+            }
+
+            // Content scroll event : auto-scroll eventually
+            if (autoscroll && e.ExtentHeightChange != 0)
+            {   // Content changed and auto-scroll mode set
+                // Autoscroll
+                ScrollViewer.ScrollToVerticalOffset(ScrollViewer.ExtentHeight);
+            }
+        }
+
+
     }
 }

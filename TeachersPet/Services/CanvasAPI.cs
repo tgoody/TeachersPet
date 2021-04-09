@@ -80,7 +80,7 @@ namespace TeachersPet.Services {
             var result = await GetCacheCanvasApiRequest($"courses/{courseId}/sections?include[]=students");
             return result as JArray;
         }
-        
+
         public static async Task<JToken> UpdateGradeFromSubmissionModel(SubmissionModel submissionModel, string comment=null) {
             var urlPath =
                 $"courses/{submissionModel.AssignmentModel.CourseId}/assignments/{submissionModel.AssignmentId}/submissions/{submissionModel.UserId}";

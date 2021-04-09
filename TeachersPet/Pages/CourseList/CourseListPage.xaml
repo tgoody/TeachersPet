@@ -7,15 +7,11 @@
       Title="Course List" Height="800" Width="1200">
 
     <Page.Resources>
-
-        <!-- TODO: Finish these styles -->
-        <!-- Course button can probably be "based off" the semester header one -->
-
+        
         <Style x:Key="CourseButton" TargetType="{x:Type ListViewItem}">
             <EventSetter Event="PreviewMouseLeftButtonDown" Handler="CourseButtonClick" />
         </Style>
 
-        <!-- TODO: I found this online, try to understand it Matty -->
         <ControlTemplate x:Key="BetterLvItems" TargetType="ListViewItem">
             <Border x:Name="border" Background="Transparent">
                 <VisualStateManager.VisualStateGroups>

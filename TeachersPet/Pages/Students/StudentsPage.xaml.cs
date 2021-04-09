@@ -69,7 +69,7 @@ namespace TeachersPet.Pages.Students {
                 }
             }
 
-            NavigationService.Navigate(new StudentInfo.StudentInfo(student, _courseModel));
+            NavigationService.Navigate(new StudentInfo.StudentInfoPage(student, _courseModel));
         }
 
         

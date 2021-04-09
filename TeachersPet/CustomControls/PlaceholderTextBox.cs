@@ -38,7 +38,7 @@ namespace TeachersPet.CustomControls {
         }
 
         //when the control is focused, the placeholder is removed
-        private void RemovePlaceHolder()
+        public void RemovePlaceHolder()
         {
 
             if (isPlaceHolder)

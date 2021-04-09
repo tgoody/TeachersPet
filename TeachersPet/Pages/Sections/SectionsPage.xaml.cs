@@ -1,10 +1,13 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using TeachersPet.BaseModules;
 using TeachersPet.Models;
 using TeachersPet.Pages.CourseInfo;
+using TeachersPet.Pages.SectionInfo;
 using TeachersPet.Services;
 
 namespace TeachersPet.Pages.Sections {
@@ -34,6 +37,14 @@ namespace TeachersPet.Pages.Sections {
                     _sectionView.Refresh();
                 });
             });
+        }
+
+        private void ClickSection(object sender, MouseButtonEventArgs e) {
+            
+            var listBoxItem = sender as ListViewItem;
+            var sectionObject = listBoxItem.Tag as SectionModel;
+            
+            NavigationService.Navigate(new SectionInfoPage(sectionObject));
         }
     }
 }
