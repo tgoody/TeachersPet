@@ -78,5 +78,15 @@ namespace TeachersPet.Services {
                 // ignored
             }
         }
+
+        public static void ClearCache() {
+            _cache = new Dictionary<string, Task<JToken>>();
+            var temp = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            temp = Path.GetDirectoryName(temp);
+            var cacheFile = new FileInfo($"{temp}/Cache/localCache.tpf");
+            if (cacheFile.Exists) {
+                File.Delete(cacheFile.FullName);
+            }
+        }
     }
 }

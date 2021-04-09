@@ -10,6 +10,7 @@ using Newtonsoft.Json.Linq;
 using TeachersPet.BaseModules;
 using TeachersPet.Models;
 using TeachersPet.Pages.CourseInfo;
+using TeachersPet.Pages.Settings;
 using TeachersPet.Services;
 
 namespace TeachersPet.Pages.CourseList {
@@ -83,6 +84,9 @@ namespace TeachersPet.Pages.CourseList {
             var item = sender as ListViewItem;
             NavigationService?.Navigate(new CourseInfoPage(item?.Tag as CourseModel));
         }
-        
+
+        private void OpenSettingsPage(object sender, RoutedEventArgs e) {
+            NavigationService?.Navigate(new SettingsPage());
+        }
     }
 }

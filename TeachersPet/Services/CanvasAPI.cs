@@ -16,8 +16,10 @@ namespace TeachersPet.Services {
         private static HttpClient httpClient = new HttpClient();
         private static string canvasAPIUrl;
         private static string bearerToken;
-        public static string BearerToken => bearerToken;
+        private static bool canvasBetaMode = false;
 
+        public static bool CanvasBetaMode => canvasBetaMode;
+        public static string BearerToken => bearerToken;
         public static string CanvasApiUrl => canvasAPIUrl;
         
         static CanvasAPI() {
@@ -26,11 +28,23 @@ namespace TeachersPet.Services {
         
         public static bool ToggleBetaCanvasMode() {
             //maybe make this an if statement if it's too gross
-            var inProduction = canvasAPIUrl == App.Current.Properties["CanvasAPIUrl"] as string;
-            canvasAPIUrl = (inProduction)
+            canvasBetaMode = !canvasBetaMode;
+            canvasAPIUrl = (canvasBetaMode)
                 ? App.Current.Properties["BetaCanvasAPIUrl"] as string
                 : App.Current.Properties["CanvasAPIUrl"] as string;
-            return !inProduction;
+            return canvasBetaMode;
+        }
+
+        public static bool TurnBetaModeOn() {
+            canvasBetaMode = true;
+            canvasAPIUrl = App.Current.Properties["BetaCanvasAPIUrl"] as string;
+            return canvasBetaMode;
+        }
+        
+        public static bool TurnBetaModeOff() {
+            canvasBetaMode = false;
+            canvasAPIUrl = App.Current.Properties["CanvasAPIUrl"] as string;
+            return canvasBetaMode;
         }
         
         public static void SetBearerToken(string token) {
