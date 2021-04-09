@@ -58,7 +58,12 @@ namespace TeachersPet.Services {
             var result = await GetCacheCanvasApiRequest("courses?enrollment_type=teacher");
             if(!result.HasValues)
                 result = await GetCacheCanvasApiRequest("courses?enrollment_type=ta");
-            return (JArray) result;
+
+            if (!(result is JArray returnArray) || !(returnArray.Count > 0 && !string.IsNullOrEmpty((string)returnArray[0]["course_code"]))) {
+                returnArray = new JArray();
+            }
+
+            return returnArray;
         }
         
         public static async Task<JArray> GetStudentListFromCourseId(string courseID) { //TODO: Figure out retrieving emails on student list page
