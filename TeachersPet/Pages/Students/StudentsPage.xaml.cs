@@ -59,16 +59,6 @@ namespace TeachersPet.Pages.Students {
             var listBoxItem = sender as ListBoxItem;
             var student = listBoxItem.Tag as StudentModel;
 
-            if (student.Email == null) {
-                var studentProfile = await CanvasAPI.GetStudentProfileFromStudentId(student.Id);
-                if (studentProfile["email"] == null && studentProfile["login_id"] == null) {
-                    student.Email = "Error loading email";
-                }
-                else {
-                    student.Email = (string) studentProfile["email"] ?? (string) studentProfile["login_id"];
-                }
-            }
-
             NavigationService.Navigate(new StudentInfo.StudentInfoPage(student, _courseModel));
         }
 

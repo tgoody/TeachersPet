@@ -10,7 +10,6 @@ using TeachersPet.Pages.CourseInfo.CheaterManager;
 
 namespace TeachersPet.Services {
     public class MossReportService {
-        
         /// <summary>
         /// Runs a MOSS report on a given directory
         /// </summary>
@@ -20,38 +19,66 @@ namespace TeachersPet.Services {
         /// <param name="numReports"></param>
         /// <param name="nameOfReport"></param>
         /// <param name="excludedFiles"></param>
+        /// <param name="useSeparateConsole"></param>
         /// <returns>URL to resultant MOSS report</returns>
-        public static Process RunReportOnDirectory(DirectoryInfo workingDirectory, RunReportPage.MOSSLanguageObject language, int numSimilarLines,
-            int numReports, string nameOfReport, List<string> excludedFiles) {
-            
+        public static Process RunReportOnDirectory(DirectoryInfo workingDirectory,
+            RunReportPage.MOSSLanguageObject language, int numSimilarLines,
+            int numReports, string nameOfReport, List<string> excludedFiles, bool useSeparateConsole) {
+
             var resultantFiles = WalkDirectories(workingDirectory, excludedFiles, language.AcceptedExtensions);
             File.WriteAllText($"{workingDirectory.FullName}/moss.pl", Properties.Resources.MossPerlScript);
             var resultantFilesList = resultantFiles.Select(ConvertPathToWslPath).Select(path =>
                 path.Replace($"{ConvertPathToWslPath(workingDirectory.FullName)}/", "")).ToList();
-            var startInfo = new ProcessStartInfo
-            {
-                WorkingDirectory = workingDirectory.FullName,
-                CreateNoWindow = true,
-                FileName = "wsl.exe",
-                RedirectStandardInput = true,
-                RedirectStandardError = true,
-                RedirectStandardOutput = true,
-                UseShellExecute = false
-            };
-            var proc = Process.Start(startInfo);
+
+            var proc = Process.Start(CreateStartInfo(workingDirectory, useSeparateConsole));
+
             //WITHOUT THIS EVERYTHING WILL BREAK BECAUSE WINDOWS USES \r\n FOR RETURNS
             proc.StandardInput.NewLine = "\n";
             proc.StandardInput.WriteLine($"results=()");
             foreach (var file in resultantFilesList) {
                 proc.StandardInput.WriteLine($"results+=( \"{file}\" )");
             }
-            
-            //Writes the command, presses enter, then will close program after moss runs
             proc.StandardInput.WriteLine($"./moss.pl -l {language.LanguageCode} -n {numReports} -m {numSimilarLines} -x -c \"{nameOfReport}\" ${{results[@]}}");
-            proc.StandardInput.Close();
+
+
+            if (useSeparateConsole) { 
+                proc.StandardInput.WriteLine("echo \"All done, feel free to close this window after getting the link.\"");
+                proc.StandardInput.WriteLine("sleep 600");
+            }
+            else
+                proc.StandardInput.Close();
+
             return proc;
+        }
 
+        private static ProcessStartInfo CreateStartInfo(DirectoryInfo workingDirectory, bool separateConsole) {
 
+            ProcessStartInfo startInfo;
+            if (separateConsole) {
+                startInfo = new ProcessStartInfo
+                {
+                    WorkingDirectory = workingDirectory.FullName,
+                    CreateNoWindow = false,
+                    FileName = "wsl.exe",
+                    RedirectStandardInput = true,
+                    RedirectStandardError = false,
+                    RedirectStandardOutput = false,
+                    UseShellExecute = false
+                };
+            }
+            else {
+                startInfo = new ProcessStartInfo
+                {
+                    WorkingDirectory = workingDirectory.FullName,
+                    CreateNoWindow = true,
+                    FileName = "wsl.exe",
+                    RedirectStandardInput = true,
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false
+                };
+            }
+            return startInfo;
         }
         
         private static IEnumerable<string> WalkDirectories(DirectoryInfo directory, List<string> excludedFiles, List<string> acceptedExtensions) {
@@ -128,10 +155,6 @@ namespace TeachersPet.Services {
             }
 
             return pathsOfCorrectFiles;
-        }
-
-        private List<string> ConvertListOfPathsToWslPaths(IEnumerable<string> windowsPaths) {
-            return windowsPaths.Select(ConvertPathToWslPath).ToList();
         }
         
         private static string ConvertPathToWslPath(string windowsPath) {

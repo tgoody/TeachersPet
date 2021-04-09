@@ -47,6 +47,9 @@ namespace TeachersPet.Pages.CourseInfo.CheaterManager {
         private void AddDirectory(object sender, RoutedEventArgs e) {
             NewDirectoryName.Visibility = Visibility.Visible;
             ConfirmAddButton.Visibility = Visibility.Visible;
+            ViewDirectoryButton.Visibility = Visibility.Collapsed;
+            DeleteDirectoryButton.Visibility = Visibility.Collapsed;
+            RunReportButton.Visibility = Visibility.Collapsed;
         }
 
         private void ConfirmAdd(object sender, RoutedEventArgs e) {

@@ -50,7 +50,7 @@ namespace TeachersPet.Pages.CourseInfo.CheaterManager {
             InitializeComponent();
             _workingDirectory = directoryToRunReport;
             InitializeLanguages();
-            this.DataContext = this;
+            DataContext = this;
             LanguageComboBox.ItemsSource = availableLanguages;
             LanguageComboBox.SelectedIndex = 0;
             excludedFiles =new List<string>();
@@ -62,7 +62,7 @@ namespace TeachersPet.Pages.CourseInfo.CheaterManager {
                 new MOSSLanguageObject {
                     LanguageCode = "cc",
                     LanguageDisplayString = "C++",
-                    AcceptedExtensions = new List<string>{".cpp"}
+                    AcceptedExtensions = new List<string>{".cpp", ".h", ".hpp"}
                 },
                 new MOSSLanguageObject {
                     LanguageCode = "c",
@@ -144,20 +144,27 @@ namespace TeachersPet.Pages.CourseInfo.CheaterManager {
 
         private void RunReport(object sender, RoutedEventArgs e) {
             try {
+                RunReportButton.Visibility = Visibility.Hidden;
                 var language = LanguageComboBox.SelectedItem as MOSSLanguageObject;
                 var numSimilarLines = int.Parse(NumSimilarLinesTextBox.Text);
                 var numReports = int.Parse(NumReportsTextBox.Text);
                 var nameOfReport = ReportNameTextBox.Text;
                 Process mossReportProcess = null;
+                var useSeparateConsole = SeparateConsoleCheckbox.IsChecked.Value;
                 Task.Run(() => {
                     mossReportProcess = MossReportService.RunReportOnDirectory(_workingDirectory, language, numSimilarLines,
-                        numReports, nameOfReport, excludedFiles);
+                        numReports, nameOfReport, excludedFiles, useSeparateConsole);
 
                     if (mossReportProcess != null) {
                         Dispatcher.Invoke(() => {
                             LoadingTextBlock.Visibility = Visibility.Collapsed;
-                            ScrollViewer.Visibility = Visibility.Visible;
-                            ConsoleOutputTextBlock.Visibility = Visibility.Visible;
+                            if (!useSeparateConsole) {
+                                ScrollViewer.Visibility = Visibility.Visible;
+                                ConsoleOutputTextBlock.Visibility = Visibility.Visible;
+                            }
+                            else{
+                                RunReportButton.Visibility = Visibility.Visible; //bring back button after process made
+                            }
                         });
                     }
                     else {
@@ -166,40 +173,44 @@ namespace TeachersPet.Pages.CourseInfo.CheaterManager {
                 });
                 LoadingTextBlock.Visibility = Visibility.Visible;
 
-                Task.Run(() => {
+                //writing to UI from process
+                if (!useSeparateConsole) {
+                    Task.Run(() => {
 
-                      while (mossReportProcess == null) {
-                          Thread.Sleep(200);
-                      }
+                        while (mossReportProcess == null) {
+                            Thread.Sleep(200);
+                        }
 
-                      var latestOutput = mossReportProcess.StandardOutput.ReadLine();
-                      while (!string.IsNullOrEmpty(latestOutput)) {
-                          Dispatcher.Invoke(() => {
-                              ConsoleOutput += "\n" + latestOutput;
-                          });
-                          latestOutput = mossReportProcess.StandardOutput.ReadLine();
-                          Console.WriteLine(latestOutput);
-                      }
+                        var latestOutput = mossReportProcess.StandardOutput.ReadLine();
+                        while (!string.IsNullOrEmpty(latestOutput)) {
+                            Dispatcher.Invoke(() => {
+                                ConsoleOutput += "\n" + latestOutput;
+                            });
+                            latestOutput = mossReportProcess.StandardOutput.ReadLine();
+                            Console.WriteLine(latestOutput);
+                        }
 
-                      Dispatcher.Invoke(() => {
-                          resultHyperLink = consoleOutput.Trim().Split('\n')[^1];
-                          var result = Uri.TryCreate(resultHyperLink, UriKind.Absolute, out var uriResult) 
-                                       && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
-                          if (!result) {
-                              throw new Exception(
-                                  "Sorry, we couldn't complete the request to MOSS. \n" +
-                                  "This can happen if they're busy. Maybe try again later?");
-                          }
-                          ResultsButton.Visibility = Visibility.Visible;
-                      });
+                        Dispatcher.Invoke(() => {
+                            resultHyperLink = consoleOutput.Trim().Split('\n')[^1];
+                            var result = Uri.TryCreate(resultHyperLink, UriKind.Absolute, out var uriResult) 
+                                         && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+                            if (!result) {
+                                throw new Exception(
+                                    "Sorry, we couldn't complete the request to MOSS. \n" +
+                                    "This can happen if they're busy. Maybe try again later?");
+                            }
+                            ResultsButton.Visibility = Visibility.Visible;
+                            RunReportButton.Visibility = Visibility.Visible;
+                        });
 
-                });
-
+                    });
+                }
 
             }
             catch (Exception exception) {
                 ErrorMessageBlock.Visibility = Visibility.Visible;
                 ErrorMessageBlock.Text = exception.Message;
+                RunReportButton.Visibility = Visibility.Visible;
             }
         }
 

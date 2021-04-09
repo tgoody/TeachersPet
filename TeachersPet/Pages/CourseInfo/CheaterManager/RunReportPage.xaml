@@ -44,7 +44,9 @@
         <TextBlock Grid.Column="1" x:Name="LoadingTextBlock" Text="Gathering files..." Visibility="Collapsed" Margin="218,35,200,594" FontSize="36" Foreground="#FF69A856"/>
         <Button x:Name="ResultsButton" Content="View Results!" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top" Height="60" Width="200" FontSize="24" Click="ViewResults" Margin="0,335,0,0" Background="#FFE800FF" Visibility="Collapsed"/>
         <ScrollViewer Grid.Column="1" HorizontalAlignment="Center" Height="285" Margin="0,25,0,0" VerticalAlignment="Top" Width="603" ScrollChanged="ScrollViewer_ScrollChanged" x:Name="ScrollViewer" Visibility="Collapsed">
-            <TextBlock x:Name="ConsoleOutputTextBlock" Text="{Binding ConsoleOutput}" TextWrapping="Wrap" FontFamily="Consolas" FontSize="16" Padding="0,0,5,0" />
+            <TextBlock x:Name="ConsoleOutputTextBlock" Text="{Binding ConsoleOutput}" TextWrapping="Wrap" FontFamily="Consolas" FontSize="14" Padding="0,0,5,0" />
         </ScrollViewer>
+        <TextBlock Grid.Column="0" HorizontalAlignment="Left" Height="34" Margin="20,40,0,0" Text="Run report in separate console:" TextWrapping="Wrap" VerticalAlignment="Top" Width="275" FontSize="20"/>
+        <CheckBox  x:Name="SeparateConsoleCheckbox" HorizontalAlignment="Left" Margin="304,49,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Page>
