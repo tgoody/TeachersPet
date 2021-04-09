@@ -1,16 +1,15 @@
 ﻿<Page x:Class="TeachersPet.Pages.LoginPage"
                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Height="324">
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Height="800" Width="1200">
         <Grid.RowDefinitions>
-            <RowDefinition Height="197"/>
-            <RowDefinition Height="121"/>
-            <RowDefinition/>
+            <RowDefinition Height="800"/>
         </Grid.RowDefinitions>
-        <Image Source="/Resources/Images/TeachersPetLogo.png" Width="500" Height="500" Grid.RowSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-175,0,0"/>
+        <Image Source="/Resources/Images/TeachersPetLogo.png" Width="500" Height="500" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,62,0,0"/>
 
-        <Button Content="Login To Canvas" Height="68" Grid.Row="1" VerticalAlignment="Top" Click="Button_Click" FontFamily="Bahnschrift SemiBold" FontSize="36" Foreground="#FF0770A3" BorderBrush="#00707070" Margin="62,14,63,0" Background="#00DDDDDD"/>
-        <Button Content="App Settings" HorizontalAlignment="Left" Margin="765,-160,0,0" VerticalAlignment="Top" Height="35" Width="155" FontSize="22" Click="OpenSettingsPage"/>
+        <Button Content="Login To Canvas" Height="68" VerticalAlignment="Top" Click="Button_Click" FontFamily="Bahnschrift SemiBold" FontSize="36" Foreground="#FF0770A3" BorderBrush="#00707070" Margin="62,491,62,0" Background="#00DDDDDD"/>
+        <Button Content="App Settings" HorizontalAlignment="Left" Margin="950,60,0,0" VerticalAlignment="Top" Height="35" Width="155" FontSize="22" Click="OpenSettingsPage"/>
+        <TextBlock x:Name="ErrorTextBlock" HorizontalAlignment="Center" Margin="0,645,0,0" Text="oierajgoirea" TextWrapping="Wrap" VerticalAlignment="Top" Height="90" Width="462" FontSize="18" TextAlignment="Center" Visibility="Collapsed"/>
 
 
     </Grid>
