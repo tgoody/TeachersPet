@@ -23,7 +23,7 @@
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <TextBlock x:Name="SectionName" HorizontalAlignment="Left" Margin="55,25,0,0" Text="{Binding SectionModel.Name}" TextWrapping="Wrap" VerticalAlignment="Top" Height="145" Width="435" FontSize="36"/>
+        <TextBlock x:Name="SectionName" HorizontalAlignment="Left" Margin="55,25,0,0" Text="{Binding SectionModel.Name}" TextWrapping="Wrap" VerticalAlignment="Top" Height="145" Width="435" FontSize="36" FontFamily="Bahnschrift"/>
 
         <ListView Margin="23,240,24,25" Grid.Column="1" x:Name="StudentListView" ItemContainerStyle="{StaticResource StudentStyle}">
             <ListView.ItemTemplate>
@@ -38,9 +38,9 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <TextBlock HorizontalAlignment="Left" Margin="23,205,0,0" Text="Students" TextWrapping="Wrap" VerticalAlignment="Top" Height="30" Width="75" FontSize="18" Grid.Column="1"/>
+        <TextBlock HorizontalAlignment="Left" Margin="23,205,0,0" Text="Students" TextWrapping="Wrap" VerticalAlignment="Top" Height="30" Width="75" FontSize="18" Grid.Column="1" FontFamily="Bahnschrift Light"/>
         <TextBlock Grid.Column="0" x:Name="ErrorMessageTextBlock" HorizontalAlignment="Center" Margin="0,522,0,0" Text="Students" 
-                   TextWrapping="Wrap" VerticalAlignment="Top" Height="153" Width="415" FontSize="24" Foreground="Red" TextAlignment="Center" Visibility="Collapsed"/>
+                   TextWrapping="Wrap" VerticalAlignment="Top" Height="153" Width="415" FontSize="24" Foreground="Red" TextAlignment="Center" Visibility="Collapsed" FontFamily="Bahnschrift Light"/>
 
     </Grid>
 </Page>

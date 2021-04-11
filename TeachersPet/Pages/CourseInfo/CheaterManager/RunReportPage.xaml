@@ -15,22 +15,22 @@
         <ComboBox x:Name="LanguageComboBox" HorizontalAlignment="Left" Margin="160,118,0,0" VerticalAlignment="Top" Width="160" Height="42">
             <ComboBox.ItemTemplate>
                 <DataTemplate DataType="cheaterManager:RunReportPage+MOSSLanguageObject">
-                    <TextBlock Text="{Binding LanguageDisplayString}" FontSize="20" TextAlignment="Center"/>
+                    <TextBlock Text="{Binding LanguageDisplayString}" FontSize="20" TextAlignment="Center" FontFamily="Bahnschrift Light"/>
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
-        <TextBlock Grid.Column="0" HorizontalAlignment="Left" Height="34" Margin="20,118,0,0" Text="Language:" TextWrapping="Wrap" VerticalAlignment="Top" Width="125" TextAlignment="Center" FontSize="24"/>
-        <TextBlock Grid.Column="0" HorizontalAlignment="Left" Height="50" Margin="10,233,0,0" Text="# Similar Lines Permitted:" TextWrapping="Wrap" VerticalAlignment="Top" Width="135" TextAlignment="Center" FontSize="18"/>
-        <TextBox Grid.Column="0" x:Name="NumSimilarLinesTextBox" HorizontalAlignment="Left" VerticalContentAlignment="Center" Margin="160,233,0,0" Text="100" TextWrapping="Wrap" VerticalAlignment="Top" Width="60" Height="50" FontSize="20" TextAlignment="Center"/>
-        <TextBlock Grid.Column="0" HorizontalAlignment="Left" Height="50" Margin="10,340,0,0" Text="Max Results for Report:" TextWrapping="Wrap" VerticalAlignment="Top" Width="135" TextAlignment="Center" FontSize="18"/>
-        <TextBox Grid.Column="0" x:Name="NumReportsTextBox" HorizontalAlignment="Left" VerticalContentAlignment="Center" Margin="160,340,0,0" Text="200" TextWrapping="Wrap" VerticalAlignment="Top" Width="60" Height="50" FontSize="20" TextAlignment="Center"/>
-        <TextBlock Grid.Column="0" HorizontalAlignment="Left" Height="30" Margin="10,440,0,0" Text="Name of Report:" TextWrapping="Wrap" VerticalAlignment="Top" Width="135" TextAlignment="Center" FontSize="18"/>
-        <TextBox Grid.Column="0" x:Name="ReportNameTextBox" HorizontalAlignment="Left" VerticalContentAlignment="Center" Margin="160,430,0,0" Text="MOSS Report" TextWrapping="Wrap" VerticalAlignment="Top" Width="160" Height="50" FontSize="18" TextAlignment="Center"/>
-        <Button x:Name="RunReportButton" Content="Run Report!" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top" Height="60" Width="200" FontSize="24" Click="RunReport" Margin="0,419,0,0"/>
-        <TextBlock Grid.Column="0" HorizontalAlignment="Left" Height="30" Margin="10,565,0,0" Text="Exclude file:" TextWrapping="Wrap" VerticalAlignment="Top" Width="135" TextAlignment="Center" FontSize="18"/>
+        <TextBlock Grid.Column="0" HorizontalAlignment="Left" Height="34" Margin="20,125,0,0" Text="Language:" TextWrapping="Wrap" VerticalAlignment="Top" Width="125" TextAlignment="Center" FontSize="24" FontFamily="Bahnschrift Light"/>
+        <TextBlock Grid.Column="0" HorizontalAlignment="Left" Height="50" Margin="10,235,0,0" Text="# Similar Lines Permitted:" TextWrapping="Wrap" VerticalAlignment="Top" Width="135" TextAlignment="Center" FontSize="18" FontFamily="Bahnschrift Light"/>
+        <TextBox Grid.Column="0" x:Name="NumSimilarLinesTextBox" HorizontalAlignment="Left" VerticalContentAlignment="Center" Margin="160,233,0,0" Text="100" TextWrapping="Wrap" VerticalAlignment="Top" Width="60" Height="50" FontSize="20" TextAlignment="Center" FontFamily="Bahnschrift Light"/>
+        <TextBlock Grid.Column="0" HorizontalAlignment="Left" Height="50" Margin="10,345,0,0" Text="Max Results for Report:" TextWrapping="Wrap" VerticalAlignment="Top" Width="135" TextAlignment="Center" FontSize="18" FontFamily="Bahnschrift Light"/>
+        <TextBox Grid.Column="0" x:Name="NumReportsTextBox" HorizontalAlignment="Left" VerticalContentAlignment="Center" Margin="160,340,0,0" Text="200" TextWrapping="Wrap" VerticalAlignment="Top" Width="60" Height="50" FontSize="20" TextAlignment="Center" FontFamily="Bahnschrift Light"/>
+        <TextBlock Grid.Column="0" HorizontalAlignment="Left" Height="30" Margin="10,445,0,0" Text="Name of Report:" TextWrapping="Wrap" VerticalAlignment="Top" Width="135" TextAlignment="Center" FontSize="18" FontFamily="Bahnschrift Light"/>
+        <TextBox Grid.Column="0" x:Name="ReportNameTextBox" HorizontalAlignment="Left" VerticalContentAlignment="Center" Margin="160,430,0,0" Text="MOSS Report" TextWrapping="Wrap" VerticalAlignment="Top" Width="160" Height="50" FontSize="18" TextAlignment="Center" FontFamily="Bahnschrift Light"/>
+        <Button x:Name="RunReportButton" Content="Run Report!" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top" Height="60" Width="200" FontSize="24" Click="RunReport" Margin="0,419,0,0" FontFamily="Bahnschrift Light"/>
+        <TextBlock Grid.Column="0" HorizontalAlignment="Left" Height="30" Margin="10,567,0,0" Text="Exclude file:" TextWrapping="Wrap" VerticalAlignment="Top" Width="135" TextAlignment="Center" FontSize="18" FontFamily="Bahnschrift Light"/>
 
-        <CustomControls:PlaceHolderTextBox Grid.Column="0" x:Name="ExcludedFileTextBox" HorizontalAlignment="Left" Margin="160,565,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="160" Height="24" VerticalContentAlignment="Center" PlaceHolderText="Input file here" TextAlignment="Center"/>
-        <Button Grid.Column="0" Content="Exclude File" HorizontalAlignment="Left" Margin="194,605,0,0" VerticalAlignment="Top" Height="30" Width="92" Click="AddExcludedFile"/>
+        <CustomControls:PlaceHolderTextBox Grid.Column="0" x:Name="ExcludedFileTextBox" HorizontalAlignment="Left" Margin="160,565,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="160" Height="24" VerticalContentAlignment="Center" PlaceHolderText="Input file here" TextAlignment="Center" FontFamily="Bahnschrift Light"/>
+        <Button Grid.Column="0" Content="Exclude File" HorizontalAlignment="Left" Margin="194,605,0,0" VerticalAlignment="Top" Height="30" Width="92" Click="AddExcludedFile" FontFamily="Bahnschrift Light"/>
         <ListView x:Name="ExcludedFileListView" Margin="356,525,440,65" Grid.ColumnSpan="2" Grid.Column="0">
             <ListView.ItemContainerStyle>
                 <Style TargetType="{x:Type ListViewItem}">
@@ -38,15 +38,15 @@
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
-        <TextBlock HorizontalAlignment="Left" Height="30" Margin="28,485,0,0" Text="Excluded Files" TextWrapping="Wrap" VerticalAlignment="Top" Width="135" TextAlignment="Center" FontSize="18" Grid.Column="1"/>
-        <Button x:Name="RemoveExcludedFileButton" Content="Remove File" HorizontalAlignment="Left" Margin="50,650,0,0" VerticalAlignment="Top" Height="30" Width="92" Grid.Column="1" Click="RemoveExcludedFile" Visibility="Collapsed"/>
-        <TextBlock x:Name="ErrorMessageBlock" Grid.Column="1" HorizontalAlignment="Center" Margin="0,320,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="94" Width="547" FontSize="14" TextAlignment="Center" Foreground="Red" Visibility="Collapsed"/>
-        <TextBlock Grid.Column="1" x:Name="LoadingTextBlock" Text="Gathering files..." Visibility="Collapsed" Margin="218,35,200,594" FontSize="36" Foreground="#FF69A856"/>
-        <Button x:Name="ResultsButton" Content="View Results!" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top" Height="60" Width="200" FontSize="24" Click="ViewResults" Margin="0,335,0,0" Background="#FFE800FF" Visibility="Collapsed"/>
-        <ScrollViewer Grid.Column="1" HorizontalAlignment="Center" Height="285" Margin="0,25,0,0" VerticalAlignment="Top" Width="603" ScrollChanged="ScrollViewer_ScrollChanged" x:Name="ScrollViewer" Visibility="Collapsed">
-            <TextBlock x:Name="ConsoleOutputTextBlock" Text="{Binding ConsoleOutput}" TextWrapping="Wrap" FontFamily="Consolas" FontSize="14" Padding="0,0,5,0" />
+        <TextBlock HorizontalAlignment="Left" Height="30" Margin="28,485,0,0" Text="Excluded Files" TextWrapping="Wrap" VerticalAlignment="Top" Width="135" TextAlignment="Center" FontSize="18" Grid.Column="1" FontFamily="Bahnschrift Light"/>
+        <Button x:Name="RemoveExcludedFileButton" Content="Remove File" HorizontalAlignment="Left" Margin="50,650,0,0" VerticalAlignment="Top" Height="30" Width="92" Grid.Column="1" Click="RemoveExcludedFile" Visibility="Collapsed" FontFamily="Bahnschrift Light"/>
+        <TextBlock x:Name="ErrorMessageBlock" Grid.Column="1" HorizontalAlignment="Center" Margin="0,320,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="94" Width="547" FontSize="14" TextAlignment="Center" Foreground="Red" Visibility="Collapsed" FontFamily="Bahnschrift Light"/>
+        <TextBlock Grid.Column="1" x:Name="LoadingTextBlock" Text="Gathering files..." Visibility="Collapsed" Margin="218,35,200,594" FontSize="36" Foreground="#FF69A856" FontFamily="Bahnschrift Light"/>
+        <Button x:Name="ResultsButton" Content="View Results!" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top" Height="60" Width="200" FontSize="24" Click="ViewResults" Margin="0,335,0,0" Background="#FFE800FF" Visibility="Collapsed" FontFamily="Bahnschrift Light"/>
+        <ScrollViewer Grid.Column="1" HorizontalAlignment="Center" Height="285" Margin="0,25,0,0" VerticalAlignment="Top" Width="603" ScrollChanged="ScrollViewer_ScrollChanged" x:Name="ScrollViewer" Visibility="Collapsed" FontFamily="Bahnschrift Light">
+            <TextBlock x:Name="ConsoleOutputTextBlock" Text="{Binding ConsoleOutput}" TextWrapping="Wrap" FontFamily="Consolas" FontSize="14" Padding="0,0,5,0"/>
         </ScrollViewer>
-        <TextBlock Grid.Column="0" HorizontalAlignment="Left" Height="34" Margin="20,40,0,0" Text="Run report in separate console:" TextWrapping="Wrap" VerticalAlignment="Top" Width="275" FontSize="20"/>
-        <CheckBox  x:Name="SeparateConsoleCheckbox" HorizontalAlignment="Left" Margin="304,49,0,0" VerticalAlignment="Top"/>
+        <TextBlock Grid.Column="0" HorizontalAlignment="Left" Height="34" Margin="20,40,0,0" Text="Run report in separate console:" VerticalAlignment="Top" Width="280" FontSize="20" FontFamily="Bahnschrift Light" />
+        <CheckBox  x:Name="SeparateConsoleCheckbox" HorizontalAlignment="Left" Margin="310,45,0,0" VerticalAlignment="Top" FontFamily="Bahnschrift Light"/>
     </Grid>
 </Page>
