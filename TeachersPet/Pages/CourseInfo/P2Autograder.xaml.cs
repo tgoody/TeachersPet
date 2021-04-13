@@ -46,6 +46,7 @@ namespace TeachersPet.Pages.CourseInfo {
             _p2AutograderService.Init(pathToModuleFolder, files[0]);
             DragDropText.Text = "File Loaded";
             InitialSetupButton.Visibility = Visibility.Visible;
+            AutograderGradient.GradientStops.ElementAt(0).Color = (Color)ColorConverter.ConvertFromString("#7F0770A3");
         }
 
 
@@ -54,6 +55,7 @@ namespace TeachersPet.Pages.CourseInfo {
             try {
                 InitialSetupButton.Visibility = Visibility.Collapsed;
                 DragDropText.Text = "Making students' programs now...";
+                AutograderGradient.GradientStops.ElementAt(0).Color = (Color)ColorConverter.ConvertFromString("#7FA38007");
                 _p2AutograderService.TaskScore = int.Parse(TaskScore.Text);
                 _p2AutograderService.EcScore = int.Parse(ECScore.Text);
                 var task = _p2AutograderService.RunSetup();
@@ -73,6 +75,8 @@ namespace TeachersPet.Pages.CourseInfo {
                         DragDropText.Visibility = Visibility.Collapsed;
                         ExamplesDragDropBox.Visibility = Visibility.Visible;
                         InputDragDropBox.Visibility = Visibility.Visible;
+                        DragInputText.Visibility = Visibility.Visible;
+                        DragExampleText.Visibility = Visibility.Visible;
                     });
                 });
                 
@@ -126,6 +130,8 @@ namespace TeachersPet.Pages.CourseInfo {
                     ProgressText.Visibility = Visibility.Collapsed;
                     InputDragDropBox.Visibility = Visibility.Collapsed;
                     ExamplesDragDropBox.Visibility = Visibility.Collapsed;
+                    DragInputText.Visibility = Visibility.Collapsed;
+                    DragExampleText.Visibility = Visibility.Collapsed;
                     RunGraderButton.Visibility = Visibility.Visible;
                 });
             });

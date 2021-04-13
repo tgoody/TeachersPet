@@ -422,38 +422,36 @@ namespace TeachersPet.Services {
         private async Task MakeStudentsSubmissions() {
             
             var dirInfo = new DirectoryInfo(studentFolderDirectory);
-            var tasks = new List<Task>();
-            foreach (var dir in dirInfo.GetDirectories()) {
-                tasks.Add(Task.Run(() => {
-                    studentData.TryGetValue(dir.Name, out var temp);
-                    if (!temp.containsMakefile) {
-                        return;
-                    }
-                    //Console.WriteLine($"Making {temp.name}");
-                    var oldtemp = temp;
-                    var startInfo = new ProcessStartInfo
-                    {
-                        WorkingDirectory = dir.FullName,
-                        Arguments = "/C wsl make",
-                        CreateNoWindow = true,
-                        FileName = "cmd.exe",
-                        RedirectStandardInput = true,
-                        RedirectStandardError = true,
-                        RedirectStandardOutput = true,
-                        UseShellExecute = false
-                    };
-                    var proc = Process.Start(startInfo);
-                    proc?.WaitForExit();
-                    var outputNormal = proc?.StandardOutput.ReadToEnd();
-                    var outputError = proc?.StandardError.ReadToEnd();
-                    temp.logs.Add(outputNormal);
-                    temp.errorLogs.Add(outputError);
-                    studentData.TryUpdate(dir.Name, temp, oldtemp);
-                    numProjectsMade++;
-                }));
-            }
-            //Raise exception as each task ends
-            await Task.WhenAll(tasks);
+            Parallel.ForEach(dirInfo.GetDirectories(), dir =>
+            {
+                studentData.TryGetValue(dir.Name, out var temp);
+                if (!temp.containsMakefile) {
+                    return;
+                }
+                Console.WriteLine($"Making {temp.name}");
+                var oldtemp = temp;
+                var startInfo = new ProcessStartInfo
+                {
+                    WorkingDirectory = dir.FullName,
+                    Arguments = "/C wsl make",
+                    CreateNoWindow = true,
+                    FileName = "cmd.exe",
+                    RedirectStandardInput = true,
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false
+                };
+                var proc = new Process {StartInfo = startInfo};
+                proc.ErrorDataReceived += (s, e) => temp.errorLogs.Add(e.Data);
+                proc.OutputDataReceived += (s, e) => temp.logs.Add(e.Data);
+                proc.Start();
+                proc.BeginOutputReadLine();
+                proc.BeginErrorReadLine();
+                proc.WaitForExit();
+                studentData.TryUpdate(dir.Name, temp, oldtemp);
+                Interlocked.Increment(ref numProjectsMade);
+
+            });
         }
 
         private void BuildGraderCpp() {
