@@ -160,10 +160,11 @@ namespace TeachersPet.Services {
             var studentFolderDirInfo = new DirectoryInfo(studentFolderDirectory);
             var directories = studentFolderDirInfo.GetDirectories();
             Parallel.ForEach(directories, studentFolder => {
-                    numStudentsGraded++;
                     //no makefile, return, also get student object to store logs in later
                     studentData.TryGetValue(studentFolder.Name, out var studentObject);
-                    if (!studentObject.containsMakefile) {
+                    if (!studentObject.containsMakefile)
+                    {
+                        numStudentsGraded++;
                         return;
                     }
 
@@ -197,6 +198,7 @@ namespace TeachersPet.Services {
                             }
                             catch (Exception) {
                                 studentObject.errorLogs.Add("No executable found to run, compilation error?");
+                                numStudentsGraded++;
                                 return;
                             }
                         }
@@ -265,8 +267,9 @@ namespace TeachersPet.Services {
                     Directory.Delete($"{studentFolder.FullName}/input", true);
                     Directory.Delete($"{studentFolder.FullName}/examples", true);
                     Directory.Delete($"{studentFolder.FullName}/output", true);
-                });
-
+                    numStudentsGraded++;
+            });
+            
             try {
                 WriteOutputFiles();
             }
@@ -300,7 +303,7 @@ namespace TeachersPet.Services {
             foreach (var (key, value) in kvpList) {
                 writer.WriteLine("############");
                 writer.WriteLine($"Student: {key}");
-                var validErrorMessages = value.errorLogs.Where(s => s.Length > 0).ToList();
+                var validErrorMessages = value.errorLogs.Where(s => !string.IsNullOrEmpty(s)).ToList();
                 if (validErrorMessages.Count > 0) {
                     writer.WriteLine("Errors:");
                     validErrorMessages.ForEach(error => writer.WriteLine(error));
@@ -308,7 +311,7 @@ namespace TeachersPet.Services {
                 }
                 writer.WriteLine("Console output:");
                 value.logs.ForEach(log => {
-                    if (log.Length > 0) {
+                    if (!string.IsNullOrEmpty(log)) {
                         writer.WriteLine(log);
                     }
                 });
@@ -451,7 +454,7 @@ namespace TeachersPet.Services {
                     proc.BeginErrorReadLine();
                     proc.WaitForExit();
                     studentData.TryUpdate(dir.Name, temp, oldtemp);
-                    Interlocked.Increment(ref numProjectsMade);
+                    numProjectsMade++;
                 });
             });
             await task;

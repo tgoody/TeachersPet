@@ -158,6 +158,7 @@ namespace TeachersPet.Pages.CourseInfo {
                     DragDropText.Visibility = Visibility.Collapsed;
                     DragDropText.Visibility = Visibility.Visible;
                     DragDropText.Text = "All finished! Please view the StudentScores.txt and StudentLogs.txt files.";
+                    ProgressText.Visibility = Visibility.Collapsed;
                 });
             });
         }
