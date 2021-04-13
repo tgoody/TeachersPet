@@ -19,7 +19,7 @@ namespace TeachersPet.Pages.CourseInfo {
         public CourseInfoPage(CourseModel courseData) {
             InitializeComponent();
             _courseModel = courseData;
-            GenerateModuleService.CreateWrapPanel(typeof(CourseInfoModule), ref WrapPanel, this);
+            GenerateModuleService.CreateWrapPanel(typeof(CourseInfoModule), ref WrapPanel, this); //generates child page buttons
             CourseCode.Text = courseData.CourseCode;
             CourseName.Text = courseData.CourseName;
             CourseInfo.Text = courseData.Id;

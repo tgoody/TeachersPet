@@ -106,7 +106,7 @@ namespace TeachersPet.Pages.StudentInfo {
 
             ScoreTextBox.Text = "0";
             NewCommentBox.RemovePlaceHolder();
-            NewCommentBox.Text = "Student has used the regret clause.";
+            NewCommentBox.Text = "Submission withdrawn by student request.";
 
         }
     }

@@ -30,6 +30,10 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
         private string pathToZybooksGraderFolder;
         public ZybooksGraderPage() {
             InitializeComponent();
+            _assignment = new AssignmentModel();
+            _zybooksStudentModels = new List<ZybooksStudentModel>();
+            _canvasStudentModels = new List<StudentModel>();
+            fixedNames = new Dictionary<string, string>();
         }
 
         private void ConvertZybooksCSV(string path) {
@@ -176,6 +180,11 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
                             Console.Error.WriteLine($"Error: Multiple students with the name {fixedName}");
                             continue;
                         }
+
+                        if (matchingCanvasStudent == null) {
+                            Console.Error.WriteLine($"Error: Student {fixedName} added more than once in FixedNames.txt or student in FixedNames.txt not in this course");
+                            continue;
+                        }
                     }
                     else {
                         Console.Error.WriteLine(
@@ -243,7 +252,10 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
             string fixedNamesLine;
             while ((fixedNamesLine = file.ReadLine()) != null) {
                 var names = fixedNamesLine.Split(',');
-                fixedNames.Add(names[0].ToLower(), names[1].ToLower());
+                try {
+                    fixedNames.Add(names[0].ToLower(), names[1].ToLower());
+                }
+                catch (ArgumentException) {} //handling duplicates
             }
         }
         
