@@ -17,7 +17,7 @@ namespace TeachersPet.Models {
         [JsonProperty("score")]
         public string Score {
             get {
-                if (score == null) {
+                if (string.IsNullOrEmpty(score)) {
                     return "N/A";
                 }
                 return Math.Round(Convert.ToDecimal(score), 2).ToString();
