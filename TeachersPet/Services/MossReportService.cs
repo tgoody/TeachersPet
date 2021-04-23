@@ -38,16 +38,14 @@ namespace TeachersPet.Services {
             foreach (var file in resultantFilesList) {
                 proc.StandardInput.WriteLine($"results+=( \"{file}\" )");
             }
-            proc.StandardInput.WriteLine($"./moss.pl -l {language.LanguageCode} -n {numReports} -m {numSimilarLines} -x -c \"{nameOfReport}\" ${{results[@]}}");
+            proc.StandardInput.WriteLine($"./moss.pl -l {language.LanguageCode} -n {numReports} -m {numSimilarLines} -x -d -c \"{nameOfReport}\" ${{results[@]}}");
 
 
             if (useSeparateConsole) { 
                 proc.StandardInput.WriteLine("echo \"All done, feel free to close this window after getting the link.\"");
                 proc.StandardInput.WriteLine("sleep 600");
             }
-            else
-                proc.StandardInput.Close();
-
+            
             return proc;
         }
 
@@ -145,7 +143,7 @@ namespace TeachersPet.Services {
                 }
 
 
-                if (excludedFiles.Contains(innerFile.Name)) {
+                if (excludedFiles.Select(file => file.ToLower()).Contains(innerFile.Name.ToLower())) {
                     continue;
                 }
 

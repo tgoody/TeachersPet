@@ -35,12 +35,11 @@
         </ListView>
 
         <Button x:Name="AddDirectoryButton" Content="Add Directory" Click="AddDirectory" Visibility="Visible" Grid.Row="1" Margin="160,15,40,15" FontFamily="Bahnschrift Light" FontSize="24"/>
-        <customControls:PlaceHolderTextBox x:Name="NewDirectoryName" PlaceHolderText="Name of new directory" Visibility="Collapsed"  Grid.Row="2" Margin="40,10,180,72" FontFamily="Bahnschrift Light" FontSize="16"/>
-        <Button x:Name="ConfirmAddButton" Content="Confirm Addition" Click="ConfirmAdd" Visibility="Collapsed" Grid.Row="2" Margin="280,10,15,42" FontFamily="Bahnschrift Light" FontSize="16"/>
         <Button x:Name="ViewDirectoryButton" Content="View Directory" Click="ViewDirectory" Visibility="Hidden" Grid.Column="1" Grid.Row="2" Margin="0,15,0,15" FontFamily="Bahnschrift Light" FontSize="24"/>
         <Button x:Name="RunReportButton" Content="Run Report" Click="RunReport" Visibility="Hidden" Grid.Column="1"  Margin="0,15,0,15" Grid.Row="1" FontFamily="Bahnschrift Light" FontSize="24"/>
-        <Button x:Name="DeleteDirectoryButton" Content="Delete Directory" Click="DeleteDirectory"  Visibility="Hidden"  Grid.Row="1" Grid.Column="2" Margin="40,15,160,15" FontFamily="Bahnschrift Light" FontSize="24"/>
+        <Button x:Name="DeleteDirectoryButton" Content="Delete Directory" Click="DeleteDirectory"  Visibility="Collapsed"  Grid.Row="1" Grid.Column="2" Margin="40,15,160,15" FontFamily="Bahnschrift Light" FontSize="24"/>
         <Button x:Name="ConfirmDeleteButton" Content="Confirm Deletion" Click="ConfirmDelete" Visibility="Collapsed" Margin="50,0,170,30" Grid.Row="2" Grid.Column="2" FontFamily="Bahnschrift Light" FontSize="24"/>
-        <TextBlock x:Name="ErrorTextBlock" Visibility="Collapsed" Foreground="Red" Margin="10,10,285,167"  FontFamily="Bahnschrift Light" FontSize="16"/>
+        <TextBlock x:Name="ErrorTextBlock" Visibility="Collapsed" Foreground="Red" Margin="10,10,285,167"  FontFamily="Bahnschrift Light" FontSize="16" TextWrapping="Wrap"/>
+        <CheckBox x:Name="DeleteFolderFromFilesystemCheckbox" Content="Also Delete Folder From Filesystem" Grid.Column="2" HorizontalAlignment="Left" Margin="54,82,0,0" Grid.Row="2" VerticalAlignment="Top" Height="27" Width="212" Visibility="Collapsed"/>
     </Grid>
 </Page>

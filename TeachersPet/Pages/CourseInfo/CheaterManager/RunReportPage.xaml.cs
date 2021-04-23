@@ -144,6 +144,8 @@ namespace TeachersPet.Pages.CourseInfo.CheaterManager {
 
         private void RunReport(object sender, RoutedEventArgs e) {
             try {
+                ErrorMessageBlock.Visibility = Visibility.Collapsed;
+                ConsoleOutput = "";
                 RunReportButton.Visibility = Visibility.Hidden;
                 var language = LanguageComboBox.SelectedItem as MOSSLanguageObject;
                 var numSimilarLines = int.Parse(NumSimilarLinesTextBox.Text);
@@ -154,7 +156,7 @@ namespace TeachersPet.Pages.CourseInfo.CheaterManager {
                 Task.Run(() => {
                     mossReportProcess = MossReportService.RunReportOnDirectory(_workingDirectory, language, numSimilarLines,
                         numReports, nameOfReport, excludedFiles, useSeparateConsole);
-
+                    
                     if (mossReportProcess != null) {
                         Dispatcher.Invoke(() => {
                             LoadingTextBlock.Visibility = Visibility.Collapsed;
@@ -171,41 +173,54 @@ namespace TeachersPet.Pages.CourseInfo.CheaterManager {
                         throw new Exception("Error starting MOSS process");
                     }
                 });
+                
                 LoadingTextBlock.Visibility = Visibility.Visible;
 
                 //writing to UI from process
-                if (!useSeparateConsole) {
-                    Task.Run(() => {
+                 if (!useSeparateConsole) {
+                     Task.Run(() => {
+                         while (mossReportProcess == null) {
+                             Thread.Sleep(200);
+                         }
+                         
+                         mossReportProcess.ErrorDataReceived += (s, e) => {
+                             Dispatcher.Invoke(() => {
+                                 ErrorMessageBlock.Visibility = Visibility.Visible;
+                                 ErrorMessageBlock.Text += $"{e.Data}";
+                                 RunReportButton.Visibility = Visibility.Visible;
+                             });
+                         };
+                         mossReportProcess.OutputDataReceived += (s, e) => {
+                             Dispatcher.Invoke(() => {
+                                 ConsoleOutput += "\n" + e.Data;
+                                 var potentialLink = consoleOutput.Trim().Split('\n')[^1];
+                                 var result = Uri.TryCreate(potentialLink, UriKind.Absolute, out var uriResult) 
+                                              && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+                                 if (result) {
+                                     resultHyperLink = potentialLink;
+                                     ResultsButton.Visibility = Visibility.Visible;
+                                     RunReportButton.Visibility = Visibility.Visible;
+                                     mossReportProcess.StandardInput.Close();
+                                 }
+                             });
+                         };
+                         mossReportProcess.BeginErrorReadLine();
+                         mossReportProcess.BeginOutputReadLine();
 
-                        while (mossReportProcess == null) {
-                            Thread.Sleep(200);
-                        }
-
-                        var latestOutput = mossReportProcess.StandardOutput.ReadLine();
-                        while (!string.IsNullOrEmpty(latestOutput)) {
-                            Dispatcher.Invoke(() => {
-                                ConsoleOutput += "\n" + latestOutput;
-                            });
-                            latestOutput = mossReportProcess.StandardOutput.ReadLine();
-                            Console.WriteLine(latestOutput);
-                        }
-
-                        Dispatcher.Invoke(() => {
-                            resultHyperLink = consoleOutput.Trim().Split('\n')[^1];
-                            var result = Uri.TryCreate(resultHyperLink, UriKind.Absolute, out var uriResult) 
-                                         && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
-                            if (!result) {
-                                throw new Exception(
-                                    "Sorry, we couldn't complete the request to MOSS. \n" +
-                                    "This can happen if they're busy. Maybe try again later?");
-                            }
-                            ResultsButton.Visibility = Visibility.Visible;
-                            RunReportButton.Visibility = Visibility.Visible;
-                        });
-
-                    });
-                }
-
+                         var lastResponse = consoleOutput.Trim().Split('\n')[^1];
+                         while (true) {
+                             Thread.Sleep(60000);
+                             var newResponse = consoleOutput.Trim().Split('\n')[^1];
+                             if (lastResponse == newResponse) {
+                                 Dispatcher.Invoke(() => {
+                                     ConsoleOutput += "\n" +
+                                                      "This seems to be taking a while... Maybe MOSS is busy? Perhaps try again later.";
+                                 });
+                                 lastResponse = newResponse;
+                             }
+                         }
+                     });
+                 }
             }
             catch (Exception exception) {
                 ErrorMessageBlock.Visibility = Visibility.Visible;
