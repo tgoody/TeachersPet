@@ -34,12 +34,11 @@ namespace TeachersPet.Pages.CourseInfo.CheaterManager {
             get => consoleOutput;
             set {
                 consoleOutput = value;
-                RaisePropertyChanged("ConsoleOutput");
+                RaisePropertyChanged(nameof(ConsoleOutput));
             } 
         }
         private void RaisePropertyChanged(string propName) {
             PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propName));
-
         }
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -235,7 +234,6 @@ namespace TeachersPet.Pages.CourseInfo.CheaterManager {
 
 
         //Found https://stackoverflow.com/a/19315242
-
         private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             // User scroll event : set or unset auto-scroll mode
@@ -250,7 +248,6 @@ namespace TeachersPet.Pages.CourseInfo.CheaterManager {
                 ScrollViewer.ScrollToVerticalOffset(ScrollViewer.ExtentHeight);
             }
         }
-
-
+        
     }
 }

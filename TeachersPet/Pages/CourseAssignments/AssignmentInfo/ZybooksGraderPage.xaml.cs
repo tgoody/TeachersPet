@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -15,7 +16,7 @@ using TeachersPet.Models;
 using TeachersPet.Services;
 
 namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
-    public partial class ZybooksGraderPage : Page, AssignmentInfoModule {
+    public partial class ZybooksGraderPage : Page, AssignmentInfoModule, INotifyPropertyChanged {
         private struct ZybooksStudentModel {
             public string lastName;
             public string firstName;
@@ -26,14 +27,27 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
         private AssignmentModel _assignment;
         private List<ZybooksStudentModel> _zybooksStudentModels;
         private List<StudentModel> _canvasStudentModels;
-        private Dictionary<string, string> fixedNames;
-        private string pathToZybooksGraderFolder;
+        private string graderOutput;
+        private bool autoscroll = true;
+        public string GraderOutput {
+            get => graderOutput;
+            set {
+                graderOutput = value;
+                RaisePropertyChanged(nameof(GraderOutput));
+            } 
+        }
+        private void RaisePropertyChanged(string propName) {
+            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propName));
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        
+        
         public ZybooksGraderPage() {
             InitializeComponent();
             _assignment = new AssignmentModel();
             _zybooksStudentModels = new List<ZybooksStudentModel>();
             _canvasStudentModels = new List<StudentModel>();
-            fixedNames = new Dictionary<string, string>();
+            DataContext = this;
         }
 
         private void ConvertZybooksCSV(string path) {
@@ -52,6 +66,9 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
                     }
                     else if (headerName.Contains("first name")) {
                         firstNameIndex = i;
+                    }
+                    else if (headerName.Contains("school email")) { //prioritize school email if that column is there
+                        emailIndex = i;
                     }
                     else if (headerName.Contains("email")) {
                         emailIndex = i;
@@ -107,31 +124,13 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
             var files = (string[])e.Data.GetData(DataFormats.FileDrop);
             ConvertZybooksCSV(files[0]);
-            var canvas = sender as Canvas;
             GradientBrush.GradientStops.ElementAt(0).Color = (Color)ColorConverter.ConvertFromString("#7F0770A3");
-
             DragDropText.Text = "Loading students from Canvas still, please hold...";
-            
             //TODO: this is bad.
             while (_canvasStudentModels == null || _canvasStudentModels.Count == 0) {
-                Console.WriteLine("loading students...");
                 Thread.Sleep(250);
             }
 
-            if (_canvasStudentModels.Count != _zybooksStudentModels.Count) {
-                Console.WriteLine("Warning: mismatch in number of canvas students and zybooks students!");
-                try {
-                    GetFixedNames();
-                }
-                //This will happen if GetFixedNames throws an exception, meaning there is no fixednames.txt
-                catch (Exception) {
-                    noFixedNamesText.Text = "Warning: mismatch in number of canvas students and zybooks students!\n" +
-                           "No FixedNames.txt found, please create one";
-                    noFixedNamesText.Visibility = Visibility.Visible;
-                    GenerateBadNames(_zybooksStudentModels, _canvasStudentModels);
-                }
-            }
-            
             DragDropText.Text = "File Loaded";
             GradeButton.Visibility = Visibility.Visible;
             Checkbox.Visibility = Visibility.Visible;
@@ -140,64 +139,15 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
         private void UpdateGrades(object sender, MouseButtonEventArgs e) {
             var combinedData = new Dictionary<StudentModel, string>();
             foreach (var zybooksStudent in _zybooksStudentModels) {
-
-                var firstName = zybooksStudent.firstName;
-                var lastName = zybooksStudent.lastName;
-                StudentModel matchingCanvasStudent;
-                
-                //TODO: email
-                //_canvasStudentModels.SingleOrDefault(s => s.Email == zybooksStudent.schoolEmail)
-                
-                try {
-                    matchingCanvasStudent =
-                        _canvasStudentModels.SingleOrDefault(s => s.Name.ToLower().Contains($"{firstName.ToLower()}") && s.Name.ToLower().Contains($"{lastName.ToLower()}"));
+                var matchingCanvasStudent = GetClosestMatchedCanvasStudent(zybooksStudent);
+                if (matchingCanvasStudent == null) { //couldn't match on name or email
+                    continue;
                 }
-                catch (InvalidOperationException) {
-                    //If the first line fails, try to match explicitly
-                    //Example problem (a real one we ran into) -- two students:
-                    //1. Leonardo Leon 
-                    //2. Leonardo <something else>
-                    //Because of the first student, their last name is contained in the first name of the second student
-                    //Causes an issue.
-                    matchingCanvasStudent =
-                        _canvasStudentModels.SingleOrDefault(s =>
-                            s.Name.ToLower() == $"{firstName.ToLower()} {lastName.ToLower()}");
-                    if (matchingCanvasStudent == null) {
-                        Console.Error.WriteLine($"Error: Multiple students with the name {firstName} {lastName}");
-                        continue;
-                    }
-                }
-                if (matchingCanvasStudent == null){
-                    var studentName = (zybooksStudent.firstName + " " + zybooksStudent.lastName).ToLower();
-                    if (fixedNames.ContainsKey(studentName)) {
-                    
-                        var fixedName = fixedNames[studentName];
-                        try {
-                            matchingCanvasStudent =
-                                _canvasStudentModels.SingleOrDefault(s => s.Name.ToLower().Contains($"{fixedName}"));
-                        }
-                        catch (InvalidOperationException) {
-                            Console.Error.WriteLine($"Error: Multiple students with the name {fixedName}");
-                            continue;
-                        }
-
-                        if (matchingCanvasStudent == null) {
-                            Console.Error.WriteLine($"Error: Student {fixedName} added more than once in FixedNames.txt or student in FixedNames.txt not in this course");
-                            continue;
-                        }
-                    }
-                    else {
-                        Console.Error.WriteLine(
-                            $"Error: No student found with name {firstName} {lastName} in Canvas from Zybooks report");
-                        continue;
-                    }
-                }
-
                 try {
                     combinedData.Add(matchingCanvasStudent, zybooksStudent.grade.ToString());
                 }
                 catch (ArgumentException) {
-                    Console.Error.WriteLine($"key already found: {matchingCanvasStudent.Name}");
+                    Console.Error.WriteLine($"Student already found: {matchingCanvasStudent.Name}");
                 }
             }
             Task.Run(() => PutGrades(combinedData));
@@ -206,14 +156,38 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
             GradeButton.Visibility = Visibility.Collapsed;
             Checkbox.Visibility = Visibility.Collapsed;
             StudentsGradedProgress.Visibility = Visibility.Visible;
+            ScrollViewer.Visibility = Visibility.Visible;
             GradientBrush.GradientStops.ElementAt(0).Color = (Color)ColorConverter.ConvertFromString("#7FA38007");
-
         }
 
+        private StudentModel GetClosestMatchedCanvasStudent(ZybooksStudentModel zybooksStudent) {
+
+            string firstName = zybooksStudent.firstName, lastName = zybooksStudent.lastName;
+            var queryResult = _canvasStudentModels.Where(s =>
+                s.Name.ToLower().Contains($"{firstName.ToLower()}") &&
+                s.Name.ToLower().Contains($"{lastName.ToLower()}")).ToList();
+            
+            //If we found the right student
+            if (queryResult.Count == 1) {
+                return queryResult.ElementAt(0);
+            }
+            
+            //else, try to match explicitly on name
+            queryResult = _canvasStudentModels.Where(s => 
+                s.Name.ToLower() == $"{firstName.ToLower()} {lastName.ToLower()}").ToList();
+            
+            if (queryResult.Count == 1) {
+                return queryResult.ElementAt(0);
+            }
+            
+            //else, match on email
+            queryResult = _canvasStudentModels.Where(s => s.Email.ToLower() == zybooksStudent.email.ToLower()).ToList();
+            return queryResult.Count == 1 ? queryResult.ElementAt(0) : null;
+        }
+        
         private async void PutGrades(Dictionary<StudentModel, string> mapForStudentsToGrades) {
             var counter = 0;
-            
-            bool overwriteGrades = false;
+            var overwriteGrades = false;
             Dispatcher.Invoke(() => { overwriteGrades = OverwriteGradeCheckbox.IsChecked ?? false; });
             
             foreach (var (studentModel, score) in mapForStudentsToGrades) {
@@ -221,9 +195,9 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
                     var gradeResponse =
                         await CanvasAPI.GetSubmissionForAssignmentForStudent(_assignment.CourseId, _assignment.Id,
                             studentModel.Id);
-                    var stringCheck = gradeResponse["grade"]?.ToString();
-                    if (stringCheck != "") {
-                        Console.WriteLine($"Grade not null for {studentModel.Name}");
+                    var currentGrade = gradeResponse["grade"]?.ToString();
+                    if (currentGrade != "") {
+                        Dispatcher.Invoke(() => GraderOutput += "\n" + $"Grade not null for {studentModel.Name}");
                     }
                     else {
                         var result = CanvasAPI.UpdateSingleGradeFromStudentModelAndScore(studentModel,
@@ -233,7 +207,7 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
                 else {
                     var result = CanvasAPI.UpdateSingleGradeFromStudentModelAndScore(studentModel,
                         score, _assignment.CourseId, _assignment.Id);
-                    Console.WriteLine($"Graded {studentModel.Name}");
+                    Dispatcher.Invoke(() => GraderOutput += "\n" + $"Graded {studentModel.Name}: {score}");
                 }
 
                 counter++;
@@ -246,37 +220,24 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
             });
                 
         }
-        
-        private void GetFixedNames() {
-            var file = new StreamReader($"{pathToZybooksGraderFolder}/FixedNames.txt");
-            string fixedNamesLine;
-            while ((fixedNamesLine = file.ReadLine()) != null) {
-                var names = fixedNamesLine.Split(',');
-                try {
-                    fixedNames.Add(names[0].ToLower(), names[1].ToLower());
-                }
-                catch (ArgumentException) {} //handling duplicates
-            }
-        }
-        
-        private void OpenExplorer(object sender, MouseButtonEventArgs e) {
-            Process.Start("explorer.exe" , @pathToZybooksGraderFolder);
-        }
 
-        /// <summary>
-        /// Used to generate a text file named "IncorrectNames.txt" containing mismatched student names between zybooks and canvas
-        /// </summary>
-        /// <param name="studentsFromFile">Zybooks List</param>
-        /// <param name="canvasStudents">Students from Canvas in Dictionary format</param>
-        private void GenerateBadNames(List<ZybooksStudentModel> studentsFromFile, List<StudentModel> canvasStudents) {
-            var file = new StreamWriter($"{pathToZybooksGraderFolder}/IncorrectNames.txt");
-            foreach (var student in studentsFromFile) {
-                if (!canvasStudents.Exists(s => s.Name.ToLower().Contains($"{student.firstName.ToLower()}") && s.Name.ToLower().Contains($"{student.lastName.ToLower()}"))) {
-                    var studentName = (student.firstName + " " + student.lastName).ToLower();
-                    file.WriteLine(studentName);
-                }
+        
+        
+        
+        //Found https://stackoverflow.com/a/19315242
+        private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            // User scroll event : set or unset auto-scroll mode
+            if (e.ExtentHeightChange == 0) { // Content unchanged : user scroll event
+                autoscroll = ScrollViewer.VerticalOffset == ScrollViewer.ScrollableHeight;
             }
-            file.Close();
+
+            // Content scroll event : auto-scroll eventually
+            if (autoscroll && e.ExtentHeightChange != 0)
+            {   // Content changed and auto-scroll mode set
+                // Autoscroll
+                ScrollViewer.ScrollToVerticalOffset(ScrollViewer.ExtentHeight);
+            }
         }
         
         public string GetName() {
@@ -295,13 +256,11 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
             });
             _zybooksStudentModels = new List<ZybooksStudentModel>();
             _canvasStudentModels = new List<StudentModel>();
-            fixedNames = new Dictionary<string, string>();
             var workingDirectory = System.Reflection.Assembly.GetExecutingAssembly().Location;
             workingDirectory = Path.GetDirectoryName(workingDirectory);
             var modulePath = Directory.CreateDirectory($"{workingDirectory}/Modules").FullName;
             var zybooksModulePath = Directory.CreateDirectory($"{modulePath}/ZybooksGrader").FullName;
-            pathToZybooksGraderFolder =
-                Directory.CreateDirectory($"{zybooksModulePath}/{_assignment.CourseId}").FullName;
+            Directory.CreateDirectory($"{zybooksModulePath}/{_assignment.CourseId}");
         }
     }
 }
