@@ -127,13 +127,18 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
             GradientBrush.GradientStops.ElementAt(0).Color = (Color)ColorConverter.ConvertFromString("#7F0770A3");
             DragDropText.Text = "Loading students from Canvas still, please hold...";
             //TODO: this is bad.
-            while (_canvasStudentModels == null || _canvasStudentModels.Count == 0) {
-                Thread.Sleep(250);
-            }
+            Task.Run(() => {
+                while (_canvasStudentModels == null || _canvasStudentModels.Count == 0){
+                    Thread.Sleep(250);
+                }
 
-            DragDropText.Text = "File Loaded";
-            GradeButton.Visibility = Visibility.Visible;
-            Checkbox.Visibility = Visibility.Visible;
+                Dispatcher.Invoke(() => {
+                    DragDropText.Text = "File Loaded";
+                    GradeButton.Visibility = Visibility.Visible;
+                    Checkbox.Visibility = Visibility.Visible;
+                });
+            });
+            
         }
         
         private void UpdateGrades(object sender, MouseButtonEventArgs e) {
@@ -181,7 +186,7 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
             }
             
             //else, match on email
-            queryResult = _canvasStudentModels.Where(s => s.Email.ToLower() == zybooksStudent.email.ToLower()).ToList();
+            queryResult = _canvasStudentModels.Where(s => s.Email?.ToLower() == zybooksStudent.email.ToLower()).ToList();
             return queryResult.Count == 1 ? queryResult.ElementAt(0) : null;
         }
         
@@ -196,17 +201,20 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
                         await CanvasAPI.GetSubmissionForAssignmentForStudent(_assignment.CourseId, _assignment.Id,
                             studentModel.Id);
                     var currentGrade = gradeResponse["grade"]?.ToString();
+                    if (currentGrade == null) {
+                        Dispatcher.Invoke(() => GraderOutput += "\n" + $"Could not get grade response from Canvas for {studentModel.Name}");
+                    }
                     if (currentGrade != "") {
-                        Dispatcher.Invoke(() => GraderOutput += "\n" + $"Grade not null for {studentModel.Name}");
+                        Dispatcher.Invoke(() => GraderOutput += "\n" + $"Grade already entered for {studentModel.Name}");
                     }
                     else {
                         var result = CanvasAPI.UpdateSingleGradeFromStudentModelAndScore(studentModel,
-                            score, _assignment.CourseId, _assignment.Id);
+                            score, _assignment.CourseId, _assignment.Id, $"Autograded on: {DateTime.Now.Date:d}.\nIf this grade is incorrect, please contact your TA.");
                     }
                 }
                 else {
                     var result = CanvasAPI.UpdateSingleGradeFromStudentModelAndScore(studentModel,
-                        score, _assignment.CourseId, _assignment.Id);
+                        score, _assignment.CourseId, _assignment.Id, $"Autograded on: {DateTime.Now.Date:d}.\nIf this grade is incorrect, please contact your TA.");
                     Dispatcher.Invoke(() => GraderOutput += "\n" + $"Graded {studentModel.Name}: {score}");
                 }
 
@@ -221,9 +229,6 @@ namespace TeachersPet.Pages.CourseAssignments.AssignmentInfo {
                 
         }
 
-        
-        
-        
         //Found https://stackoverflow.com/a/19315242
         private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {

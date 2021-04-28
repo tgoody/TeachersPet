@@ -115,22 +115,14 @@ namespace TeachersPet.Services {
                 updateTask);
             return result;
         }
-        
-        public static async Task<JToken> UpdateGradesFromStudentModelsAndScores(Dictionary<StudentModel, string> userIdsAndScores, string courseId, string assignmentId) {
-            var dataForJson = new Dictionary<string, string>();
-            foreach (var (key, value) in userIdsAndScores) {
-                dataForJson.Add($"grade_data[{key.Id}][posted_grade]", value);
-                dataForJson.Add($"grade_data[{key.Id}][text_comment]", $"Autograded on: {DateTime.Now.Date:d}\nIf this grade is incorrect, please contact your TA.");
-            }
-            return PostCanvasApiRequest($"courses/{courseId}/assignments/{assignmentId}/submissions/update_grades", dataForJson).Result;
-        }
 
         public static async Task<JToken> UpdateSingleGradeFromStudentModelAndScore(StudentModel student, string score,
-            string courseId, string assignmentId) {
+            string courseId, string assignmentId, string comment = "") {
             var dataForJson = new Dictionary<string, string>();
                 dataForJson.Add("submission[posted_grade]", score);
-                dataForJson.Add("comment[text_comment]",
-                    $"Autograded on: {DateTime.Now.Date:d}\nIf this grade is incorrect, please contact your TA.");
+                if (!string.IsNullOrEmpty(comment)) {
+                    dataForJson.Add("comment[text_comment]", comment);
+                }
                 return PutCanvasApiRequest($"courses/{courseId}/assignments/{assignmentId}/submissions/{student.Id}", dataForJson).Result;
         }
 

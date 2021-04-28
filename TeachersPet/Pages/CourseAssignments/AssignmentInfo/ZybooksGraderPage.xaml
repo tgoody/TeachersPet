@@ -19,9 +19,7 @@
         </Style>
     </Page.Resources>
 
-
-
-
+    
     <Grid x:Name="Grid" Height="700" Width="1000" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,100">
         <Canvas x:Name="DragDropBox" Height="400" Width="800" Style="{StaticResource DragDropCanvas}" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Canvas.Background>
@@ -32,13 +30,13 @@
             </Canvas.Background>
         </Canvas>
 
-        <TextBlock x:Name="DragDropText" Text="Drag Zybooks Report Here" FontFamily="Bahnschrift" FontSize="24" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock x:Name="DragDropText" Text="Drag Zybooks Report Here" FontFamily="Bahnschrift" FontSize="24" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False"/>
         <StackPanel x:Name="Checkbox" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,100,0,0" Visibility="Collapsed">
             <CheckBox x:Name="OverwriteGradeCheckbox" VerticalAlignment="Center"/>
             <TextBlock Margin="5,0,0,0" Text="Overwrite Already Existing Grades" VerticalAlignment="Center" FontFamily="Bahnschrift Light"/>
         </StackPanel>
         <Button x:Name="GradeButton" Height="50" Content="Grade students" PreviewMouseLeftButtonDown="UpdateGrades" Visibility="Collapsed" Background="#00DDDDDD" BorderBrush="#00707070" VerticalAlignment="Center" Margin="0,200,0,0" FontFamily="Bahnschrift Light" FontSize="20" HorizontalAlignment="Center"/>
-        <TextBlock x:Name="StudentsGradedProgress" Height="50" Width="100" Visibility="Visible" Margin="350,239,350,161" FontFamily="Bahnschrift Light" FontSize="14" TextAlignment="Center" HorizontalAlignment="Center"/>
+        <TextBlock x:Name="StudentsGradedProgress" Height="50" Width="100" Visibility="Collapsed" Margin="350,239,350,161" FontFamily="Bahnschrift Light" FontSize="14" TextAlignment="Center" HorizontalAlignment="Center"/>
         <ScrollViewer HorizontalAlignment="Center" Height="125" Margin="0,40,0,0" VerticalAlignment="Top" Width="283" ScrollChanged="ScrollViewer_ScrollChanged" x:Name="ScrollViewer" Visibility="Collapsed" FontFamily="Bahnschrift Light">
             <TextBlock x:Name="GraderOutputTextBlock" Text="{Binding GraderOutput}" TextWrapping="Wrap" FontFamily="Consolas" FontSize="14" Padding="0,0,5,0"/>
         </ScrollViewer>
