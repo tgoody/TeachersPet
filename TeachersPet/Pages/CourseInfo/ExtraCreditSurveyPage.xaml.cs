@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Newtonsoft.Json.Linq;
 using TeachersPet.BaseModules;
 using TeachersPet.Models;
 using TeachersPet.Services;
@@ -36,6 +37,7 @@ namespace TeachersPet.Pages.CourseInfo
         private List<ExtraCreditReportStudentModel> extraCreditReportStudentModels;
         private bool autoscroll = true;
         private string graderOutput;
+        private int maxExtraCredit;
         public string GraderOutput
         {
             get => graderOutput;
@@ -55,6 +57,7 @@ namespace TeachersPet.Pages.CourseInfo
         {
             InitializeComponent();
             DataContext = this;
+            maxExtraCredit = int.Parse(MaxCourseExtraCredit.Text);
         }
 
 
@@ -116,74 +119,72 @@ namespace TeachersPet.Pages.CourseInfo
         private async void UpdateExtraCreditButton_Click(object sender, RoutedEventArgs e)
         {
             ScrollViewer.Visibility = Visibility.Visible;
-            _ = Task.Run(async () =>
-            {
-                foreach (var ecstudentModel in extraCreditReportStudentModels)
-                {
-                    var numCredits = 0;
-                    var didParseSuccessfully = int.TryParse(ecstudentModel.creditsEarned, out numCredits);
-                    if (!didParseSuccessfully || numCredits < 1)
-                    {
+            Task.Run(async () => {
+                foreach (var ecstudentModel in extraCreditReportStudentModels) {
+                    var didParseSuccessfully = int.TryParse(ecstudentModel.creditsEarned, out var numCredits);
+                    if (!didParseSuccessfully || numCredits < 1) {
                         continue;
                     }
-
                     var scorePerCredit = 0;
                     Dispatcher.Invoke(() => { didParseSuccessfully = int.TryParse(SurveyCreditValue.Text, out scorePerCredit); });
-                    
-                    if (!didParseSuccessfully)
-                    {
-                        Console.Error.WriteLine("Text box with survey credit value didn't parse correctly");
+                    if (!didParseSuccessfully) {
+                        ErrorText.Visibility = Visibility.Visible;
+                        ErrorText.Text = "Could not parse survey credit value. Please input an integer.";
                         continue;
                     }
                     var scoreToAdd = numCredits * scorePerCredit;
 
                     StudentModel foundStudent = null;
-                    try
-                    {
+                    try {
                         var studentId = int.Parse(ecstudentModel.ufid);
-                        foundStudent = canvasStudentModels.Where(student => student.SisUserId == studentId).Single();
+                        foundStudent = canvasStudentModels.Single(student => student.SisUserId == studentId);
                     }
-                    catch (Exception exception)
-                    {
-                        //couldn't parse UFID, try to match on name
+                    catch (Exception exception) {} //couldn't parse UFID, try to match on name
+                    if (foundStudent == null) {
+                        try {
+                            foundStudent = canvasStudentModels.Single(student => student.Name.Contains(ecstudentModel.firstName)
+                                && student.Name.Contains(ecstudentModel.lastName));
+                        }
+                        catch (Exception exception) {} //couldn't find matching student on name
                     }
-                    if (foundStudent == null)
-                    {
-                        try
-                        {
-                            foundStudent = canvasStudentModels.Where(student => student.Name.Contains(ecstudentModel.firstName)
-                                && student.Name.Contains(ecstudentModel.lastName)).Single();
+                    if (foundStudent == null) {
+                        try {
+                            foundStudent = canvasStudentModels.Single(student => student.Email == ecstudentModel.email);
                         }
-                        catch (Exception exception)
-                        {
-                            //couldn't find matching student on name
-                        }
-                    }
-                    if (foundStudent == null)
-                    {
-                        try
-                        {
-                            foundStudent = canvasStudentModels.Where(student => student.Email == ecstudentModel.email).Single();
-                        }
-                        catch (Exception exception)
-                        {
+                        catch (Exception exception) {
                             //couldn't match on email either, so skip that student and hope for the best
-                            Console.Error.WriteLine($"Couldn't parse: {ecstudentModel.firstName} {ecstudentModel.lastName}");
+                            GraderOutput += "\n" + $"Couldn't find or match on student: {ecstudentModel.firstName} {ecstudentModel.lastName}";
                             continue;
                         }
                     }
 
                     var gradeResponse = await CanvasAPI.GetSubmissionForAssignmentForStudent(parentData.Id, extraCreditAssignmentModel.Id, foundStudent.Id);
+                    var commentsToken = gradeResponse["submission_comments"];
+
+                    if (commentsToken != null && commentsToken.HasValues) {
+                        var commentsArray = commentsToken as JArray;
+                        if (commentsArray.Any(comment =>
+                            comment["comment"] != null &&
+                            comment["comment"].ToString() == "Added credit from research study.")) {
+                            GraderOutput += "\n" + $"{foundStudent.Name} already given credit for research.";
+                            continue;
+                        }
+                    }
+
                     var currentGrade = gradeResponse["grade"]?.ToString();
-                    var currentExtraCreditScore = 0;
-                    int.TryParse(currentGrade, out currentExtraCreditScore);
+                    int.TryParse(currentGrade, out var currentExtraCreditScore);
                     currentExtraCreditScore += scoreToAdd;
-                    var maxExtraCredit = 20;
-                    Dispatcher.Invoke(() => int.TryParse(MaxCourseExtraCredit.Text, out maxExtraCredit));
+                    Dispatcher.Invoke(() => {
+                        didParseSuccessfully = int.TryParse(MaxCourseExtraCredit.Text, out maxExtraCredit);
+                        if (!didParseSuccessfully) {
+                            ErrorText.Visibility = Visibility.Visible;
+                            ErrorText.Text = "Could not parse max extra credit value. Please input an integer.";
+                        }
+                    });
                     if (currentExtraCreditScore > maxExtraCredit) currentExtraCreditScore = maxExtraCredit;
 
                     await CanvasAPI.UpdateSingleGradeFromStudentModelAndScore(foundStudent, currentExtraCreditScore.ToString(), parentData.Id,
-                        extraCreditAssignmentModel.Id, "Added credit from survey.");
+                        extraCreditAssignmentModel.Id, "Added credit from research study.");
                     Dispatcher.Invoke(() =>
                     {
                         GraderOutput += "\n" + $"Added extra credit to: {ecstudentModel.firstName} {ecstudentModel.lastName}";
@@ -228,11 +229,12 @@ namespace TeachersPet.Pages.CourseInfo
                     .ToObject<List<AssignmentModel>>();
                 try
                 {
-                    extraCreditAssignmentModel = assignments.Where(assignment => assignment.Name.ToLower() == "extra credit").Single();
+                    extraCreditAssignmentModel = assignments.Single(assignment => assignment.Name.ToLower() == "extra credit");
                 }
                 catch(Exception e)
                 {
-                    Console.Error.WriteLine("Found multiple (or no) assignments with the name \"extra credit\"");
+                    ErrorText.Visibility = Visibility.Visible;
+                    ErrorText.Text = "Found multiple (or no) assignments with the name \"extra credit\"";
                 }
             });
             extraCreditReportStudentModels = new List<ExtraCreditReportStudentModel>();

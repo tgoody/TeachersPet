@@ -82,7 +82,7 @@ namespace TeachersPet.Services {
         }
 
         public static async Task<JToken> GetSubmissionForAssignmentForStudent(string courseId, string assignmentId, string studentId) {
-            var result = await GetCanvasApiRequest($"courses/{courseId}/assignments/{assignmentId}/submissions/{studentId}");
+            var result = await GetCanvasApiRequest($"courses/{courseId}/assignments/{assignmentId}/submissions/{studentId}?include[]=submission_comments");
             return result;
         }
         public static async Task<JArray> GetSubmissionsFromCourseAndAssignmentId(string courseId, string assignmentId) {

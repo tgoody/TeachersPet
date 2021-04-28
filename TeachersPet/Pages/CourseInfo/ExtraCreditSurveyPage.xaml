@@ -21,7 +21,7 @@
     </Page.Resources>
 
 
-    <Grid Visibility="Visible">
+    <Grid>
         <Canvas x:Name="DragDropBox" Height="400" Width="800" Style="{StaticResource DragDropCanvas}" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Canvas.Background>
                 <RadialGradientBrush x:Name="GradientBrush">
@@ -37,10 +37,10 @@
         <TextBlock x:Name="MaxCourseExtraCreditTextBlock" Text="Max Course Extra Credit" TextWrapping="Wrap" FontSize="16" Height="21" Margin="512,496,512,283" Visibility="Collapsed"/>
         <TextBox x:Name="SurveyCreditValue" Text="10" TextWrapping="Wrap" Margin="715,529,455,250" Height="21" Visibility="Collapsed"/>
         <TextBlock x:Name="SurveyCreditValueTextBlock" Text="Survey Credit Worth in Points" TextWrapping="Wrap" FontSize="16" Height="21" Margin="494,529,494,250" Visibility="Collapsed"/>
-        <ScrollViewer HorizontalAlignment="Center" Height="125" Margin="0,40,0,0" VerticalAlignment="Top" Width="283" ScrollChanged="ScrollViewer_ScrollChanged" x:Name="ScrollViewer" Visibility="Collapsed" FontFamily="Bahnschrift Light">
+        <ScrollViewer HorizontalAlignment="Center" Height="170" Margin="0,40,0,0" VerticalAlignment="Top" Width="480" ScrollChanged="ScrollViewer_ScrollChanged" x:Name="ScrollViewer" Visibility="Collapsed" FontFamily="Bahnschrift Light">
             <TextBlock x:Name="GraderOutputTextBlock" Text="{Binding GraderOutput}" TextWrapping="Wrap" FontFamily="Consolas" FontSize="14" Padding="0,0,5,0"/>
         </ScrollViewer>
-
+        <TextBlock x:Name="ErrorText" TextWrapping="Wrap" Visibility="Collapsed" Margin="0,400,0,0" FontFamily="Bahnschrift Light" FontSize="14" TextAlignment="Center" HorizontalAlignment="Center" Foreground="Red"/>
 
     </Grid>
 </Page>
