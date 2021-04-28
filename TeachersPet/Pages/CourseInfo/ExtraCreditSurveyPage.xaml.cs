@@ -38,6 +38,7 @@ namespace TeachersPet.Pages.CourseInfo
         private bool autoscroll = true;
         private string graderOutput;
         private int maxExtraCredit;
+        private string extraCreditComment = "Added credit from research study.";
         public string GraderOutput
         {
             get => graderOutput;
@@ -80,6 +81,10 @@ namespace TeachersPet.Pages.CourseInfo
                 tempModel.ufid = dataPoints[ufidIndex].Replace("-", "").Replace("\"", "");
                 tempModel.email = dataPoints[emailIndex].Replace("\"", "");
                 tempModel.creditsEarned = dataPoints[creditsEarnedIndex].Replace("\"", "");
+                if (string.IsNullOrEmpty(tempModel.firstName) && string.IsNullOrEmpty(tempModel.lastName) &&
+                    string.IsNullOrEmpty(tempModel.ufid)) {
+                    continue;
+                }
                 extraCreditReportStudentModels.Add(tempModel);
             }
         }
@@ -116,22 +121,31 @@ namespace TeachersPet.Pages.CourseInfo
 
         }
 
-        private async void UpdateExtraCreditButton_Click(object sender, RoutedEventArgs e)
+        private void UpdateExtraCreditButton_Click(object sender, RoutedEventArgs e)
         {
             ScrollViewer.Visibility = Visibility.Visible;
+            var didParseSuccessfully = int.TryParse(SurveyCreditValue.Text, out var scorePerCredit);
+            if (!didParseSuccessfully) {
+                ErrorText.Visibility = Visibility.Visible;
+                ErrorText.Text = "Could not parse survey credit value. Please input an integer.";
+                return;
+            }
+            didParseSuccessfully = int.TryParse(MaxCourseExtraCredit.Text, out maxExtraCredit);
+            if (!didParseSuccessfully) {
+                ErrorText.Visibility = Visibility.Visible;
+                ErrorText.Text = "Could not parse max extra credit value. Please input an integer.";
+                return;
+            }
+            
+            
             Task.Run(async () => {
                 foreach (var ecstudentModel in extraCreditReportStudentModels) {
-                    var didParseSuccessfully = int.TryParse(ecstudentModel.creditsEarned, out var numCredits);
+                    didParseSuccessfully = int.TryParse(ecstudentModel.creditsEarned, out var numCredits);
                     if (!didParseSuccessfully || numCredits < 1) {
                         continue;
                     }
                     var scorePerCredit = 0;
-                    Dispatcher.Invoke(() => { didParseSuccessfully = int.TryParse(SurveyCreditValue.Text, out scorePerCredit); });
-                    if (!didParseSuccessfully) {
-                        ErrorText.Visibility = Visibility.Visible;
-                        ErrorText.Text = "Could not parse survey credit value. Please input an integer.";
-                        continue;
-                    }
+                    
                     var scoreToAdd = numCredits * scorePerCredit;
 
                     StudentModel foundStudent = null;
@@ -153,7 +167,7 @@ namespace TeachersPet.Pages.CourseInfo
                         }
                         catch (Exception exception) {
                             //couldn't match on email either, so skip that student and hope for the best
-                            GraderOutput += "\n" + $"Couldn't find or match on student: {ecstudentModel.firstName} {ecstudentModel.lastName}";
+                            GraderOutput += "\n" + $"WARNING: Couldn't find or match on student: {ecstudentModel.firstName} {ecstudentModel.lastName}";
                             continue;
                         }
                     }
@@ -165,7 +179,7 @@ namespace TeachersPet.Pages.CourseInfo
                         var commentsArray = commentsToken as JArray;
                         if (commentsArray.Any(comment =>
                             comment["comment"] != null &&
-                            comment["comment"].ToString() == "Added credit from research study.")) {
+                            comment["comment"].ToString() == extraCreditComment)) {
                             GraderOutput += "\n" + $"{foundStudent.Name} already given credit for research.";
                             continue;
                         }
@@ -174,17 +188,11 @@ namespace TeachersPet.Pages.CourseInfo
                     var currentGrade = gradeResponse["grade"]?.ToString();
                     int.TryParse(currentGrade, out var currentExtraCreditScore);
                     currentExtraCreditScore += scoreToAdd;
-                    Dispatcher.Invoke(() => {
-                        didParseSuccessfully = int.TryParse(MaxCourseExtraCredit.Text, out maxExtraCredit);
-                        if (!didParseSuccessfully) {
-                            ErrorText.Visibility = Visibility.Visible;
-                            ErrorText.Text = "Could not parse max extra credit value. Please input an integer.";
-                        }
-                    });
+                    
                     if (currentExtraCreditScore > maxExtraCredit) currentExtraCreditScore = maxExtraCredit;
 
                     await CanvasAPI.UpdateSingleGradeFromStudentModelAndScore(foundStudent, currentExtraCreditScore.ToString(), parentData.Id,
-                        extraCreditAssignmentModel.Id, "Added credit from research study.");
+                        extraCreditAssignmentModel.Id, extraCreditComment);
                     Dispatcher.Invoke(() =>
                     {
                         GraderOutput += "\n" + $"Added extra credit to: {ecstudentModel.firstName} {ecstudentModel.lastName}";
