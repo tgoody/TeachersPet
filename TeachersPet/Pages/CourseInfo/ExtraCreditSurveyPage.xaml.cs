@@ -144,8 +144,6 @@ namespace TeachersPet.Pages.CourseInfo
                     if (!didParseSuccessfully || numCredits < 1) {
                         continue;
                     }
-                    var scorePerCredit = 0;
-                    
                     var scoreToAdd = numCredits * scorePerCredit;
 
                     StudentModel foundStudent = null;
